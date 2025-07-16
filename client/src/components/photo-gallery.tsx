@@ -68,7 +68,7 @@ export function PhotoGallery({ weddingId, className = '' }: PhotoGalleryProps) {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                   </div>
-                  <p className="text-sm text-charcoal opacity-60">Moments</p>
+                  <p className="text-sm text-charcoal opacity-60">{t('gallery.moments')}</p>
                 </div>
               </div>
             </div>
@@ -82,10 +82,10 @@ export function PhotoGallery({ weddingId, className = '' }: PhotoGalleryProps) {
                 </svg>
               </div>
               <h3 className="text-2xl font-playfair font-semibold text-charcoal mb-3">
-                Creating Beautiful Memories
+                {t('gallery.creatingBeautifulMemories')}
               </h3>
               <p className="text-charcoal opacity-70 max-w-sm mx-auto leading-relaxed">
-                Every moment of our journey is precious. Soon this space will be filled with the beautiful memories we create together.
+                {t('gallery.everyMomentPrecious')}
               </p>
             </div>
 
@@ -98,7 +98,7 @@ export function PhotoGallery({ weddingId, className = '' }: PhotoGalleryProps) {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                     </svg>
                   </div>
-                  <p className="text-sm text-charcoal opacity-60">Dreams</p>
+                  <p className="text-sm text-charcoal opacity-60">{t('gallery.dreams')}</p>
                 </div>
               </div>
             </div>
@@ -138,7 +138,7 @@ export function PhotoGallery({ weddingId, className = '' }: PhotoGalleryProps) {
             >
               <img
                 src={memoryPhotos[0].url}
-                alt={memoryPhotos[0].caption || 'Wedding photo'}
+                alt={memoryPhotos[0].caption || t('common.weddingPhoto')}
                 className="w-full h-96 md:h-[500px] object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">

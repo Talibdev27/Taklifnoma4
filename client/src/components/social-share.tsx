@@ -124,7 +124,7 @@ export function SocialShare({ title, url, description, image }: SocialShareProps
             className="flex flex-col items-center gap-1 h-auto py-3 wedding-button-outline"
           >
             <SiWhatsapp className="h-5 w-5 text-green-600" />
-            <span className="text-xs">WhatsApp</span>
+            <span className="text-xs">{t('share.whatsapp')}</span>
           </Button>
           
           <Button
@@ -133,7 +133,7 @@ export function SocialShare({ title, url, description, image }: SocialShareProps
             className="flex flex-col items-center gap-1 h-auto py-3 wedding-button-outline"
           >
             <Facebook className="h-5 w-5 text-blue-600" />
-            <span className="text-xs">Facebook</span>
+            <span className="text-xs">{t('share.facebook')}</span>
           </Button>
           
           <Button
@@ -174,7 +174,7 @@ export function SocialShare({ title, url, description, image }: SocialShareProps
               className="flex items-center gap-2 wedding-button-outline"
             >
               <Twitter className="h-4 w-4 text-blue-400" />
-              Twitter
+              {t('share.twitter')}
             </Button>
             
             <Button
@@ -183,7 +183,7 @@ export function SocialShare({ title, url, description, image }: SocialShareProps
               className="flex items-center gap-2 wedding-button-outline"
             >
               <SiTelegram className="h-4 w-4 text-blue-500" />
-              Telegram
+              {t('share.telegram')}
             </Button>
             
             <Button
@@ -192,7 +192,7 @@ export function SocialShare({ title, url, description, image }: SocialShareProps
               className="flex items-center gap-2 wedding-button-outline"
             >
               <SiLinkedin className="h-4 w-4 text-blue-700" />
-              LinkedIn
+              {t('share.linkedin')}
             </Button>
             
             <Button
@@ -201,7 +201,7 @@ export function SocialShare({ title, url, description, image }: SocialShareProps
               className="flex items-center gap-2 wedding-button-outline"
             >
               <Mail className="h-4 w-4 text-charcoal" />
-              Email
+              {t('share.email')}
             </Button>
           </div>
         )}

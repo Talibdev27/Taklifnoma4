@@ -31,7 +31,7 @@ export function EnhancedSocialShare({ weddingUrl, coupleName, className = '', pr
       });
     } catch (error) {
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: t('share.copyError'),
         variant: "destructive",
       });
@@ -72,7 +72,7 @@ export function EnhancedSocialShare({ weddingUrl, coupleName, className = '', pr
     }
     
     toast({
-      title: "Instagram",
+      title: t('share.instagram'),
       description: t('share.linkCopied') + " " + (isMobile ? t('share.instagramOpened') : t('share.instagramWebOpened')),
       duration: 4000,
     });

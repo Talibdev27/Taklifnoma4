@@ -171,7 +171,7 @@ export function GuestBookManager({ weddingId, readOnly = false }: GuestBookManag
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-medium text-[#8B4513]">{entry.guestName}</span>
                         <span className="text-xs text-gray-500">
-                          {new Date(entry.createdAt).toLocaleDateString('en-US', {
+                          {new Date(entry.createdAt).toLocaleDateString(localStorage.getItem('language') === 'kk' ? 'ru-RU' : 'en-US', {
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric',

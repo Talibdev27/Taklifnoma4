@@ -33,8 +33,8 @@ export function GuestBookForm({ weddingId, primaryColor = '#1976d2', accentColor
     },
     onSuccess: () => {
       toast({
-        title: 'Message Added!',
-        description: 'Your message has been added to the guest book.',
+        title: t('guestBook.messageAdded'),
+        description: t('guestBook.messageAddedDesc'),
       });
       setGuestName('');
       setMessage('');
@@ -42,8 +42,8 @@ export function GuestBookForm({ weddingId, primaryColor = '#1976d2', accentColor
     },
     onError: () => {
       toast({
-        title: 'Error',
-        description: 'Failed to add message. Please try again.',
+        title: t('common.error'),
+        description: t('guestBook.addMessageError'),
         variant: 'destructive',
       });
     },

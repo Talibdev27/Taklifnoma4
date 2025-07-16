@@ -114,7 +114,8 @@ export function PersonalizedGuestDashboard({
   };
 
   const formatDate = (date: Date | string) => {
-    return new Date(date).toLocaleDateString('en-US', {
+    const currentLocale = localStorage.getItem('language') || 'en';
+    return new Date(date).toLocaleDateString(currentLocale === 'kk' ? 'ru-RU' : currentLocale === 'uz' ? 'uz-UZ' : 'en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -270,10 +271,10 @@ export function PersonalizedGuestDashboard({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Camera className="h-5 w-5" />
-                Wedding Memories
+                {t('dashboard.weddingMemories')}
               </CardTitle>
               <CardDescription>
-                Share and view photos from the celebration
+                {t('dashboard.shareAndViewPhotos')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -283,7 +284,7 @@ export function PersonalizedGuestDashboard({
                     <div key={photo.id} className="relative aspect-square">
                       <img
                         src={photo.url}
-                        alt={photo.caption || 'Wedding photo'}
+                        alt={photo.caption || t('common.weddingPhoto')}
                         className="w-full h-full object-cover rounded-lg"
                       />
                       {photo.caption && (
@@ -297,8 +298,8 @@ export function PersonalizedGuestDashboard({
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <Camera className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p>No photos uploaded yet</p>
-                  <p className="text-sm">Photos will appear here as guests share memories</p>
+                  <p>{t('dashboard.noPhotosYet')}</p>
+                  <p className="text-sm">{t('dashboard.photosWillAppear')}</p>
                 </div>
               )}
             </CardContent>
@@ -310,30 +311,30 @@ export function PersonalizedGuestDashboard({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageSquare className="h-5 w-5" />
-                Guest Book
+                {t('dashboard.guestBook')}
               </CardTitle>
               <CardDescription>
-                Leave a message for the happy couple
+                {t('dashboard.leaveMessageForCouple')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="guest-name">Your Name</Label>
+                  <Label htmlFor="guest-name">{t('form.name')}</Label>
                   <Input
                     id="guest-name"
                     value={guestName}
                     onChange={(e) => setGuestName(e.target.value)}
-                    placeholder="Enter your name"
+                    placeholder={t('guestBook.form.namePlaceholder')}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="guest-message">Your Message</Label>
+                  <Label htmlFor="guest-message">{t('form.message')}</Label>
                   <Textarea
                     id="guest-message"
                     value={guestMessage}
                     onChange={(e) => setGuestMessage(e.target.value)}
-                    placeholder="Share your wishes for the happy couple..."
+                    placeholder={t('guestBook.form.messagePlaceholder')}
                     rows={3}
                   />
                 </div>
@@ -342,7 +343,7 @@ export function PersonalizedGuestDashboard({
                   disabled={!guestName.trim() || !guestMessage.trim() || guestBookMutation.isPending}
                   className="w-full"
                 >
-                  {guestBookMutation.isPending ? 'Adding Message...' : 'Add to Guest Book'}
+                  {guestBookMutation.isPending ? t('guestBook.addingMessage') : t('guestBook.addToGuestBook')}
                 </Button>
               </div>
 
@@ -359,11 +360,11 @@ export function PersonalizedGuestDashboard({
                   </div>
                 ))}
                 {guestBookEntries.length === 0 && (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <MessageSquare className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                    <p>No messages yet</p>
-                    <p className="text-sm">Be the first to leave a message!</p>
-                  </div>
+                                  <div className="text-center py-8 text-muted-foreground">
+                  <MessageSquare className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                  <p>{t('guestBook.noMessages')}</p>
+                  <p className="text-sm">{t('guestBook.beFirstToLeave')}</p>
+                </div>
                 )}
               </div>
             </CardContent>

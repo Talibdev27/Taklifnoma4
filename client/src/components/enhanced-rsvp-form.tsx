@@ -187,7 +187,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
               <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-center gap-2 text-green-800">
                   <CheckCircle className="h-4 w-4" />
-                  <span className="font-medium">Selected: {selectedGuest.name}</span>
+                  <span className="font-medium">{t('rsvp.selected')}: {selectedGuest.name}</span>
                 </div>
               </div>
             )}
@@ -244,10 +244,10 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
 
               {/* Message */}
               <div className="space-y-2">
-                <Label htmlFor="message">Leave a message (optional)</Label>
+                <Label htmlFor="message">{t('rsvp.leaveMessage')}</Label>
                 <Textarea
                   id="message"
-                  placeholder="Share a message with the couple..."
+                  placeholder={t('rsvp.shareMessage')}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   className="resize-none"
@@ -262,12 +262,12 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
                 {updateRSVP.isPending ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                    Updating...
+                    {t('rsvp.updating')}
                   </>
                 ) : (
                   <>
                     <Heart className="h-4 w-4 mr-2" />
-                    Confirm RSVP
+                    {t('rsvp.confirmRsvp')}
                   </>
                 )}
               </Button>
