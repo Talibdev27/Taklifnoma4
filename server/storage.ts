@@ -46,6 +46,8 @@ export interface IStorage {
   // Guest Book
   createGuestBookEntry(entry: InsertGuestBookEntry): Promise<GuestBookEntry>;
   getGuestBookEntriesByWeddingId(weddingId: number): Promise<GuestBookEntry[]>;
+  getAllGuestBookEntries(): Promise<GuestBookEntry[]>;
+  deleteGuestBookEntry(id: number): Promise<boolean>;
 
   // Invitations
   createInvitation(invitation: InsertInvitation): Promise<Invitation>;
@@ -332,6 +334,14 @@ export class MemStorage implements IStorage {
     return Array.from(this.guestBookEntries.values())
       .filter(entry => entry.weddingId === weddingId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getAllGuestBookEntries(): Promise<GuestBookEntry[]> {
+    return Array.from(this.guestBookEntries.values());
+  }
+
+  async deleteGuestBookEntry(id: number): Promise<boolean> {
+    return this.guestBookEntries.delete(id);
   }
 
   // Invitations
@@ -713,6 +723,15 @@ export class DatabaseStorage implements IStorage {
 
   async getGuestBookEntriesByWeddingId(weddingId: number): Promise<GuestBookEntry[]> {
     return await db.select().from(guestBookEntries).where(eq(guestBookEntries.weddingId, weddingId));
+  }
+
+  async getAllGuestBookEntries(): Promise<GuestBookEntry[]> {
+    return await db.select().from(guestBookEntries);
+  }
+
+  async deleteGuestBookEntry(id: number): Promise<boolean> {
+    const result = await db.delete(guestBookEntries).where(eq(guestBookEntries.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
   // Invitations

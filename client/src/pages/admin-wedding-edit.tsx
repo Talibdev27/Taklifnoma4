@@ -567,6 +567,91 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Background Music (Optional)
+                      </label>
+                      <p className="text-xs text-gray-500 mb-1">
+                        Upload background music (MP3, WAV) that will play on the wedding site. Max 10MB.
+                      </p>
+                      {editMode ? (
+                        <>
+                          {weddingData?.backgroundMusicUrl && (
+                            <div className="mb-2">
+                              <audio 
+                                controls 
+                                className="w-full"
+                                src={weddingData.backgroundMusicUrl}
+                              >
+                                Your browser does not support the audio element.
+                              </audio>
+                              <button 
+                                type="button"
+                                onClick={() => handleInputChange('backgroundMusicUrl', '')}
+                                className="text-red-500 text-sm hover:underline block mb-2"
+                              >
+                                Remove music
+                              </button>
+                            </div>
+                          )}
+                          <input
+                            type="file"
+                            accept="audio/*"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              
+                              // Validate file type
+                              if (!file.type.startsWith('audio/')) {
+                                alert('Please upload an audio file (MP3, WAV, etc.).');
+                                return;
+                              }
+                              
+                              // Validate file size (max 10MB)
+                              if (file.size > 10 * 1024 * 1024) {
+                                alert('Please upload a file smaller than 10MB.');
+                                return;
+                              }
+                              
+                              const formData = new FormData();
+                              formData.append('music', file);
+                              try {
+                                const token = localStorage.getItem('adminToken');
+                                const response = await fetch('/api/upload/background-music', {
+                                  method: 'POST',
+                                  headers: token ? { 'Authorization': `Bearer ${token}` } : undefined,
+                                  body: formData
+                                });
+                                if (response.ok) {
+                                  const result = await response.json();
+                                  handleInputChange('backgroundMusicUrl', result.url);
+                                } else {
+                                  alert('Failed to upload music');
+                                }
+                              } catch (err) {
+                                alert('Failed to upload music');
+                              }
+                            }}
+                            className="mb-2"
+                          />
+                        </>
+                      ) : (
+                        wedding.backgroundMusicUrl ? (
+                          <div>
+                            <audio 
+                              controls 
+                              className="w-full"
+                              src={wedding.backgroundMusicUrl}
+                            >
+                              Your browser does not support the audio element.
+                            </audio>
+                          </div>
+                        ) : (
+                          <span className="text-gray-400">No background music uploaded</span>
+                        )
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Template
                       </label>
                       {editMode ? (
@@ -598,6 +683,8 @@ export default function AdminWeddingEdit() {
                           <option value="en">English</option>
                           <option value="ru">Russian</option>
                           <option value="uz">O'zbekcha</option>
+                          <option value="kk">Қазақша</option>
+                          <option value="kaa">Қарақалпақша</option>
                         </select>
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg capitalize">{wedding.defaultLanguage}</p>

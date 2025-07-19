@@ -19,7 +19,9 @@ interface WeddingLanguageSettingsProps {
 const SUPPORTED_LANGUAGES = [
   { code: 'uz', name: "O'zbekcha", flag: '🇺🇿' },
   { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'ru', name: 'Русский', flag: '🇷🇺' }
+  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+  { code: 'kk', name: 'Қазақша', flag: '🇰🇿' },
+  { code: 'kaa', name: 'Қарақалпақша', flag: '🇺🇿' }
 ];
 
 export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProps) {

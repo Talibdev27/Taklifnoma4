@@ -5,16 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, Calendar, Plus, Settings, ArrowLeft, Languages } from "lucide-react";
+import { Users, Calendar, Plus, Settings, ArrowLeft, Languages, MessageSquare } from "lucide-react";
 import { Link } from "wouter";
 import type { Wedding, User } from "@shared/schema";
+import { GuestManagerGuestBook } from "./guest-manager-guest-book";
 
 interface RestrictedAdminDashboardProps {
   user: User;
 }
 
 export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<"weddings" | "create">("weddings");
+  const [activeTab, setActiveTab] = useState<"weddings" | "guestbook">("weddings");
   const { t, i18n } = useTranslation();
 
   const handleLanguageChange = (language: string) => {
@@ -35,6 +36,12 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
       label: t('guestManager.weddingManagement'),
       icon: Calendar,
       description: t('guestManager.manageAssignedWeddings')
+    },
+    {
+      id: "guestbook" as const,
+      label: t('guestManager.guestBookManagement'),
+      icon: MessageSquare,
+      description: t('guestManager.manageGuestBook')
     }
   ];
 
@@ -60,6 +67,8 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
                     <SelectItem value="en">English</SelectItem>
                     <SelectItem value="uz">O'zbekcha</SelectItem>
                     <SelectItem value="ru">Русский</SelectItem>
+                    <SelectItem value="kk">Қазақша</SelectItem>
+                    <SelectItem value="kaa">Қарақалпақша</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -186,9 +195,74 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
           </div>
         )}
 
+        {activeTab === "guestbook" && (
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+              <h2 className="text-base sm:text-lg font-medium text-gray-900">{t('guestManager.guestBookManagement')}</h2>
+            </div>
+
+            {weddingsLoading ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <Card key={i} className="animate-pulse">
+                    <CardHeader className="pb-2 sm:pb-4">
+                      <div className="h-3 sm:h-4 bg-gray-200 rounded w-3/4"></div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="space-y-2">
+                        <div className="h-3 bg-gray-200 rounded"></div>
+                        <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : weddings.length > 0 ? (
+              <div className="space-y-4 sm:space-y-6">
+                {weddings.map((wedding: any) => (
+                  <Card key={wedding.id} className="hover:shadow-md transition-shadow">
+                    <CardHeader className="pb-3 sm:pb-6">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <CardTitle className="text-sm sm:text-lg truncate">
+                            {wedding.bride} & {wedding.groom}
+                          </CardTitle>
+                          <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                            📅 {new Date(wedding.weddingDate).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <Button size="sm" asChild className="text-xs sm:text-sm min-h-[44px] sm:min-h-[36px]">
+                          <Link href={`/wedding/${wedding.uniqueUrl}`} target="_blank">
+                            <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                            {t('guestManager.viewWedding')}
+                          </Link>
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <GuestManagerGuestBook weddingId={wedding.id} />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="text-center py-8 sm:py-12 px-4">
+                  <MessageSquare className="h-8 w-8 sm:h-12 sm:w-12 mx-auto text-gray-400 mb-3 sm:mb-4" />
+                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">{t('guestManager.noAssignedWeddings')}</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">
+                    {t('guestManager.noAssignedWeddingsDesc')}
+                  </p>
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    {t('guestManager.contactAdmin')}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        )}
 
       </div>
-
 
     </div>
   );

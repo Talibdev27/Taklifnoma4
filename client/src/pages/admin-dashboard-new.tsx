@@ -18,6 +18,7 @@ import {
 import type { Wedding, User, Guest, Photo } from "@shared/schema";
 import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
 import { GuestManagerAssignment } from '@/components/guest-manager-assignment';
+import { AdminGuestBookManager } from '@/components/admin-guest-book-manager';
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -39,6 +40,8 @@ export default function AdminDashboard() {
     story: '',
     dearGuestMessage: '',
     couplePhotoUrl: '',
+    backgroundMusicUrl: '',
+    dressCode: '',
     defaultLanguage: 'en',
     primaryColor: '#1976d2',
     accentColor: '#1565c0'
@@ -74,6 +77,61 @@ export default function AdminDashboard() {
       toast({
         title: "Upload failed",
         description: "Failed to upload couple photo. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleBackgroundMusicUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('audio/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an audio file (MP3, WAV, etc.).",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload a file smaller than 10MB.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('music', file);
+
+    try {
+      const response = await fetch('/api/upload/background-music', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setNewWedding(prev => ({...prev, backgroundMusicUrl: result.url}));
+        toast({
+          title: "Music uploaded successfully",
+          description: "Background music has been uploaded and will play on the wedding site."
+        });
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (error) {
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload background music. Please try again.",
         variant: "destructive"
       });
     }
@@ -259,6 +317,8 @@ export default function AdminDashboard() {
         story: '',
         dearGuestMessage: '',
         couplePhotoUrl: '',
+        backgroundMusicUrl: '',
+        dressCode: '',
         defaultLanguage: 'uz',
         primaryColor: '#1976d2',
         accentColor: '#1565c0'
@@ -475,6 +535,7 @@ export default function AdminDashboard() {
       story: '',
       dearGuestMessage: '',
       couplePhotoUrl: '',
+      backgroundMusicUrl: '',
       defaultLanguage: 'en',
       primaryColor: '#1976d2',
       accentColor: '#1565c0'
@@ -627,6 +688,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="analytics" className="text-xs sm:text-sm p-2 sm:p-3">
               <span className="hidden sm:inline">Analytics</span>
               <span className="sm:hidden">Stats</span>
+            </TabsTrigger>
+            <TabsTrigger value="guestbook" className="text-xs sm:text-sm p-2 sm:p-3">
+              <span className="hidden sm:inline">Guest Book</span>
+              <span className="sm:hidden">Book</span>
             </TabsTrigger>
           </TabsList>
 
@@ -1331,6 +1396,8 @@ export default function AdminDashboard() {
                         <option value="uz">O'zbekcha</option>
                         <option value="en">English</option>
                         <option value="ru">Русский</option>
+                        <option value="kk">Қазақша</option>
+                        <option value="kaa">Қарақалпақша</option>
                       </select>
                       <p className="text-xs text-gray-500 mt-1">
                         This will be the default language for the wedding website
@@ -1386,6 +1453,39 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Background Music (Optional)
+                      </label>
+                      <Input
+                        type="file"
+                        accept="audio/*"
+                        onChange={handleBackgroundMusicUpload}
+                        className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Upload background music (MP3, WAV) that will play on the wedding site. Max 10MB.
+                      </p>
+                      {newWedding.backgroundMusicUrl && (
+                        <div className="mt-2">
+                          <audio 
+                            controls 
+                            className="w-full"
+                            src={newWedding.backgroundMusicUrl}
+                          >
+                            Your browser does not support the audio element.
+                          </audio>
+                          <button 
+                            type="button"
+                            onClick={() => setNewWedding({...newWedding, backgroundMusicUrl: ''})}
+                            className="text-red-500 text-sm mt-1 hover:underline block"
+                          >
+                            Remove music
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Love Story (Optional)
                       </label>
                       <textarea 
@@ -1415,6 +1515,50 @@ export default function AdminDashboard() {
                   >
                     Reset Form
                   </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Guest Book Management */}
+          <TabsContent value="guestbook" className="space-y-6">
+            <Card className="wedding-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-[#2C3338]">
+                  <MessageSquare className="h-5 w-5 text-[#D4B08C]" />
+                  Guest Book Management
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {weddings.map((wedding) => (
+                    <div key={wedding.id} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <h3 className="font-semibold text-[#2C3338]">
+                            {wedding.bride} & {wedding.groom}
+                          </h3>
+                          <p className="text-sm text-[#2C3338]/70">
+                            /{wedding.uniqueUrl}
+                          </p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          View Wedding
+                        </Button>
+                      </div>
+                      <AdminGuestBookManager weddingId={wedding.id} />
+                    </div>
+                  ))}
+                  {weddings.length === 0 && (
+                    <div className="text-center py-8 text-[#2C3338]/70">
+                      No weddings found. Create a wedding first to manage guest book entries.
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

@@ -33,6 +33,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       case 'uz': return uz;
       case 'ru': return ru;
       case 'kk': return ru; // Kazakh uses Russian locale for date formatting
+      case 'kaa': return ru; // Karakalpak uses Russian locale for date formatting
       default: return enUS;
     }
   };

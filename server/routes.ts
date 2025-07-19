@@ -70,6 +70,28 @@ const upload = multer({
   }
 });
 
+// Multer configuration for audio uploads
+const audioUpload = multer({
+  storage: multer.diskStorage({
+    destination: uploadDir,
+    filename: (req, file, cb) => {
+      const uniqueSuffix = nanoid();
+      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+  }),
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a', 'audio/aac'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only audio files (MP3, WAV, OGG, M4A, AAC) are allowed.'));
+    }
+  },
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB limit for audio files
+  }
+});
+
 // JWT secret key - in production, use environment variable
 const JWT_SECRET = process.env.JWT_SECRET || 'wedding-platform-secret-key';
 
@@ -78,14 +100,19 @@ const authenticateToken = (req: any, res: any, next: any) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
+  console.log('authenticateToken - auth header present:', !!authHeader);
+  console.log('authenticateToken - token present:', !!token);
+
   if (!token) {
     return res.status(401).json({ message: 'Access token required' });
   }
 
   jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
     if (err) {
+      console.log('authenticateToken - token verification failed:', err.message);
       return res.status(403).json({ message: 'Invalid or expired token' });
     }
+    console.log('authenticateToken - token verified, user:', user);
     req.user = user;
     next();
   });
@@ -125,12 +152,17 @@ const verifyWeddingOwnership = async (req: any, res: any, next: any) => {
 const requireAdmin = async (req: any, res: any, next: any) => {
   try {
     const userId = req.user.userId;
+    console.log('requireAdmin - checking user ID:', userId);
+    
     const user = await storage.getUserById(userId);
+    console.log('requireAdmin - user found:', user ? { id: user.id, email: user.email, isAdmin: user.isAdmin, role: user.role } : 'null');
     
     if (!user || (!user.isAdmin && user.role !== 'admin')) {
+      console.log('requireAdmin - access denied for user:', userId);
       return res.status(403).json({ message: 'Admin privileges required' });
     }
     
+    console.log('requireAdmin - access granted for user:', userId);
     next();
   } catch (error) {
     console.error('Admin verification error:', error);
@@ -516,10 +548,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         story: story?.trim() || "",
         dearGuestMessage: dearGuestMessage?.trim() || "",
         couplePhotoUrl: couplePhotoUrl?.trim() || null,
+        backgroundMusicUrl: req.body.backgroundMusicUrl?.trim() || null,
         template: template || "standard",
         primaryColor: primaryColor || "#D4B08C",
         accentColor: accentColor || "#89916B",
-        backgroundMusicUrl: null,
         venueCoordinates: null,
         isPublic: true,
         uniqueUrl
@@ -1292,6 +1324,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Background music upload endpoint for admin
+  app.post('/api/upload/background-music', authenticateToken, requireAdmin, audioUpload.single('music'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+
+      const musicUrl = `/uploads/${req.file.filename}`;
+      res.json({ url: musicUrl, message: 'Background music uploaded successfully' });
+    } catch (error) {
+      console.error('Background music upload error:', error);
+      res.status(500).json({ message: 'Failed to upload background music' });
+    }
+  });
+
   // Wedding routes
   app.post("/api/weddings", authenticateToken, async (req: any, res) => {
     try {
@@ -1343,11 +1390,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         story: weddingFields.story || "",
         dearGuestMessage: weddingFields.dearGuestMessage || null,
         couplePhotoUrl: weddingFields.couplePhotoUrl || null,
+        backgroundMusicUrl: weddingFields.backgroundMusicUrl || null,
         template: weddingFields.template || "modernElegance",
         defaultLanguage: weddingFields.defaultLanguage || "en",
         primaryColor: weddingFields.primaryColor || "#D4B08C",
         accentColor: weddingFields.accentColor || "#89916B",
-        backgroundMusicUrl: null,
         venueCoordinates: null,
         isPublic: weddingFields.isPublic !== undefined ? weddingFields.isPublic : true,
         uniqueUrl
@@ -2106,6 +2153,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const entries = await storage.getGuestBookEntriesByWeddingId(weddingId);
       res.json(entries);
     } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Delete guest book entry (admin only)
+  app.delete("/api/guest-book/:entryId", authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      console.log('Delete guest book entry request:', req.params.entryId);
+      console.log('User making request:', (req as any).user);
+      
+      const entryId = parseInt(req.params.entryId);
+      const deleted = await storage.deleteGuestBookEntry(entryId);
+      
+      console.log('Delete result:', deleted);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Guest book entry not found" });
+      }
+      
+      res.json({ message: "Guest book entry deleted successfully" });
+    } catch (error) {
+      console.error('Delete guest book entry error:', error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Delete guest book entry (guest manager - can only delete from their own weddings)
+  app.delete("/api/guest-manager/guest-book/:entryId", authenticateToken, async (req, res) => {
+    try {
+      console.log('Guest manager delete request:', req.params.entryId);
+      console.log('User making request:', (req as any).user);
+      
+      const entryId = parseInt(req.params.entryId);
+      const userId = (req as any).user.userId;
+      
+      // Get the guest book entry - we need to find it by ID
+      // First, let's get all guest book entries and find the one we want
+      const allEntries = await storage.getAllGuestBookEntries();
+      const entry = allEntries.find((e: any) => e.id === entryId);
+      
+      if (!entry) {
+        return res.status(404).json({ message: "Guest book entry not found" });
+      }
+      
+      // Check if user owns the wedding or is a guest manager for this wedding
+      const wedding = await storage.getWeddingById(entry.weddingId);
+      if (!wedding) {
+        return res.status(404).json({ message: "Wedding not found" });
+      }
+      
+      // Check if user is the wedding owner or has guest manager access
+      if (wedding.userId !== userId) {
+        // Check if user has guest manager access to this wedding
+        const user = await storage.getUserById(userId);
+        if (!user || user.role !== 'guest_manager') {
+          return res.status(403).json({ message: "Access denied" });
+        }
+        
+        // Additional check: verify guest manager has access to this specific wedding
+        // This could be enhanced with a proper access control system
+        const userWeddings = await storage.getWeddingsByUserId(userId);
+        const hasAccess = userWeddings.some(w => w.id === entry.weddingId);
+        
+        if (!hasAccess) {
+          return res.status(403).json({ message: "Access denied to this wedding" });
+        }
+      }
+      
+      const deleted = await storage.deleteGuestBookEntry(entryId);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Guest book entry not found" });
+      }
+      
+      res.json({ message: "Guest book entry deleted successfully" });
+    } catch (error) {
+      console.error('Guest manager delete error:', error);
       res.status(500).json({ message: "Server error" });
     }
   });

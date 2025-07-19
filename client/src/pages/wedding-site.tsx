@@ -16,6 +16,7 @@ import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher'
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
 import { EpicTemplate } from '@/components/epic-template';
+import { BackgroundMusicPlayer } from '@/components/background-music-player';
 import { formatDate } from '@/lib/utils';
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, ExternalLink, MessageCircle } from 'lucide-react';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
@@ -642,13 +643,13 @@ export default function WeddingSite() {
         </div>
       </section>
 
-      {/* Background Music */}
+      {/* Background Music Player */}
       {wedding.backgroundMusicUrl && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <Button size="icon" className="rounded-full bg-romantic-gold hover:bg-opacity-90 shadow-lg">
-            <Music className="h-5 w-5" />
-          </Button>
-        </div>
+        <BackgroundMusicPlayer 
+          musicUrl={wedding.backgroundMusicUrl}
+          autoPlay={true}
+          loop={true}
+        />
       )}
 
       {/* Footer */}

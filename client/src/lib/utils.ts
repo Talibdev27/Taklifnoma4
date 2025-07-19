@@ -29,6 +29,15 @@ export function formatDate(date: Date | string, locale?: string): string {
     return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
   }
   
+  // Custom Karakalpak month names
+  if (currentLocale === 'kaa') {
+    const months = [
+      'Қаңтар', 'Ақпан', 'Наурыз', 'Сәуір', 'Мамыр', 'Маусым',
+      'Шілде', 'Тамыз', 'Қыркүйек', 'Қазан', 'Қараша', 'Желтоқсан'
+    ];
+    return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  }
+  
   // Use browser locale for other languages
   return d.toLocaleDateString(currentLocale === 'en' ? 'en-US' : 'ru-RU', {
     year: 'numeric',
