@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: taklifnoma4
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: ADMIN_USERNAME
+        value: Talibdev
+      - key: ADMIN_PASSWORD
+        value: Dilnoza2003 
