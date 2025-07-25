@@ -54,6 +54,13 @@ const templateOptions = [
     image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop"
   },
   {
+    id: "anime_1",
+    name: "Anime 1 (Animated)",
+    nameUz: "Anime 1 (Animatsiyali)",
+    nameRu: "Аниме 1 (Анимированный)",
+    image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop"
+  },
+  {
     id: "modernElegance", 
     name: "Modern Elegance",
     nameUz: "Zamonaviy nafislik",

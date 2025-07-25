@@ -18,4 +18,10 @@ services:
       - key: ADMIN_USERNAME
         value: Talibdev
       - key: ADMIN_PASSWORD
-        value: Dilnoza2003 
+        value: Dilnoza2003
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false 

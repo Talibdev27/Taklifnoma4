@@ -1304,6 +1304,7 @@ export default function AdminDashboard() {
                       >
                         <option value="standard">Standard</option>
                         <option value="epic">Epic</option>
+                        <option value="anime_1">Anime 1 (Animated)</option>
                         <option value="gardenRomance">Garden Romance</option>
                         <option value="modernElegance">Modern Elegance</option>
                         <option value="rusticCharm">Rustic Charm</option>

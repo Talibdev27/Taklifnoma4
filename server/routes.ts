@@ -6,6 +6,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { nanoid } from "nanoid";
+import { uploadImage, uploadAudio, deleteFromCloudinary, getPublicIdFromUrl } from "./cloudinary";
 import { storage } from "./storage";
 import { 
   insertUserSchema, insertWeddingSchema, insertGuestSchema, 
@@ -43,13 +44,13 @@ function generateClickUrl(orderId: string, amount: number): string {
   return `${baseUrl}?${params.toString()}`;
 }
 
-// Configure multer for file uploads
+// Keep local upload for fallback (if Cloudinary is not configured)
 const uploadDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-const upload = multer({
+const localUpload = multer({
   storage: multer.diskStorage({
     destination: uploadDir,
     filename: (req, file, cb) => {
@@ -70,8 +71,7 @@ const upload = multer({
   }
 });
 
-// Multer configuration for audio uploads
-const audioUpload = multer({
+const localAudioUpload = multer({
   storage: multer.diskStorage({
     destination: uploadDir,
     filename: (req, file, cb) => {
@@ -91,6 +91,10 @@ const audioUpload = multer({
     fileSize: 10 * 1024 * 1024 // 10MB limit for audio files
   }
 });
+
+// Use Cloudinary if configured, otherwise fallback to local
+const upload = process.env.CLOUDINARY_CLOUD_NAME ? uploadImage : localUpload;
+const audioUpload = process.env.CLOUDINARY_CLOUD_NAME ? uploadAudio : localAudioUpload;
 
 // JWT secret key - in production, use environment variable
 const JWT_SECRET = process.env.JWT_SECRET || 'wedding-platform-secret-key';
@@ -1316,8 +1320,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'No file uploaded' });
       }
 
-      const photoUrl = `/uploads/${req.file.filename}`;
-      res.json({ url: photoUrl, message: 'Couple photo uploaded successfully' });
+      // Use Cloudinary URL if available, otherwise fallback to local
+      const photoUrl = req.file.path || `/uploads/${req.file.filename}`;
+      res.json({ 
+        url: photoUrl, 
+        message: 'Couple photo uploaded successfully',
+        publicId: req.file.filename // For Cloudinary deletion later
+      });
     } catch (error) {
       console.error('Couple photo upload error:', error);
       res.status(500).json({ message: 'Failed to upload couple photo' });
@@ -1331,8 +1340,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'No file uploaded' });
       }
 
-      const musicUrl = `/uploads/${req.file.filename}`;
-      res.json({ url: musicUrl, message: 'Background music uploaded successfully' });
+      // Use Cloudinary URL if available, otherwise fallback to local
+      const musicUrl = req.file.path || `/uploads/${req.file.filename}`;
+      res.json({ 
+        url: musicUrl, 
+        message: 'Background music uploaded successfully',
+        publicId: req.file.filename // For Cloudinary deletion later
+      });
     } catch (error) {
       console.error('Background music upload error:', error);
       res.status(500).json({ message: 'Failed to upload background music' });
@@ -2084,7 +2098,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Invalid Wedding ID format.' });
       }
 
-      const photoUrl = `/uploads/${req.file.filename}`;
+      // Use Cloudinary URL if available, otherwise fallback to local
+      const photoUrl = req.file.path || `/uploads/${req.file.filename}`;
 
       // Create the photo entry in the photos table
       const newPhoto = await storage.createPhoto({

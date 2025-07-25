@@ -587,15 +587,17 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async createWedding(userId: number, insertWedding: any): Promise<Wedding> {
+  async createWedding(userId: number, insertWedding: InsertWedding): Promise<Wedding> {
     try {
       console.log("Creating wedding with data:", { ...insertWedding, userId });
       
-      // Ensure defaultLanguage is included in the insert
+      // Ensure all required fields have defaults
       const weddingData = {
         ...insertWedding,
         userId,
-        defaultLanguage: insertWedding.defaultLanguage || 'en'
+        timezone: insertWedding.timezone || 'Asia/Tashkent',
+        defaultLanguage: insertWedding.defaultLanguage || 'en',
+        availableLanguages: insertWedding.availableLanguages || ['en']
       };
       
       console.log("Final wedding data to insert:", weddingData);

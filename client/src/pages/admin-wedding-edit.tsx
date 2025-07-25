@@ -661,9 +661,10 @@ export default function AdminWeddingEdit() {
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <option value="standard">Standard</option>
+                          <option value="epic">Epic</option>
+                          <option value="anime_1">Anime 1 (Animated)</option>
                           <option value="modern">Modern</option>
                           <option value="classic">Classic</option>
-                          <option value="epic">Epic</option>
                         </select>
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg capitalize">{wedding.template}</p>
