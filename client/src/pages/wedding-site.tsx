@@ -16,7 +16,9 @@ import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher'
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
 import { EpicTemplate } from '@/components/epic-template';
+import { BirthdayTemplate } from '@/components/birthday-template';
 import { Anime1Template } from '@/components/anime-1-template';
+import { FlowerTemplate } from '@/components/flower-template';
 import { BackgroundMusicPlayer } from '@/components/background-music-player';
 import { formatDate } from '@/lib/utils';
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, ExternalLink, MessageCircle } from 'lucide-react';
@@ -84,10 +86,22 @@ export default function WeddingSite() {
     return <EpicTemplate wedding={wedding} />;
   }
 
+  // Check for Birthday template
+  if (wedding?.template === 'birthday') {
+    console.log('Rendering Birthday template for wedding:', wedding);
+    return <BirthdayTemplate wedding={wedding} />;
+  }
+
   // Check for Anime1 template
   if (wedding?.template === 'anime_1') {
     console.log('Rendering Anime1 template for wedding:', wedding);
     return <Anime1Template wedding={wedding} guests={[]} photos={photos} guestBookEntries={guestBookEntries} />;
+  }
+
+  // Check for Flower template
+  if (wedding?.template === 'flower') {
+    console.log('Rendering Flower template for wedding:', wedding);
+    return <FlowerTemplate wedding={wedding} />;
   }
 
   // Template-specific configurations

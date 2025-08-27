@@ -615,19 +615,40 @@ export default function AdminWeddingEdit() {
                               formData.append('music', file);
                               try {
                                 const token = localStorage.getItem('adminToken');
+                                console.log('Uploading music file:', file.name, 'Size:', file.size, 'Type:', file.type);
+                                
                                 const response = await fetch('/api/upload/background-music', {
                                   method: 'POST',
                                   headers: token ? { 'Authorization': `Bearer ${token}` } : undefined,
                                   body: formData
                                 });
+                                
+                                console.log('Upload response status:', response.status);
+                                
                                 if (response.ok) {
                                   const result = await response.json();
+                                  console.log('Upload successful:', result);
                                   handleInputChange('backgroundMusicUrl', result.url);
+                                  toast({
+                                    title: "Music Uploaded",
+                                    description: "Background music has been uploaded successfully.",
+                                  });
                                 } else {
-                                  alert('Failed to upload music');
+                                  const errorText = await response.text();
+                                  console.error('Upload failed:', response.status, errorText);
+                                  toast({
+                                    title: "Upload Failed",
+                                    description: `Failed to upload music: ${response.status} ${response.statusText}`,
+                                    variant: "destructive",
+                                  });
                                 }
                               } catch (err) {
-                                alert('Failed to upload music');
+                                console.error('Upload error:', err);
+                                toast({
+                                  title: "Upload Error",
+                                  description: "Failed to upload music. Please try again.",
+                                  variant: "destructive",
+                                });
                               }
                             }}
                             className="mb-2"
@@ -662,7 +683,9 @@ export default function AdminWeddingEdit() {
                         >
                           <option value="standard">Standard</option>
                           <option value="epic">Epic</option>
+                          <option value="birthday">Birthday</option>
                           <option value="anime_1">Anime 1 (Animated)</option>
+                          <option value="flower">Flower</option>
                           <option value="modern">Modern</option>
                           <option value="classic">Classic</option>
                         </select>
@@ -938,6 +961,302 @@ export default function AdminWeddingEdit() {
                         )}
                       </div>
                     </div>
+
+                    {/* Flower Template Specific Photos */}
+                    {wedding?.template === 'flower' && (
+                      <div>
+                        <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
+                          <Camera className="h-4 w-4" />
+                          Flower Template Photos
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-6">Upload photos for specific sections of the Flower template</p>
+                        
+                        {/* Photo 1 - Hero Section */}
+                        <div className="mb-6">
+                          <h4 className="font-medium text-gray-700 mb-3">Photo 1 - Hero Section (Circular)</h4>
+                          <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                            <div className="text-center">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    const formData = new FormData();
+                                    formData.append('photo', file);
+                                    formData.append('photoType', 'flower_photo_1');
+                                    formData.append('weddingId', wedding?.id?.toString() || '');
+                                    
+                                    fetch('/api/photos/upload', {
+                                      method: 'POST',
+                                      body: formData,
+                                    }).then(() => {
+                                      queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                    });
+                                  }
+                                }}
+                                className="hidden"
+                                id="flower-photo-1-upload"
+                              />
+                              <label
+                                htmlFor="flower-photo-1-upload"
+                                className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
+                              >
+                                <Camera className="h-4 w-4 mr-2" />
+                                Upload Photo 1
+                              </label>
+                            </div>
+                          </div>
+                          {photos && photos.filter((photo: any) => photo.photoType === 'flower_photo_1').length > 0 && (
+                            <div className="mt-3">
+                              <img 
+                                src={photos.filter((photo: any) => photo.photoType === 'flower_photo_1')[0].url} 
+                                alt="Photo 1"
+                                className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Photo 2 - Dear Guest Section */}
+                        <div className="mb-6">
+                          <h4 className="font-medium text-gray-700 mb-3">Photo 2 - Under Invitation Text Section</h4>
+                          <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                            <div className="text-center">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    const formData = new FormData();
+                                    formData.append('photo', file);
+                                    formData.append('photoType', 'flower_photo_2');
+                                    formData.append('weddingId', wedding?.id?.toString() || '');
+                                    
+                                    fetch('/api/photos/upload', {
+                                      method: 'POST',
+                                      body: formData,
+                                    }).then(() => {
+                                      queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                    });
+                                  }
+                                }}
+                                className="hidden"
+                                id="flower-photo-2-upload"
+                              />
+                              <label
+                                htmlFor="flower-photo-2-upload"
+                                className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
+                              >
+                                <Camera className="h-4 w-4 mr-2" />
+                                Upload Photo 2
+                              </label>
+                              <p className="text-sm text-gray-500 mt-2">This photo will appear under the invitation text and signature</p>
+                            </div>
+                          </div>
+                          {photos && photos.filter((photo: any) => photo.photoType === 'flower_photo_2').length > 0 && (
+                            <div className="mt-3">
+                              <img 
+                                src={photos.filter((photo: any) => photo.photoType === 'flower_photo_2')[0].url} 
+                                alt="Photo 2"
+                                className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Photo 3 - Calendar Section */}
+                        <div className="mb-6">
+                          <h4 className="font-medium text-gray-700 mb-3">Photo 3 - Under Calendar Section</h4>
+                          <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                            <div className="text-center">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    const formData = new FormData();
+                                    formData.append('photo', file);
+                                    formData.append('photoType', 'flower_photo_3');
+                                    formData.append('weddingId', wedding?.id?.toString() || '');
+                                    
+                                    fetch('/api/photos/upload', {
+                                      method: 'POST',
+                                      body: formData,
+                                    }).then(() => {
+                                      queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                    });
+                                  }
+                                }}
+                                className="hidden"
+                                id="flower-photo-3-upload"
+                              />
+                              <label
+                                htmlFor="flower-photo-3-upload"
+                                className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
+                              >
+                                <Camera className="h-4 w-4 mr-2" />
+                                Upload Photo 3
+                              </label>
+                              <p className="text-sm text-gray-500 mt-2">This photo will appear under the calendar and countdown</p>
+                            </div>
+                          </div>
+                          {photos && photos.filter((photo: any) => photo.photoType === 'flower_photo_3').length > 0 && (
+                            <div className="mt-3">
+                              <img 
+                                src={photos.filter((photo: any) => photo.photoType === 'flower_photo_3')[0].url} 
+                                alt="Photo 3"
+                                className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Photo 4 - Location Section */}
+                        <div className="mb-6">
+                          <h4 className="font-medium text-gray-700 mb-3">Photo 4 - Location Section</h4>
+                          <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                            <div className="text-center">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    const formData = new FormData();
+                                    formData.append('photo', file);
+                                    formData.append('photoType', 'flower_photo_4');
+                                    formData.append('weddingId', wedding?.id?.toString() || '');
+                                    
+                                    fetch('/api/photos/upload', {
+                                      method: 'POST',
+                                      body: formData,
+                                    }).then(() => {
+                                      queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                    });
+                                  }
+                                }}
+                                className="hidden"
+                                id="flower-photo-4-upload"
+                              />
+                              <label
+                                htmlFor="flower-photo-4-upload"
+                                className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
+                              >
+                                <Camera className="h-4 w-4 mr-2" />
+                                Upload Photo 4
+                              </label>
+                            </div>
+                          </div>
+                          {photos && photos.filter((photo: any) => photo.photoType === 'flower_photo_4').length > 0 && (
+                            <div className="mt-3">
+                              <img 
+                                src={photos.filter((photo: any) => photo.photoType === 'flower_photo_4')[0].url} 
+                                alt="Photo 4"
+                                className="w-32 h-20 object-cover rounded-lg border-2 border-gray-200"
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Photo 5 & 6 - Additional Section */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <h4 className="font-medium text-gray-700 mb-3">Photo 5 - Special Moment</h4>
+                            <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                              <div className="text-center">
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      const formData = new FormData();
+                                      formData.append('photo', file);
+                                      formData.append('photoType', 'flower_photo_5');
+                                      formData.append('weddingId', wedding?.id?.toString() || '');
+                                      
+                                      fetch('/api/photos/upload', {
+                                        method: 'POST',
+                                        body: formData,
+                                      }).then(() => {
+                                        queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                      });
+                                    }
+                                  }}
+                                  className="hidden"
+                                  id="flower-photo-5-upload"
+                                />
+                                <label
+                                  htmlFor="flower-photo-5-upload"
+                                  className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
+                                >
+                                  <Camera className="h-4 w-4 mr-2" />
+                                  Upload Photo 5
+                                </label>
+                              </div>
+                            </div>
+                            {photos && photos.filter((photo: any) => photo.photoType === 'flower_photo_5').length > 0 && (
+                              <div className="mt-3">
+                                <img 
+                                  src={photos.filter((photo: any) => photo.photoType === 'flower_photo_5')[0].url} 
+                                  alt="Photo 5"
+                                  className="w-full h-24 object-cover rounded-lg border-2 border-gray-200"
+                                />
+                              </div>
+                            )}
+                          </div>
+
+                          <div>
+                            <h4 className="font-medium text-gray-700 mb-3">Photo 6 - Beautiful Memory</h4>
+                            <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                              <div className="text-center">
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      const formData = new FormData();
+                                      formData.append('photo', file);
+                                      formData.append('photoType', 'flower_photo_6');
+                                      formData.append('weddingId', wedding?.id?.toString() || '');
+                                      
+                                      fetch('/api/photos/upload', {
+                                        method: 'POST',
+                                        body: formData,
+                                      }).then(() => {
+                                        queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                      });
+                                    }
+                                  }}
+                                  className="hidden"
+                                  id="flower-photo-6-upload"
+                                />
+                                <label
+                                  htmlFor="flower-photo-6-upload"
+                                  className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
+                                >
+                                  <Camera className="h-4 w-4 mr-2" />
+                                  Upload Photo 6
+                                </label>
+                              </div>
+                            </div>
+                            {photos && photos.filter((photo: any) => photo.photoType === 'flower_photo_6').length > 0 && (
+                              <div className="mt-3">
+                                <img 
+                                  src={photos.filter((photo: any) => photo.photoType === 'flower_photo_6')[0].url} 
+                                  alt="Photo 6"
+                                  className="w-full h-24 object-cover rounded-lg border-2 border-gray-200"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Memory Photos Section */}
                     <div>

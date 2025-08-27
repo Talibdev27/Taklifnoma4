@@ -53,6 +53,20 @@ const templateOptions = [
     image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop"
   },
   {
+    id: "flower",
+    name: "Flower",
+    nameUz: "Gul",
+    nameRu: "Цветок",
+    image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop"
+  },
+  {
+    id: "birthday",
+    name: "Birthday",
+    nameUz: "Tug'ilgan kun",
+    nameRu: "День рождения",
+    image: "https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=400&h=300&fit=crop"
+  },
+  {
     id: "modernElegance", 
     name: "Modern Elegance",
     nameUz: "Zamonaviy nafislik",

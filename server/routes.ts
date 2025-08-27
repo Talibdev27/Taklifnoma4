@@ -529,9 +529,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { userId, bride, groom, weddingDate, venue, venueAddress, template, story, dearGuestMessage, couplePhotoUrl, primaryColor, accentColor } = req.body;
 
       // Validate required fields
-      if (!userId || !bride || !groom || !weddingDate) {
-        console.log("Missing required fields:", { userId: !!userId, bride: !!bride, groom: !!groom, weddingDate: !!weddingDate });
-        return res.status(400).json({ message: "Missing required fields: userId, bride, groom, and weddingDate are required" });
+      const missingFields = [];
+      if (!userId) missingFields.push("userId");
+      if (!bride) missingFields.push("bride");
+      if (!groom && template !== 'birthday') missingFields.push("groom");
+      if (!weddingDate) missingFields.push("weddingDate");
+
+      if (missingFields.length > 0) {
+        console.log("Missing required fields:", missingFields);
+        return res.status(400).json({ message: `Missing required fields: ${missingFields.join(", ")} are required` });
       }
 
       // Check if user exists
@@ -541,11 +547,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Generate unique URL
-      const uniqueUrl = Math.random().toString(36).substring(2, 15);
+      const uniqueUrl = nanoid(10);
 
       const weddingData = {
         bride: bride.trim(),
-        groom: groom.trim(),
+        groom: groom?.trim() || (template === 'birthday' ? 'Birthday Celebration' : ''), // Default value for birthday template
         weddingDate: new Date(weddingDate),
         venue: venue?.trim() || "",
         venueAddress: venueAddress?.trim() || "",
@@ -556,9 +562,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         template: template || "standard",
         primaryColor: primaryColor || "#D4B08C",
         accentColor: accentColor || "#89916B",
-        venueCoordinates: null,
-        isPublic: true,
-        uniqueUrl
+        uniqueUrl,
+        weddingTime: req.body.weddingTime || "4:00 PM",
+        timezone: req.body.timezone || "Asia/Tashkent",
+        defaultLanguage: req.body.defaultLanguage || "en",
+        availableLanguages: req.body.availableLanguages || ["en"],
+        dressCode: req.body.dressCode || null,
+        isPublic: true
       };
 
       console.log("Creating wedding with data:", weddingData);
@@ -1336,12 +1346,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Background music upload endpoint for admin
   app.post('/api/upload/background-music', authenticateToken, requireAdmin, audioUpload.single('music'), async (req, res) => {
     try {
+      console.log('Background music upload request received');
+      console.log('Request headers:', req.headers);
+      console.log('Request file:', req.file);
+      
       if (!req.file) {
+        console.log('No file uploaded');
         return res.status(400).json({ message: 'No file uploaded' });
       }
 
+      console.log('File details:', {
+        originalname: req.file.originalname,
+        filename: req.file.filename,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        path: req.file.path
+      });
+
       // Use Cloudinary URL if available, otherwise fallback to local
       const musicUrl = req.file.path || `/uploads/${req.file.filename}`;
+      
+      console.log('Music URL generated:', musicUrl);
+      
       res.json({ 
         url: musicUrl, 
         message: 'Background music uploaded successfully',
@@ -1349,7 +1375,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error('Background music upload error:', error);
-      res.status(500).json({ message: 'Failed to upload background music' });
+      res.status(500).json({ message: 'Failed to upload background music', error: error instanceof Error ? error.message : 'Unknown error' });
     }
   });
 
@@ -1392,7 +1418,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Generate unique URL
-      const uniqueUrl = Math.random().toString(36).substring(2, 15);
+      const uniqueUrl = nanoid(10);
 
       // Create wedding data with all required fields
       const weddingData = {
@@ -1405,13 +1431,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         dearGuestMessage: weddingFields.dearGuestMessage || null,
         couplePhotoUrl: weddingFields.couplePhotoUrl || null,
         backgroundMusicUrl: weddingFields.backgroundMusicUrl || null,
-        template: weddingFields.template || "modernElegance",
-        defaultLanguage: weddingFields.defaultLanguage || "en",
+        template: weddingFields.template || "standard",
         primaryColor: weddingFields.primaryColor || "#D4B08C",
         accentColor: weddingFields.accentColor || "#89916B",
-        venueCoordinates: null,
-        isPublic: weddingFields.isPublic !== undefined ? weddingFields.isPublic : true,
-        uniqueUrl
+        uniqueUrl,
+        weddingTime: req.body.weddingTime || "4:00 PM",
+        timezone: req.body.timezone || "Asia/Tashkent",
+        defaultLanguage: weddingFields.defaultLanguage || "en",
+        availableLanguages: weddingFields.availableLanguages || ["en"],
+        dressCode: weddingFields.dressCode || null,
+        isPublic: true
       };
 
       console.log("Processed wedding data:", weddingData);

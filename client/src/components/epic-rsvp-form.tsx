@@ -31,9 +31,10 @@ interface EpicRSVPFormProps {
   weddingId: number;
   primaryColor?: string;
   accentColor?: string;
+  isBirthday?: boolean;
 }
 
-export function EpicRSVPForm({ weddingId, primaryColor = '#1976d2', accentColor = '#1565c0' }: EpicRSVPFormProps) {
+export function EpicRSVPForm({ weddingId, primaryColor = '#1976d2', accentColor = '#1565c0', isBirthday = false }: EpicRSVPFormProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -72,7 +73,7 @@ export function EpicRSVPForm({ weddingId, primaryColor = '#1976d2', accentColor 
     onSuccess: () => {
       toast({
         title: t('rsvp.thankYou'),
-        description: t('rsvp.thankYouMessage'),
+        description: isBirthday ? t('birthday.rsvp.thankYouMessage') || t('rsvp.thankYouMessage') : t('rsvp.thankYouMessage'),
       });
       setIsSubmitted(true);
       queryClient.invalidateQueries({ queryKey: [`/api/guests/wedding/${weddingId}`] });
@@ -100,7 +101,9 @@ export function EpicRSVPForm({ weddingId, primaryColor = '#1976d2', accentColor 
           <span className="text-white text-2xl">✓</span>
         </div>
         <h3 className="text-xl font-semibold text-gray-800 mb-2">{t('rsvp.thankYou')}</h3>
-        <p className="text-gray-600">{t('rsvp.thankYouMessage')}</p>
+        <p className="text-gray-600">
+          {isBirthday ? t('birthday.rsvp.thankYouMessage') || t('rsvp.thankYouMessage') : t('rsvp.thankYouMessage')}
+        </p>
       </div>
     );
   }
@@ -208,10 +211,12 @@ export function EpicRSVPForm({ weddingId, primaryColor = '#1976d2', accentColor 
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-gray-700 font-medium">{t('rsvp.message')}</FormLabel>
+              <FormLabel className="text-gray-700 font-medium">
+                {isBirthday ? t('birthday.rsvp.message') || t('rsvp.message') : t('rsvp.message')}
+              </FormLabel>
               <FormControl>
                 <Textarea 
-                  placeholder={t('rsvp.shareMessage')} 
+                  placeholder={isBirthday ? t('birthday.rsvp.shareMessage') : t('rsvp.shareMessage')} 
                   {...field} 
                   value={field.value || ''}
                   className="border-gray-300 min-h-[80px]"
@@ -245,7 +250,7 @@ export function EpicRSVPForm({ weddingId, primaryColor = '#1976d2', accentColor 
           }}
           disabled={submitRSVP.isPending}
         >
-          {submitRSVP.isPending ? t('common.loading') : t('rsvp.submit')}
+          {submitRSVP.isPending ? t('common.loading') : (isBirthday ? t('birthday.rsvp.submit') || t('rsvp.submit') : t('rsvp.submit'))}
         </Button>
       </form>
     </Form>

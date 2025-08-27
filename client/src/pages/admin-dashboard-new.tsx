@@ -30,21 +30,28 @@ export default function AdminDashboard() {
   // Create wedding form state
   const [newWedding, setNewWedding] = useState({
     userId: '',
-    bride: '',
-    groom: '',
-    weddingDate: '',
-    weddingTime: '18:00',
-    venue: '',
-    venueAddress: '',
+    bride: '', // Will be used as "Birthday Person's Name" for birthday template
+    groom: '', // Will be hidden for birthday template
+    weddingDate: '', // Will be used as "Birthday Date" for birthday template
+    weddingTime: '18:00', // Will be used as "Party Time" for birthday template
+    venue: '', // Will be used as "Party Venue" for birthday template
+    venueAddress: '', // Will be used as "Party Location Address" for birthday template
     template: 'standard',
-    story: '',
-    dearGuestMessage: '',
+    story: '', // Will be used as "About [Name]" for birthday template
+    dearGuestMessage: '', // Will be used as "Party Details" for birthday template
     couplePhotoUrl: '',
     backgroundMusicUrl: '',
     dressCode: '',
     defaultLanguage: 'en',
     primaryColor: '#1976d2',
-    accentColor: '#1565c0'
+    accentColor: '#1565c0',
+    // Birthday-specific fields
+    age: '',
+    partyTheme: '',
+    rsvpDeadline: '',
+    giftRegistryInfo: '',
+    contactPerson: '',
+    specialInstructions: ''
   });
 
   const handleCouplePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -276,7 +283,7 @@ export default function AdminDashboard() {
       console.log("Sending wedding data:", weddingData);
       
       // Validate required fields
-      if (!weddingData.userId || !weddingData.bride || !weddingData.groom || !weddingData.weddingDate) {
+      if (!weddingData.userId || !weddingData.bride || !weddingData.weddingDate) {
         throw new Error('Please fill in all required fields');
       }
       
@@ -313,15 +320,22 @@ export default function AdminDashboard() {
         weddingTime: '18:00',
         venue: '',
         venueAddress: '',
+        dressCode: '',
         template: 'standard',
         story: '',
         dearGuestMessage: '',
         couplePhotoUrl: '',
         backgroundMusicUrl: '',
-        dressCode: '',
-        defaultLanguage: 'uz',
+        defaultLanguage: 'en',
         primaryColor: '#1976d2',
-        accentColor: '#1565c0'
+        accentColor: '#1565c0',
+        // Birthday-specific fields
+        age: '',
+        partyTheme: '',
+        rsvpDeadline: '',
+        giftRegistryInfo: '',
+        contactPerson: '',
+        specialInstructions: ''
       });
     },
     onError: (error: any) => {
@@ -493,9 +507,12 @@ export default function AdminDashboard() {
     // Validate required fields
     const errors = [];
     if (!newWedding.userId) errors.push("User ID");
-    if (!newWedding.bride?.trim()) errors.push("Bride's Name");
-    if (!newWedding.groom?.trim()) errors.push("Groom's Name");
-    if (!newWedding.weddingDate) errors.push("Wedding Date");
+    if (!newWedding.bride?.trim()) {
+      errors.push(newWedding.template === 'birthday' ? "Birthday Person's Name" : "Bride's Name");
+    }
+    if (!newWedding.weddingDate) {
+      errors.push(newWedding.template === 'birthday' ? "Birthday Date" : "Wedding Date");
+    }
 
     if (errors.length > 0) {
       toast({
@@ -511,7 +528,7 @@ export default function AdminDashboard() {
     if (isNaN(dateObj.getTime())) {
       toast({
         title: "Invalid Date",
-        description: "Please enter a valid wedding date.",
+        description: newWedding.template === 'birthday' ? "Please enter a valid birthday date." : "Please enter a valid wedding date.",
         variant: "destructive",
       });
       return;
@@ -538,7 +555,14 @@ export default function AdminDashboard() {
       backgroundMusicUrl: '',
       defaultLanguage: 'en',
       primaryColor: '#1976d2',
-      accentColor: '#1565c0'
+      accentColor: '#1565c0',
+      // Birthday-specific fields
+      age: '',
+      partyTheme: '',
+      rsvpDeadline: '',
+      giftRegistryInfo: '',
+      contactPerson: '',
+      specialInstructions: ''
     });
   };
 
@@ -1179,7 +1203,7 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-[#D4B08C]" />
-                  Create New Wedding
+                  {newWedding.template === 'birthday' ? 'Create New Birthday Event' : 'Create New Wedding'}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -1205,31 +1229,63 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Bride's Name
+                        {newWedding.template === 'birthday' ? "Birthday Person's Name" : "Bride's Name"}
                       </label>
                       <Input 
-                        placeholder="Enter bride's name" 
+                        placeholder={newWedding.template === 'birthday' ? "Enter birthday person's name" : "Enter bride's name"} 
                         className="wedding-input"
                         value={newWedding.bride}
                         onChange={(e) => handleFormChange('bride', e.target.value)}
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Groom's Name
-                      </label>
-                      <Input 
-                        placeholder="Enter groom's name" 
-                        className="wedding-input"
-                        value={newWedding.groom}
-                        onChange={(e) => handleFormChange('groom', e.target.value)}
-                      />
-                    </div>
+                    {/* Only show groom field for non-birthday templates */}
+                    {newWedding.template !== 'birthday' && (
+                      <div>
+                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                          Groom's Name
+                        </label>
+                        <Input 
+                          placeholder="Enter groom's name" 
+                          className="wedding-input"
+                          value={newWedding.groom}
+                          onChange={(e) => handleFormChange('groom', e.target.value)}
+                        />
+                      </div>
+                    )}
+
+                    {/* Birthday-specific fields */}
+                    {newWedding.template === 'birthday' && (
+                      <>
+                        <div>
+                          <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                            Age Turning
+                          </label>
+                          <Input 
+                            placeholder="e.g., 25, 30, Sweet 16" 
+                            className="wedding-input"
+                            value={newWedding.age}
+                            onChange={(e) => handleFormChange('age', e.target.value)}
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                            Party Theme (Optional)
+                          </label>
+                          <Input 
+                            placeholder="e.g., Tropical, Superhero, Vintage, etc." 
+                            className="wedding-input"
+                            value={newWedding.partyTheme}
+                            onChange={(e) => handleFormChange('partyTheme', e.target.value)}
+                          />
+                        </div>
+                      </>
+                    )}
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Wedding Date
+                        {newWedding.template === 'birthday' ? "Birthday Date" : "Wedding Date"}
                       </label>
                       <Input 
                         type="date" 
@@ -1241,7 +1297,7 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Ceremony Time
+                        {newWedding.template === 'birthday' ? "Party Time" : "Ceremony Time"}
                       </label>
                       <Input 
                         placeholder="e.g., 18:00, 6:00 PM" 
@@ -1250,15 +1306,30 @@ export default function AdminDashboard() {
                         onChange={(e) => handleFormChange('weddingTime', e.target.value)}
                       />
                     </div>
+
+                    {/* Birthday-specific deadline */}
+                    {newWedding.template === 'birthday' && (
+                      <div>
+                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                          RSVP Deadline (Optional)
+                        </label>
+                        <Input 
+                          type="date" 
+                          className="wedding-input"
+                          value={newWedding.rsvpDeadline}
+                          onChange={(e) => handleFormChange('rsvpDeadline', e.target.value)}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Venue
+                        {newWedding.template === 'birthday' ? "Party Venue" : "Venue"}
                       </label>
                       <Input 
-                        placeholder="Wedding venue" 
+                        placeholder={newWedding.template === 'birthday' ? "Birthday party venue" : "Wedding venue"} 
                         className="wedding-input"
                         value={newWedding.venue}
                         onChange={(e) => handleFormChange('venue', e.target.value)}
@@ -1267,15 +1338,30 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Venue Address
+                        {newWedding.template === 'birthday' ? "Party Location Address" : "Venue Address"}
                       </label>
                       <Input 
-                        placeholder="Full venue address" 
+                        placeholder={newWedding.template === 'birthday' ? "Full party location address" : "Full venue address"} 
                         className="wedding-input"
                         value={newWedding.venueAddress}
                         onChange={(e) => handleFormChange('venueAddress', e.target.value)}
                       />
                     </div>
+
+                    {/* Birthday-specific contact person */}
+                    {newWedding.template === 'birthday' && (
+                      <div>
+                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                          Contact Person for Questions
+                        </label>
+                        <Input 
+                          placeholder="e.g., John Doe - 123-456-7890" 
+                          className="wedding-input"
+                          value={newWedding.contactPerson}
+                          onChange={(e) => handleFormChange('contactPerson', e.target.value)}
+                        />
+                      </div>
+                    )}
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
@@ -1284,12 +1370,12 @@ export default function AdminDashboard() {
                       <textarea 
                         className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
                         rows={3}
-                        placeholder="e.g., Formal attire, Cocktail dress, Beach casual..."
+                        placeholder={newWedding.template === 'birthday' ? "e.g., Casual, Party attire, Color theme..." : "e.g., Formal attire, Cocktail dress, Beach casual..."}
                         value={newWedding.dressCode || ''}
                         onChange={(e) => handleFormChange('dressCode', e.target.value)}
                       ></textarea>
                       <p className="text-xs text-gray-500 mt-1">
-                        Specify attire expectations for guests. Only shows if filled.
+                        {newWedding.template === 'birthday' ? "Specify attire expectations for birthday party guests. Only shows if filled." : "Specify attire expectations for guests. Only shows if filled."}
                       </p>
                     </div>
 
@@ -1304,7 +1390,9 @@ export default function AdminDashboard() {
                       >
                         <option value="standard">Standard</option>
                         <option value="epic">Epic</option>
+                        <option value="birthday">Birthday</option>
                         <option value="anime_1">Anime 1 (Animated)</option>
+                        <option value="flower">Flower</option>
                         <option value="gardenRomance">Garden Romance</option>
                         <option value="modernElegance">Modern Elegance</option>
                         <option value="rusticCharm">Rustic Charm</option>
@@ -1313,77 +1401,6 @@ export default function AdminDashboard() {
                         <option value="bohoChic">Boho Chic</option>
                       </select>
                     </div>
-
-                    {/* Epic Template Color Customization */}
-                    {newWedding.template === 'epic' && (
-                      <div className="space-y-4 p-4 border border-blue-200 rounded-lg bg-blue-50/30">
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          <h4 className="text-sm font-semibold text-blue-700">Epic Template Colors</h4>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                              Primary Color
-                            </label>
-                            <div className="flex items-center space-x-3">
-                              <input
-                                type="color"
-                                value={newWedding.primaryColor}
-                                onChange={(e) => handleFormChange('primaryColor', e.target.value)}
-                                className="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer"
-                              />
-                              <Input
-                                value={newWedding.primaryColor}
-                                onChange={(e) => handleFormChange('primaryColor', e.target.value)}
-                                placeholder="#1976d2"
-                                className="flex-1"
-                              />
-                            </div>
-                            <p className="text-xs text-gray-500 mt-1">Used for main elements and countdown</p>
-                          </div>
-
-                          <div>
-                            <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                              Accent Color
-                            </label>
-                            <div className="flex items-center space-x-3">
-                              <input
-                                type="color"
-                                value={newWedding.accentColor}
-                                onChange={(e) => handleFormChange('accentColor', e.target.value)}
-                                className="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer"
-                              />
-                              <Input
-                                value={newWedding.accentColor}
-                                onChange={(e) => handleFormChange('accentColor', e.target.value)}
-                                placeholder="#1565c0"
-                                className="flex-1"
-                              />
-                            </div>
-                            <p className="text-xs text-gray-500 mt-1">Used for buttons and highlights</p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between p-3 bg-blue-100/50 rounded-lg border border-blue-200">
-                          <div className="text-sm">
-                            <span className="font-medium text-blue-700">Preview:</span>
-                            <span className="ml-2 text-gray-600">Colors will be applied to your Epic template</span>
-                          </div>
-                          <div className="flex space-x-2">
-                            <div 
-                              className="w-6 h-6 rounded-full border border-white shadow-sm"
-                              style={{ backgroundColor: newWedding.primaryColor }}
-                            ></div>
-                            <div 
-                              className="w-6 h-6 rounded-full border border-white shadow-sm"
-                              style={{ backgroundColor: newWedding.accentColor }}
-                            ></div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
@@ -1401,102 +1418,231 @@ export default function AdminDashboard() {
                         <option value="kaa">Қарақалпақша</option>
                       </select>
                       <p className="text-xs text-gray-500 mt-1">
-                        This will be the default language for the wedding website
+                        This will be the default language for the {newWedding.template === 'birthday' ? 'birthday' : 'wedding'} website
                       </p>
                     </div>
+                  </div>
+                </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Dear Guest Message
-                      </label>
-                      <textarea 
-                        className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
-                        rows={4}
-                        placeholder="Write a welcome message for guests..."
-                        value={newWedding.dearGuestMessage}
-                        onChange={(e) => handleFormChange('dearGuestMessage', e.target.value)}
-                      ></textarea>
-                      <p className="text-xs text-gray-500 mt-1">
-                        This message will appear in the "Dear Guests" section of the wedding website
-                      </p>
+                {/* Birthday-specific additional fields */}
+                {newWedding.template === 'birthday' && (
+                  <div className="space-y-4 mt-6">
+                    <h3 className="text-lg font-semibold text-[#2C3338] border-b border-gray-200 pb-2">
+                      Birthday Party Details
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                          Gift Registry Information (Optional)
+                        </label>
+                        <textarea 
+                          className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
+                          rows={3}
+                          placeholder="e.g., Amazon wishlist link, preferred gifts, no gifts please..."
+                          value={newWedding.giftRegistryInfo}
+                          onChange={(e) => handleFormChange('giftRegistryInfo', e.target.value)}
+                        ></textarea>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                          Special Instructions (Optional)
+                        </label>
+                        <textarea 
+                          className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
+                          rows={3}
+                          placeholder="e.g., What to bring, parking info, dietary restrictions..."
+                          value={newWedding.specialInstructions}
+                          onChange={(e) => handleFormChange('specialInstructions', e.target.value)}
+                        ></textarea>
+                      </div>
                     </div>
+                  </div>
+                )}
 
-                    <div>
-                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Couple Photo (Optional)
-                      </label>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleCouplePhotoUpload}
-                        className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Upload a couple photo to use as the hero image instead of template background
-                      </p>
-                      {newWedding.couplePhotoUrl && (
-                        <div className="mt-2">
-                          <img 
-                            src={newWedding.couplePhotoUrl} 
-                            alt="Preview" 
-                            className="w-32 h-32 object-cover rounded-lg border"
+                {/* Template Previews */}
+                {newWedding.template === 'birthday' && (
+                  <div className="space-y-4 p-4 border border-pink-200 rounded-lg bg-pink-50/30 mt-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
+                      <h4 className="text-sm font-semibold text-pink-700">Birthday Template Features</h4>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 gap-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+                        <span className="text-sm text-gray-700">🎂 Birthday-themed design with pink/purple gradients</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+                        <span className="text-sm text-gray-700">🎉 Animated floating birthday elements</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+                        <span className="text-sm text-gray-700">📅 Real-time countdown to birthday</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+                        <span className="text-sm text-gray-700">🎵 Background music with autoplay</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+                        <span className="text-sm text-gray-700">💌 Birthday guest book for wishes</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+                        <span className="text-sm text-gray-700">🌍 Multi-language support (5 languages)</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {newWedding.template === 'epic' && (
+                  <div className="space-y-4 p-4 border border-blue-200 rounded-lg bg-blue-50/30 mt-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <h4 className="text-sm font-semibold text-blue-700">Epic Template Colors</h4>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                          Primary Color
+                        </label>
+                        <div className="flex items-center space-x-3">
+                          <input
+                            type="color"
+                            value={newWedding.primaryColor}
+                            onChange={(e) => handleFormChange('primaryColor', e.target.value)}
+                            className="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer"
                           />
-                          <button 
-                            type="button"
-                            onClick={() => setNewWedding({...newWedding, couplePhotoUrl: ''})}
-                            className="text-red-500 text-sm mt-1 hover:underline block"
-                          >
-                            Remove photo
-                          </button>
+                          <Input
+                            value={newWedding.primaryColor}
+                            onChange={(e) => handleFormChange('primaryColor', e.target.value)}
+                            placeholder="#1976d2"
+                            className="flex-1"
+                          />
                         </div>
-                      )}
-                    </div>
+                        <p className="text-xs text-gray-500 mt-1">Used for main elements and countdown</p>
+                      </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Background Music (Optional)
-                      </label>
-                      <Input
-                        type="file"
-                        accept="audio/*"
-                        onChange={handleBackgroundMusicUpload}
-                        className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Upload background music (MP3, WAV) that will play on the wedding site. Max 10MB.
-                      </p>
-                      {newWedding.backgroundMusicUrl && (
-                        <div className="mt-2">
-                          <audio 
-                            controls 
-                            className="w-full"
-                            src={newWedding.backgroundMusicUrl}
-                          >
-                            Your browser does not support the audio element.
-                          </audio>
-                          <button 
-                            type="button"
-                            onClick={() => setNewWedding({...newWedding, backgroundMusicUrl: ''})}
-                            className="text-red-500 text-sm mt-1 hover:underline block"
-                          >
-                            Remove music
-                          </button>
+                      <div>
+                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                          Accent Color
+                        </label>
+                        <div className="flex items-center space-x-3">
+                          <input
+                            type="color"
+                            value={newWedding.accentColor}
+                            onChange={(e) => handleFormChange('accentColor', e.target.value)}
+                            className="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer"
+                          />
+                          <Input
+                            value={newWedding.accentColor}
+                            onChange={(e) => handleFormChange('accentColor', e.target.value)}
+                            placeholder="#1565c0"
+                            className="flex-1"
+                          />
                         </div>
-                      )}
+                        <p className="text-xs text-gray-500 mt-1">Used for buttons and highlights</p>
+                      </div>
                     </div>
+                  </div>
+                )}
 
-                    <div>
-                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Love Story (Optional)
-                      </label>
-                      <textarea 
-                        className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
-                        rows={3}
-                        placeholder="Tell their love story..."
-                        value={newWedding.story}
-                        onChange={(e) => handleFormChange('story', e.target.value)}
-                      ></textarea>
-                    </div>
+                {/* Story and Messages */}
+                <div className="space-y-4 mt-6">
+                  <div>
+                    <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                      {newWedding.template === 'birthday' ? "About [Name]" : "Love Story (Optional)"}
+                    </label>
+                    <textarea 
+                      className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
+                      rows={4}
+                      placeholder={newWedding.template === 'birthday' ? "Tell us about the birthday person..." : "Tell their love story..."}
+                      value={newWedding.story}
+                      onChange={(e) => handleFormChange('story', e.target.value)}
+                    ></textarea>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                      {newWedding.template === 'birthday' ? "Party Details" : "Dear Guest Message"}
+                    </label>
+                    <textarea 
+                      className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
+                      rows={4}
+                      placeholder={newWedding.template === 'birthday' ? "Write birthday party details..." : "Write a welcome message for guests..."}
+                      value={newWedding.dearGuestMessage}
+                      onChange={(e) => handleFormChange('dearGuestMessage', e.target.value)}
+                    ></textarea>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {newWedding.template === 'birthday' ? "This message will appear in the birthday celebration section of the website" : "This message will appear in the \"Dear Guests\" section of the wedding website"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                      {newWedding.template === 'birthday' ? "Birthday Person Photo (Optional)" : "Couple Photo (Optional)"}
+                    </label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleCouplePhotoUpload}
+                      className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {newWedding.template === 'birthday' ? "Upload a photo of the birthday person to use as the hero image instead of template background" : "Upload a couple photo to use as the hero image instead of template background"}
+                    </p>
+                    {newWedding.couplePhotoUrl && (
+                      <div className="mt-2">
+                        <img 
+                          src={newWedding.couplePhotoUrl} 
+                          alt="Preview" 
+                          className="w-32 h-32 object-cover rounded-lg border"
+                        />
+                        <button 
+                          type="button"
+                          onClick={() => setNewWedding({...newWedding, couplePhotoUrl: ''})}
+                          className="text-red-500 text-sm mt-1 hover:underline block"
+                        >
+                          Remove photo
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                      Background Music (Optional)
+                    </label>
+                    <p className="text-xs text-gray-500 mb-1">
+                      {newWedding.template === 'birthday' ? "Upload background music (MP3, WAV) that will play on the birthday site. Max 10MB." : "Upload background music (MP3, WAV) that will play on the wedding site. Max 10MB."}
+                    </p>
+                    {newWedding.backgroundMusicUrl && (
+                      <div className="mb-2">
+                        <audio 
+                          controls 
+                          className="w-full"
+                          src={newWedding.backgroundMusicUrl}
+                        >
+                          Your browser does not support the audio element.
+                        </audio>
+                        <button 
+                          type="button"
+                          onClick={() => setNewWedding({...newWedding, backgroundMusicUrl: ''})}
+                          className="text-red-500 text-sm hover:underline block mb-2"
+                        >
+                          Remove music
+                        </button>
+                      </div>
+                    )}
+                    <Input
+                      type="file"
+                      accept="audio/*"
+                      onChange={handleBackgroundMusicUpload}
+                      className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                    />
                   </div>
                 </div>
 
@@ -1507,7 +1653,7 @@ export default function AdminDashboard() {
                     disabled={createWeddingMutation.isPending}
                   >
                     <Calendar className="w-4 h-4 mr-2" />
-                    {createWeddingMutation.isPending ? 'Creating...' : 'Create Wedding'}
+                    {createWeddingMutation.isPending ? 'Creating...' : (newWedding.template === 'birthday' ? 'Create Birthday Event' : 'Create Wedding')}
                   </Button>
                   <Button 
                     variant="outline" 

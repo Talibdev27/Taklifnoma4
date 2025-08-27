@@ -12,15 +12,18 @@ interface EnhancedSocialShareProps {
   className?: string;
   primaryColor?: string;
   accentColor?: string;
+  isBirthday?: boolean;
 }
 
-export function EnhancedSocialShare({ weddingUrl, coupleName, className = '', primaryColor = '#D4B08C', accentColor = '#89916B' }: EnhancedSocialShareProps) {
+export function EnhancedSocialShare({ weddingUrl, coupleName, className = '', primaryColor = '#D4B08C', accentColor = '#89916B', isBirthday = false }: EnhancedSocialShareProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [showMore, setShowMore] = useState(false);
 
   const fullUrl = `${window.location.origin}/wedding/${weddingUrl}`;
-  const shareText = `${coupleName} to'yiga taklif qilinasiz! / You're invited to ${coupleName}'s wedding!`;
+  const shareText = isBirthday 
+    ? `${coupleName} tug'ilgan kuniga taklif qilinasiz! / You're invited to ${coupleName}'s birthday celebration!`
+    : `${coupleName} to'yiga taklif qilinasiz! / You're invited to ${coupleName}'s wedding!`;
 
   const copyToClipboard = async () => {
     try {
@@ -88,11 +91,13 @@ export function EnhancedSocialShare({ weddingUrl, coupleName, className = '', pr
       <CardContent className="p-6">
         <div className="flex items-center gap-3 mb-4">
           <Share2 className="w-5 h-5" style={{ color: primaryColor }} />
-          <h3 className="text-lg font-semibold text-[#2C3338]">{t('share.title')}</h3>
+          <h3 className="text-lg font-semibold text-[#2C3338]">
+            {isBirthday ? t('birthday.share.title') : t('share.title')}
+          </h3>
         </div>
         
         <p className="text-[#2C3338]/70 mb-6 text-sm">
-          {t('share.subtitle')}
+          {isBirthday ? t('birthday.share.subtitle') : t('share.subtitle')}
         </p>
 
         {/* Quick Share Options */}
