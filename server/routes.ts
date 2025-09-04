@@ -550,6 +550,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const uniqueUrl = nanoid(10);
 
       const weddingData = {
+        uniqueUrl: uniqueUrl, // Include the generated uniqueUrl
         bride: bride.trim(),
         groom: groom?.trim() || (template === 'birthday' ? 'Birthday Celebration' : ''), // Default value for birthday template
         weddingDate: new Date(weddingDate),
@@ -579,7 +580,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       console.log("Creating wedding with data:", weddingData);
-      const wedding = await storage.createWedding(parseInt(userId), weddingData);
+      const wedding = await storage.createWedding(parseInt(userId), { ...weddingData, userId: parseInt(userId) });
 
       console.log("Wedding created successfully:", wedding);
       res.json(wedding);
