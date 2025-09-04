@@ -526,7 +526,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Admin wedding creation request:", req.body);
 
-      const { userId, bride, groom, weddingDate, venue, venueAddress, template, story, dearGuestMessage, couplePhotoUrl, primaryColor, accentColor } = req.body;
+      const { userId, bride, groom, weddingDate, venue, venueAddress, template, story, dearGuestMessage, couplePhotoUrl, primaryColor, accentColor, age, partyTheme, rsvpDeadline, giftRegistryInfo, contactPerson, specialInstructions } = req.body;
 
       // Validate required fields
       const missingFields = [];
@@ -562,12 +562,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         template: template || "standard",
         primaryColor: primaryColor || "#D4B08C",
         accentColor: accentColor || "#89916B",
-        uniqueUrl,
+
         weddingTime: req.body.weddingTime || "4:00 PM",
         timezone: req.body.timezone || "Asia/Tashkent",
         defaultLanguage: req.body.defaultLanguage || "en",
         availableLanguages: req.body.availableLanguages || ["en"],
         dressCode: req.body.dressCode || null,
+        // Birthday-specific fields
+        age: age?.trim() || null,
+        partyTheme: partyTheme?.trim() || null,
+        rsvpDeadline: rsvpDeadline ? new Date(rsvpDeadline) : null,
+        giftRegistryInfo: giftRegistryInfo?.trim() || null,
+        contactPerson: contactPerson?.trim() || null,
+        specialInstructions: specialInstructions?.trim() || null,
         isPublic: true
       };
 
@@ -596,6 +603,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Convert date string to Date object if needed
       if (updates.weddingDate && typeof updates.weddingDate === 'string') {
         updates.weddingDate = new Date(updates.weddingDate);
+      }
+      
+      // Convert birthday-specific date fields if needed
+      if (updates.rsvpDeadline && typeof updates.rsvpDeadline === 'string') {
+        updates.rsvpDeadline = new Date(updates.rsvpDeadline);
       }
       
       // Handle boolean conversion for isPublic

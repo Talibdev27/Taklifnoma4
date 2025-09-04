@@ -187,6 +187,17 @@ export class MemStorage implements IStorage {
       story: insertWedding.story || null,
       welcomeMessage: insertWedding.welcomeMessage || null,
       backgroundMusicUrl: insertWedding.backgroundMusicUrl || null,
+      dressCode: insertWedding.dressCode || null,
+      timezone: insertWedding.timezone || 'Asia/Tashkent',
+      defaultLanguage: insertWedding.defaultLanguage || 'en',
+      availableLanguages: insertWedding.availableLanguages || ['en'],
+      // Birthday-specific fields
+      age: insertWedding.age || null,
+      partyTheme: insertWedding.partyTheme || null,
+      rsvpDeadline: insertWedding.rsvpDeadline || null,
+      giftRegistryInfo: insertWedding.giftRegistryInfo || null,
+      contactPerson: insertWedding.contactPerson || null,
+      specialInstructions: insertWedding.specialInstructions || null,
       createdAt: new Date(),
     };
     this.weddings.set(id, wedding);

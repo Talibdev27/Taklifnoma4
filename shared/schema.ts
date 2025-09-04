@@ -43,6 +43,13 @@ export const weddings = pgTable("weddings", {
   isPublic: boolean("is_public").notNull().default(true),
   availableLanguages: json("available_languages").$type<string[]>().notNull().default(['en']),
   defaultLanguage: varchar("default_language", { length: 10 }).notNull().default("en"),
+  // Birthday-specific fields
+  age: varchar("age", { length: 50 }),
+  partyTheme: text("party_theme"),
+  rsvpDeadline: timestamp("rsvp_deadline"),
+  giftRegistryInfo: text("gift_registry_info"),
+  contactPerson: text("contact_person"),
+  specialInstructions: text("special_instructions"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

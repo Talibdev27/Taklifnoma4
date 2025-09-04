@@ -84,7 +84,7 @@ function Router() {
       {/* User dashboard */}
       <Route path="/dashboard" component={UserDashboard} />
       
-      {/* Wedding management for owners - guest_managers can view/manage guests only */}
+              {/* Event management for owners - guest_managers can view/manage guests only */}
       <Route path="/manage/:uniqueUrl" component={WeddingManage} />
 
       {/* SECURITY: Admin routes now properly protected */}

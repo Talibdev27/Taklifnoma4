@@ -74,7 +74,7 @@ export default function AdminLogin() {
             Admin Login
           </CardTitle>
           <p className="text-[#2C3338]/70">
-            Access the wedding platform management dashboard
+            Access the invitation platform management dashboard
           </p>
         </CardHeader>
         <CardContent>

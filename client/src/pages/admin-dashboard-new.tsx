@@ -633,7 +633,7 @@ export default function AdminDashboard() {
                 <h1 className="text-lg sm:text-2xl font-playfair font-bold text-[#2C3338] truncate">
                   Admin Dashboard
                 </h1>
-                <p className="text-xs sm:text-sm text-[#2C3338]/70 hidden sm:block">Wedding Platform Management</p>
+                <p className="text-xs sm:text-sm text-[#2C3338]/70 hidden sm:block">Invitation Platform Management</p>
               </div>
             </div>
             <Button 
@@ -693,10 +693,10 @@ export default function AdminDashboard() {
         {/* Mobile-Optimized Management Tabs */}
         <Tabs defaultValue="weddings" className="space-y-4 sm:space-y-6">
           <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 h-auto p-1">
-            <TabsTrigger value="weddings" className="text-xs sm:text-sm p-2 sm:p-3">
-              <span className="hidden sm:inline">Wedding Management</span>
-              <span className="sm:hidden">Weddings</span>
-            </TabsTrigger>
+                          <TabsTrigger value="weddings" className="text-xs sm:text-sm p-2 sm:p-3">
+                <span className="hidden sm:inline">Invitation Management</span>
+                <span className="sm:hidden">Events</span>
+              </TabsTrigger>
             <TabsTrigger value="users" className="text-xs sm:text-sm p-2 sm:p-3">
               <span className="hidden sm:inline">User Management</span>
               <span className="sm:hidden">Users</span>
@@ -705,10 +705,10 @@ export default function AdminDashboard() {
               <span className="hidden sm:inline">RSVP Management</span>
               <span className="sm:hidden">RSVP</span>
             </TabsTrigger>
-            <TabsTrigger value="create" className="text-xs sm:text-sm p-2 sm:p-3">
-              <span className="hidden sm:inline">Create Wedding</span>
-              <span className="sm:hidden">Create</span>
-            </TabsTrigger>
+                          <TabsTrigger value="create" className="text-xs sm:text-sm p-2 sm:p-3">
+                <span className="hidden sm:inline">Create Event</span>
+                <span className="sm:hidden">Create</span>
+              </TabsTrigger>
             <TabsTrigger value="analytics" className="text-xs sm:text-sm p-2 sm:p-3">
               <span className="hidden sm:inline">Analytics</span>
               <span className="sm:hidden">Stats</span>
@@ -726,12 +726,12 @@ export default function AdminDashboard() {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <CardTitle className="flex items-center gap-2 text-[#2C3338]">
                     <Globe className="h-4 w-4 sm:h-5 sm:w-5 text-[#D4B08C]" />
-                    All Weddings
+                    All Events
                   </CardTitle>
                   <div className="relative">
                     <Search className="h-3 w-3 sm:h-4 sm:w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <Input
-                      placeholder="Search weddings..."
+                      placeholder="Search events..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-8 sm:pl-10 w-full sm:w-64 text-sm"
@@ -764,10 +764,11 @@ export default function AdminDashboard() {
                             </div>
                             <div className="min-w-0 flex-1">
                               <h3 className="font-semibold text-sm sm:text-base text-[#2C3338] truncate">
-                                {wedding.bride} & {wedding.groom}
+                                {wedding.template === 'birthday' ? wedding.bride : `${wedding.bride} & ${wedding.groom}`}
                               </h3>
                               <p className="text-xs sm:text-sm text-[#2C3338]/70 truncate">
                                 📍 {wedding.venue} • 📅 {new Date(wedding.weddingDate).toLocaleDateString()}
+                                {wedding.template === 'birthday' && ' 🎂'}
                               </p>
                               <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1">
                                 <Badge variant={wedding.isPublic ? "default" : "secondary"} className="text-xs">
@@ -1203,7 +1204,7 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-[#D4B08C]" />
-                  {newWedding.template === 'birthday' ? 'Create New Birthday Event' : 'Create New Wedding'}
+                  {newWedding.template === 'birthday' ? 'Create New Birthday Event' : 'Create New Event'}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -1229,10 +1230,10 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {newWedding.template === 'birthday' ? "Birthday Person's Name" : "Bride's Name"}
+                        {newWedding.template === 'birthday' ? "Birthday Person's Name" : "Event Host's Name"}
                       </label>
                       <Input 
-                        placeholder={newWedding.template === 'birthday' ? "Enter birthday person's name" : "Enter bride's name"} 
+                        placeholder={newWedding.template === 'birthday' ? "Enter birthday person's name" : "Enter event host's name"} 
                         className="wedding-input"
                         value={newWedding.bride}
                         onChange={(e) => handleFormChange('bride', e.target.value)}
@@ -1285,7 +1286,7 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {newWedding.template === 'birthday' ? "Birthday Date" : "Wedding Date"}
+                        {newWedding.template === 'birthday' ? "Birthday Date" : "Event Date"}
                       </label>
                       <Input 
                         type="date" 
@@ -1297,7 +1298,7 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {newWedding.template === 'birthday' ? "Party Time" : "Ceremony Time"}
+                        {newWedding.template === 'birthday' ? "Party Time" : "Event Time"}
                       </label>
                       <Input 
                         placeholder="e.g., 18:00, 6:00 PM" 
@@ -1326,10 +1327,10 @@ export default function AdminDashboard() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {newWedding.template === 'birthday' ? "Party Venue" : "Venue"}
+                        {newWedding.template === 'birthday' ? "Party Venue" : "Event Venue"}
                       </label>
                       <Input 
-                        placeholder={newWedding.template === 'birthday' ? "Birthday party venue" : "Wedding venue"} 
+                        placeholder={newWedding.template === 'birthday' ? "Birthday party venue" : "Event venue"} 
                         className="wedding-input"
                         value={newWedding.venue}
                         onChange={(e) => handleFormChange('venue', e.target.value)}
@@ -1338,10 +1339,10 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {newWedding.template === 'birthday' ? "Party Location Address" : "Venue Address"}
+                        {newWedding.template === 'birthday' ? "Party Location Address" : "Event Location Address"}
                       </label>
                       <Input 
-                        placeholder={newWedding.template === 'birthday' ? "Full party location address" : "Full venue address"} 
+                        placeholder={newWedding.template === 'birthday' ? "Full party location address" : "Full event location address"} 
                         className="wedding-input"
                         value={newWedding.venueAddress}
                         onChange={(e) => handleFormChange('venueAddress', e.target.value)}
@@ -1418,7 +1419,7 @@ export default function AdminDashboard() {
                         <option value="kaa">Қарақалпақша</option>
                       </select>
                       <p className="text-xs text-gray-500 mt-1">
-                        This will be the default language for the {newWedding.template === 'birthday' ? 'birthday' : 'wedding'} website
+                        This will be the default language for the {newWedding.template === 'birthday' ? 'birthday' : 'event'} website
                       </p>
                     </div>
                   </div>
@@ -1554,12 +1555,12 @@ export default function AdminDashboard() {
                 <div className="space-y-4 mt-6">
                   <div>
                     <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                      {newWedding.template === 'birthday' ? "About [Name]" : "Love Story (Optional)"}
+                      {newWedding.template === 'birthday' ? "About [Name]" : "Event Story (Optional)"}
                     </label>
                     <textarea 
                       className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
                       rows={4}
-                      placeholder={newWedding.template === 'birthday' ? "Tell us about the birthday person..." : "Tell their love story..."}
+                                              placeholder={newWedding.template === 'birthday' ? "Tell us about the birthday person..." : "Tell the event story..."}
                       value={newWedding.story}
                       onChange={(e) => handleFormChange('story', e.target.value)}
                     ></textarea>
@@ -1567,12 +1568,12 @@ export default function AdminDashboard() {
 
                   <div>
                     <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                      {newWedding.template === 'birthday' ? "Party Details" : "Dear Guest Message"}
+                      {newWedding.template === 'birthday' ? "Party Details" : "Event Details"}
                     </label>
                     <textarea 
                       className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
                       rows={4}
-                      placeholder={newWedding.template === 'birthday' ? "Write birthday party details..." : "Write a welcome message for guests..."}
+                                              placeholder={newWedding.template === 'birthday' ? "Write birthday party details..." : "Write event details or welcome message..."}
                       value={newWedding.dearGuestMessage}
                       onChange={(e) => handleFormChange('dearGuestMessage', e.target.value)}
                     ></textarea>
@@ -1583,7 +1584,7 @@ export default function AdminDashboard() {
 
                   <div>
                     <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                      {newWedding.template === 'birthday' ? "Birthday Person Photo (Optional)" : "Couple Photo (Optional)"}
+                      {newWedding.template === 'birthday' ? "Birthday Person Photo (Optional)" : "Event Photo (Optional)"}
                     </label>
                     <Input
                       type="file"
@@ -1592,7 +1593,7 @@ export default function AdminDashboard() {
                       className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      {newWedding.template === 'birthday' ? "Upload a photo of the birthday person to use as the hero image instead of template background" : "Upload a couple photo to use as the hero image instead of template background"}
+                      {newWedding.template === 'birthday' ? "Upload a photo of the birthday person to use as the hero image instead of template background" : "Upload an event photo to use as the hero image instead of template background"}
                     </p>
                     {newWedding.couplePhotoUrl && (
                       <div className="mt-2">
@@ -1653,7 +1654,7 @@ export default function AdminDashboard() {
                     disabled={createWeddingMutation.isPending}
                   >
                     <Calendar className="w-4 h-4 mr-2" />
-                    {createWeddingMutation.isPending ? 'Creating...' : (newWedding.template === 'birthday' ? 'Create Birthday Event' : 'Create Wedding')}
+                    {createWeddingMutation.isPending ? 'Creating...' : (newWedding.template === 'birthday' ? 'Create Birthday Event' : 'Create Event')}
                   </Button>
                   <Button 
                     variant="outline" 

@@ -230,7 +230,7 @@ export default function AdminWeddingEdit() {
               </Button>
               <div>
                 <h1 className="text-2xl font-bold text-[#2C3338]">
-                  Manage Wedding: {wedding.bride} & {wedding.groom}
+                  {wedding?.template === 'birthday' ? 'Manage Birthday Event' : 'Manage Event'}: {wedding.template === 'birthday' ? wedding.bride : `${wedding.bride} & ${wedding.groom}`}
                 </h1>
                 <p className="text-[#2C3338]/70">
                   {wedding.isPublic ? 'Public' : 'Private'} • {wedding.uniqueUrl}
@@ -273,7 +273,7 @@ export default function AdminWeddingEdit() {
                   className="wedding-button"
                 >
                   <Edit className="w-4 h-4 mr-2" />
-                  Edit Wedding
+                  {wedding?.template === 'birthday' ? 'Edit Birthday Event' : 'Edit Wedding'}
                 </Button>
               )}
             </div>
@@ -284,7 +284,9 @@ export default function AdminWeddingEdit() {
       <main className="max-w-7xl mx-auto px-6 py-8">
         <Tabs defaultValue="details" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="details">Wedding Details</TabsTrigger>
+            <TabsTrigger value="details">
+                                {wedding?.template === 'birthday' ? 'Birthday Details' : 'Event Details'}
+            </TabsTrigger>
             <TabsTrigger value="photos">Photo Management</TabsTrigger>
             <TabsTrigger value="guests">Guest Management</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
@@ -295,7 +297,7 @@ export default function AdminWeddingEdit() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Heart className="h-5 w-5 text-[#D4B08C]" />
-                  Wedding Information
+                  {wedding?.template === 'birthday' ? 'Birthday Information' : 'Event Information'}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -303,13 +305,14 @@ export default function AdminWeddingEdit() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Bride's Name
+                        {wedding?.template === 'birthday' ? 'Birthday Person\'s Name' : 'Event Host\'s Name'}
                       </label>
                       {editMode ? (
                         <Input
                           value={weddingData?.bride || ''}
                           onChange={(e) => handleInputChange('bride', e.target.value)}
                           className="wedding-input"
+                          placeholder={wedding?.template === 'birthday' ? 'Enter birthday person\'s name' : 'Enter event host\'s name'}
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">{wedding.bride}</p>
@@ -318,13 +321,14 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Groom's Name
+                        {wedding?.template === 'birthday' ? 'Event Type' : 'Groom\'s Name'}
                       </label>
                       {editMode ? (
                         <Input
                           value={weddingData?.groom || ''}
                           onChange={(e) => handleInputChange('groom', e.target.value)}
                           className="wedding-input"
+                          placeholder={wedding?.template === 'birthday' ? 'e.g., Birthday Celebration, Sweet 16, etc.' : 'Enter groom\'s name'}
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">{wedding.groom}</p>
@@ -333,7 +337,7 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Wedding Date
+                        {wedding?.template === 'birthday' ? 'Birthday Date' : 'Event Date'}
                       </label>
                       {editMode ? (
                         <Input
@@ -344,35 +348,35 @@ export default function AdminWeddingEdit() {
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">
-                          {wedding.weddingDate ? new Date(wedding.weddingDate).toLocaleDateString() : 'No date set'}
+                          {wedding.weddingDate ? new Date(wedding.weddingDate).toLocaleDateString() : `No ${wedding?.template === 'birthday' ? 'birthday' : 'wedding'} date set`}
                         </p>
                       )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Ceremony Time
+                        {wedding?.template === 'birthday' ? 'Party Time' : 'Event Time'}
                       </label>
                       {editMode ? (
                         <Input
                           value={weddingData?.weddingTime || ''}
                           onChange={(e) => handleInputChange('weddingTime', e.target.value)}
                           className="wedding-input"
-                          placeholder="e.g., 4:00 PM, 16:00, 2:30 PM"
+                          placeholder={wedding?.template === 'birthday' ? 'e.g., 18:00, 7:00 PM, 14:30' : 'e.g., 4:00 PM, 16:00, 2:30 PM'}
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">
-                          {wedding.weddingTime || '4:00 PM'}
+                          {wedding.weddingTime || (wedding?.template === 'birthday' ? '18:00' : '4:00 PM')}
                         </p>
                       )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Wedding Timezone
+                        {wedding?.template === 'birthday' ? 'Party Timezone' : 'Wedding Timezone'}
                       </label>
                       <p className="text-sm text-gray-600 mb-3">
-                        Set the timezone for your wedding location. All countdown timers will be based on this timezone.
+                        Set the timezone for your {wedding?.template === 'birthday' ? 'birthday party' : 'event'} location. All countdown timers will be based on this timezone.
                       </p>
                       {editMode ? (
                         <select
@@ -430,13 +434,14 @@ export default function AdminWeddingEdit() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Venue
+                        {wedding?.template === 'birthday' ? 'Party Venue' : 'Event Venue'}
                       </label>
                       {editMode ? (
                         <Input
                           value={weddingData?.venue || ''}
                           onChange={(e) => handleInputChange('venue', e.target.value)}
                           className="wedding-input"
+                          placeholder={wedding?.template === 'birthday' ? 'Birthday party venue' : 'Enter venue name'}
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">{wedding.venue}</p>
@@ -445,14 +450,14 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Venue Address
+                        {wedding?.template === 'birthday' ? 'Party Location Address' : 'Event Location Address'}
                       </label>
                       {editMode ? (
                         <Input
                           value={weddingData?.venueAddress || ''}
                           onChange={(e) => handleInputChange('venueAddress', e.target.value)}
                           className="wedding-input"
-                          placeholder="Full venue address"
+                          placeholder={wedding?.template === 'birthday' ? 'Full party location address' : 'Full venue address'}
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">{wedding.venueAddress}</p>
@@ -464,14 +469,14 @@ export default function AdminWeddingEdit() {
                         Dress Code (Optional)
                       </label>
                       <p className="text-sm text-gray-600 mb-3">
-                        Specify attire expectations for guests. Only shows if filled.
+                        Specify attire expectations for {wedding?.template === 'birthday' ? 'birthday party' : 'event'} guests. Only shows if filled.
                       </p>
                       {editMode ? (
                         <Input
                           value={weddingData?.dressCode || ''}
                           onChange={(e) => handleInputChange('dressCode', e.target.value)}
                           className="wedding-input"
-                          placeholder="e.g., Formal attire, Cocktail dress, Beach casual..."
+                          placeholder={wedding?.template === 'birthday' ? 'e.g., Casual, Party attire, Color theme...' : 'e.g., Formal attire, Cocktail dress, Beach casual...'}
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">{wedding.dressCode || 'Not specified'}</p>
@@ -483,7 +488,7 @@ export default function AdminWeddingEdit() {
                         Map Pin URL (Optional)
                       </label>
                       <p className="text-sm text-gray-600 mb-3">
-                        Custom map link for the "Show on Map" button. If empty, will use venue address.
+                        Custom map link for the "Show on Map" button. If empty, will use {wedding?.template === 'birthday' ? 'party' : 'event venue'} address.
                       </p>
                       {editMode ? (
                         <Input
@@ -494,17 +499,17 @@ export default function AdminWeddingEdit() {
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">
-                          {wedding.mapPinUrl || 'Not set - using venue address'}
+                          {wedding.mapPinUrl || `Not set - using ${wedding?.template === 'birthday' ? 'party location' : 'event venue'} address`}
                         </p>
                       )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Couple Photo (Optional)
+                        {wedding?.template === 'birthday' ? 'Birthday Person Photo (Optional)' : 'Event Photo (Optional)'}
                       </label>
                       <p className="text-xs text-gray-500 mb-1">
-                        Upload a couple photo to use as the hero image instead of template background
+                        Upload a {wedding?.template === 'birthday' ? 'birthday person' : 'event'} photo to use as the hero image instead of template background
                       </p>
                       {editMode ? (
                         <>
@@ -512,7 +517,7 @@ export default function AdminWeddingEdit() {
                             <div className="mb-2">
                               <img 
                                 src={weddingData.couplePhotoUrl} 
-                                alt="Couple" 
+                                alt={wedding?.template === 'birthday' ? 'Birthday Person' : 'Couple'} 
                                 className="w-32 h-32 object-cover rounded-lg border mb-2" 
                               />
                               <button 
@@ -543,10 +548,10 @@ export default function AdminWeddingEdit() {
                                   const result = await response.json();
                                   handleInputChange('couplePhotoUrl', result.url);
                                 } else {
-                                  alert('Failed to upload photo');
+                                  alert(`Failed to upload ${wedding?.template === 'birthday' ? 'birthday person' : 'couple'} photo`);
                                 }
                               } catch (err) {
-                                alert('Failed to upload photo');
+                                alert(`Failed to upload ${wedding?.template === 'birthday' ? 'birthday person' : 'couple'} photo`);
                               }
                             }}
                             className="mb-2"
@@ -556,11 +561,11 @@ export default function AdminWeddingEdit() {
                         wedding.couplePhotoUrl ? (
                           <img 
                             src={wedding.couplePhotoUrl} 
-                            alt="Couple" 
+                            alt={wedding?.template === 'birthday' ? 'Birthday Person' : 'Couple'} 
                             className="w-32 h-32 object-cover rounded-lg border mb-2" 
                           />
                         ) : (
-                          <span className="text-gray-400">No couple photo uploaded</span>
+                          <span className="text-gray-400">No {wedding?.template === 'birthday' ? 'birthday person' : 'couple'} photo uploaded</span>
                         )
                       )}
                     </div>
@@ -570,7 +575,7 @@ export default function AdminWeddingEdit() {
                         Background Music (Optional)
                       </label>
                       <p className="text-xs text-gray-500 mb-1">
-                        Upload background music (MP3, WAV) that will play on the wedding site. Max 10MB.
+                        Upload background music (MP3, WAV) that will play on the {wedding?.template === 'birthday' ? 'birthday site' : 'event site'}. Max 10MB.
                       </p>
                       {editMode ? (
                         <>
@@ -694,6 +699,77 @@ export default function AdminWeddingEdit() {
                       )}
                     </div>
 
+                    {/* Birthday-specific fields */}
+                    {wedding?.template === 'birthday' && (
+                      <>
+                        <div>
+                          <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                            Age Turning
+                          </label>
+                          {editMode ? (
+                            <Input
+                              value={weddingData?.age || ''}
+                              onChange={(e) => handleInputChange('age', e.target.value)}
+                              className="wedding-input"
+                              placeholder="e.g., 25, 30, Sweet 16"
+                            />
+                          ) : (
+                            <p className="p-3 bg-gray-50 rounded-lg">{wedding.age || 'Not specified'}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                            Party Theme (Optional)
+                          </label>
+                          {editMode ? (
+                            <Input
+                              value={weddingData?.partyTheme || ''}
+                              onChange={(e) => handleInputChange('partyTheme', e.target.value)}
+                              className="wedding-input"
+                              placeholder="e.g., Tropical, Superhero, Vintage, etc."
+                            />
+                          ) : (
+                            <p className="p-3 bg-gray-50 rounded-lg">{wedding.partyTheme || 'Not specified'}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                            RSVP Deadline (Optional)
+                          </label>
+                          {editMode ? (
+                            <Input
+                              type="date"
+                              value={weddingData?.rsvpDeadline ? new Date(weddingData.rsvpDeadline).toISOString().split('T')[0] : ''}
+                              onChange={(e) => handleInputChange('rsvpDeadline', e.target.value)}
+                              className="wedding-input"
+                            />
+                          ) : (
+                            <p className="p-3 bg-gray-50 rounded-lg">
+                              {wedding.rsvpDeadline ? new Date(wedding.rsvpDeadline).toLocaleDateString() : 'Not specified'}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                            Contact Person for Questions
+                          </label>
+                          {editMode ? (
+                            <Input
+                              value={weddingData?.contactPerson || ''}
+                              onChange={(e) => handleInputChange('contactPerson', e.target.value)}
+                              className="wedding-input"
+                              placeholder="e.g., John Doe - 123-456-7890"
+                            />
+                          ) : (
+                            <p className="p-3 bg-gray-50 rounded-lg">{wedding.contactPerson || 'Not specified'}</p>
+                          )}
+                        </div>
+                      </>
+                    )}
+
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Default Language
@@ -741,14 +817,14 @@ export default function AdminWeddingEdit() {
                 <div className="mt-8">
                   <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                     <Heart className="h-5 w-5 text-[#D4B08C]" />
-                    Dear Guest Message
+                    {wedding?.template === 'birthday' ? 'Party Details' : 'Event Details'}
                   </h3>
                   <div>
                     <label className="block text-sm font-medium text-[#2C3338] mb-2">
                       Welcome Message for Guests
                     </label>
                     <p className="text-sm text-gray-600 mb-3">
-                      This message will appear in the 'Dear Guests' section of the wedding website.
+                      This message will appear in the {wedding?.template === 'birthday' ? 'birthday celebration' : 'event details'} section of the website.
                     </p>
                     {editMode ? (
                       <Textarea
@@ -772,33 +848,99 @@ export default function AdminWeddingEdit() {
                 <div className="mt-8">
                   <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                     <Heart className="h-5 w-5 text-[#D4B08C]" />
-                    Love Story
+                    {wedding?.template === 'birthday' ? 'About [Name]' : 'Love Story'}
                   </h3>
                   <div>
                     <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                      Your Love Story (Optional)
+                      {wedding?.template === 'birthday' ? 'About the Birthday Person' : 'Your Love Story (Optional)'}
                     </label>
                     <p className="text-sm text-gray-600 mb-3">
-                      Tell your unique love story. If left empty, the website will show a beautiful photo layout instead.
+                      {wedding?.template === 'birthday' 
+                        ? 'Tell us about the birthday person. What makes them special?' 
+                        : 'Tell your unique love story. If left empty, the website will show a beautiful photo layout instead.'
+                      }
                     </p>
                     {editMode ? (
                       <Textarea
                         value={weddingData?.story || ''}
                         onChange={(e) => handleInputChange('story', e.target.value)}
                         className="wedding-input min-h-[120px]"
-                        placeholder="Write your love story here... How did you meet? What makes your relationship special?"
+                        placeholder={wedding?.template === 'birthday' 
+                          ? "Tell us about the birthday person..." 
+                          : "Write your love story here... How did you meet? What makes your relationship special?"
+                        }
                       />
                     ) : (
                       <div className="p-4 bg-gray-50 rounded-lg min-h-[120px]">
                         {wedding.story ? (
                           <p className="text-gray-800 leading-relaxed">{wedding.story}</p>
                         ) : (
-                          <p className="text-gray-500 italic">No love story added yet. The website will display a beautiful photo layout.</p>
+                          <p className="text-gray-500 italic">
+                            {wedding?.template === 'birthday' 
+                              ? 'No birthday person description added yet.' 
+                              : 'No love story added yet. The website will display a beautiful photo layout.'
+                            }
+                          </p>
                         )}
                       </div>
                     )}
                   </div>
                 </div>
+
+                {/* Birthday-specific additional fields */}
+                {wedding?.template === 'birthday' && (
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
+                      <Heart className="h-5 w-5 text-[#D4B08C]" />
+                      Birthday Party Details
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                          Gift Registry Information (Optional)
+                        </label>
+                        {editMode ? (
+                          <Textarea
+                            value={weddingData?.giftRegistryInfo || ''}
+                            onChange={(e) => handleInputChange('giftRegistryInfo', e.target.value)}
+                            className="wedding-input min-h-[120px]"
+                            placeholder="e.g., Amazon wishlist link, preferred gifts, no gifts please..."
+                          />
+                        ) : (
+                          <div className="p-4 bg-gray-50 rounded-lg min-h-[120px]">
+                            {wedding.giftRegistryInfo ? (
+                              <p className="text-gray-800 leading-relaxed">{wedding.giftRegistryInfo}</p>
+                            ) : (
+                              <p className="text-gray-500 italic">No gift registry information added yet.</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                          Special Instructions (Optional)
+                        </label>
+                        {editMode ? (
+                          <Textarea
+                            value={weddingData?.specialInstructions || ''}
+                            onChange={(e) => handleInputChange('specialInstructions', e.target.value)}
+                            className="wedding-input min-h-[120px]"
+                            placeholder="e.g., What to bring, parking info, dietary restrictions..."
+                          />
+                        ) : (
+                          <div className="p-4 bg-gray-50 rounded-lg min-h-[120px]">
+                            {wedding.specialInstructions ? (
+                              <p className="text-gray-800 leading-relaxed">{wedding.specialInstructions}</p>
+                            ) : (
+                              <p className="text-gray-500 italic">No special instructions added yet.</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -879,15 +1021,19 @@ export default function AdminWeddingEdit() {
                     <div>
                       <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                         <Heart className="h-4 w-4" />
-                        Couple Photo (How We Met Section)
+                        {wedding?.template === 'birthday' ? 'Birthday Person Photo (Hero Section)' : 'Event Photo (Hero Section)'}
                       </h3>
                       
                       {/* Upload Section for Couple Photo */}
                       <div className="mb-4 p-4 border-2 border-dashed border-gray-300 rounded-lg">
                         <div className="text-center">
                           <Heart className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                          <h4 className="font-medium text-gray-700 mb-2">Upload Couple Photo</h4>
-                          <p className="text-sm text-gray-500 mb-3">This photo will appear next to the "How We Met" section</p>
+                          <h4 className="font-medium text-gray-700 mb-2">
+                            {wedding?.template === 'birthday' ? 'Upload Birthday Person Photo' : 'Upload Event Photo'}
+                          </h4>
+                          <p className="text-sm text-gray-500 mb-3">
+                            This photo will appear next to the {wedding?.template === 'birthday' ? 'birthday person section' : 'event details section'}
+                          </p>
                           <input
                             type="file"
                             accept="image/*"
@@ -916,7 +1062,7 @@ export default function AdminWeddingEdit() {
                             className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
                           >
                             <Camera className="h-4 w-4 mr-2" />
-                            Choose Couple Photo
+                            {wedding?.template === 'birthday' ? 'Choose Birthday Person Photo' : 'Choose Couple Photo'}
                           </label>
                         </div>
                       </div>
@@ -928,7 +1074,7 @@ export default function AdminWeddingEdit() {
                               <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                                 <img 
                                   src={photo.url} 
-                                  alt={photo.caption || "Couple photo"}
+                                  alt={photo.caption || (wedding?.template === 'birthday' ? "Birthday person photo" : "Couple photo")}
                                   className="w-full h-full object-cover"
                                 />
                               </div>
@@ -955,8 +1101,8 @@ export default function AdminWeddingEdit() {
                         ) : (
                           <div className="col-span-2 text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
                             <Heart className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                            <p>No couple photo uploaded yet</p>
-                            <p className="text-sm text-gray-400 mt-1">This photo will appear next to the "How We Met" section</p>
+                            <p>No {wedding?.template === 'birthday' ? 'birthday person' : 'couple'} photo uploaded yet</p>
+                            <p className="text-sm text-gray-400 mt-1">This photo will appear next to the {wedding?.template === 'birthday' ? 'birthday person section' : '"How We Met" section'}</p>
                           </div>
                         )}
                       </div>

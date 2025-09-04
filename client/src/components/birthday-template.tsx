@@ -22,23 +22,29 @@ export function BirthdayTemplate({ wedding }: BirthdayTemplateProps) {
   const { t, i18n } = useTranslation();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-  // Calculate age from birthday
-  const calculateAge = () => {
-    if (!wedding?.weddingDate) return null;
-    const birthDate = new Date(wedding.weddingDate);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
+  // Use stored age for birthday events, calculate for other events
+  const getAge = () => {
+    if (wedding?.template === 'birthday' && wedding?.age) {
+      return wedding.age;
+    }
     
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    // For non-birthday events, calculate age from date if needed
+    if (!wedding?.weddingDate) return null;
+    const eventDate = new Date(wedding.weddingDate);
+    const today = new Date();
+    let age = today.getFullYear() - eventDate.getFullYear();
+    const monthDiff = today.getMonth() - eventDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < eventDate.getDate())) {
       age--;
     }
     
     return age;
   };
 
-  const age = calculateAge();
-  const isMilestone = age ? [1, 5, 10, 13, 16, 18, 21, 25, 30, 40, 50, 60, 70, 80, 90, 100].includes(age) : false;
+  const age = getAge();
+  const numericAge = typeof age === 'string' ? parseInt(age) : age;
+  const isMilestone = numericAge ? [1, 5, 10, 13, 16, 18, 21, 25, 30, 40, 50, 60, 70, 80, 90, 100].includes(numericAge) : false;
 
   // Force language based on wedding settings
   useEffect(() => {
@@ -226,11 +232,26 @@ export function BirthdayTemplate({ wedding }: BirthdayTemplateProps) {
               {wedding?.bride || 'Birthday Person'}
             </h1>
             
+            {/* Age Display */}
+            {age && (
+              <div className="mb-4 sm:mb-6">
+                <div 
+                  className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 rounded-full text-white font-semibold text-lg sm:text-xl shadow-lg"
+                  style={{ 
+                    background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`
+                  }}
+                >
+                  <span className="mr-2">🎉</span>
+                  <span>{t('birthday.turns') || 'turns'} {age} {t('birthday.years') || 'years'} 🎉</span>
+                </div>
+              </div>
+            )}
+            
             {/* Birthday Cake Animation */}
             {age && (
               <div className="flex justify-center mb-4">
                 <BirthdayCake
-                  age={age}
+                  age={numericAge}
                   primaryColor={primaryColor}
                   accentColor={accentColor}
                   isAnimated={true}
@@ -255,7 +276,7 @@ export function BirthdayTemplate({ wedding }: BirthdayTemplateProps) {
                 weddingDate={typeof wedding.weddingDate === 'string' ? wedding.weddingDate : wedding.weddingDate.toISOString()}
                 weddingTime={wedding.weddingTime}
                 timezone={wedding.timezone}
-                age={age || undefined}
+                age={numericAge || undefined}
                 primaryColor={primaryColor}
                 accentColor={accentColor}
               />
