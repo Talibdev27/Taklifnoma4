@@ -55,11 +55,11 @@ export const uploadAudio = multer({
     fileSize: 10 * 1024 * 1024, // 10MB
   },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a', 'audio/aac'];
+    const allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a', 'audio/aac', 'video/mp4', 'audio/mp4'];
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Invalid file type. Only audio files (MP3, WAV, OGG, M4A, AAC) are allowed.'));
+      cb(new Error('Invalid file type. Only audio files (MP3, WAV, OGG, M4A, AAC, MP4) are allowed.'));
     }
   },
 });
