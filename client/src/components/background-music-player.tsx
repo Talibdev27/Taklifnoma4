@@ -25,6 +25,8 @@ export function BackgroundMusicPlayer({
   const [showAutoplayPrompt, setShowAutoplayPrompt] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const audioRef = useRef<HTMLAudioElement>(null);
   const hasInteractedRef = useRef(false);
   const previousTriggerRef = useRef(false);
@@ -118,15 +120,48 @@ export function BackgroundMusicPlayer({
       audioRef.current.loop = loop;
       audioRef.current.muted = isMuted;
       
-      // Set up audio event listeners
-      audioRef.current.addEventListener('loadstart', () => setIsLoading(true));
+      // Set up audio event listeners with comprehensive error logging
+      audioRef.current.addEventListener('loadstart', () => {
+        console.log('🎵 Audio loadstart:', musicUrl);
+        setIsLoading(true);
+      });
+      
       audioRef.current.addEventListener('canplay', () => {
+        console.log('🎵 Audio canplay:', musicUrl);
         setIsLoading(false);
         setIsReady(true);
       });
-      audioRef.current.addEventListener('error', () => {
+      
+      audioRef.current.addEventListener('canplaythrough', () => {
+        console.log('🎵 Audio canplaythrough:', musicUrl);
+      });
+      
+      audioRef.current.addEventListener('error', (e) => {
+        const errorInfo = {
+          url: musicUrl,
+          error: e,
+          networkState: audioRef.current?.networkState,
+          readyState: audioRef.current?.readyState,
+          errorCode: audioRef.current?.error?.code,
+          errorMessage: audioRef.current?.error?.message
+        };
+        console.error('🎵 Audio error:', errorInfo);
         setIsLoading(false);
         setIsReady(false);
+        setHasError(true);
+        setErrorMessage(`Audio error: ${audioRef.current?.error?.message || 'Unknown error'}`);
+      });
+      
+      audioRef.current.addEventListener('abort', () => {
+        console.warn('🎵 Audio abort:', musicUrl);
+      });
+      
+      audioRef.current.addEventListener('stalled', () => {
+        console.warn('🎵 Audio stalled:', musicUrl);
+      });
+      
+      audioRef.current.addEventListener('suspend', () => {
+        console.warn('🎵 Audio suspend:', musicUrl);
       });
       
       // Save volume and mute state to session storage
@@ -145,7 +180,13 @@ export function BackgroundMusicPlayer({
               sessionStorage.setItem('wedding-music-playing', 'true');
             })
             .catch((error) => {
-              console.log('Autoplay prevented:', error);
+              console.error('🎵 Autoplay prevented:', {
+                error,
+                url: musicUrl,
+                userAgent: navigator.userAgent,
+                hasUserInteracted,
+                triggerPlay
+              });
               setIsPlaying(false);
               setIsLoading(false);
               setShowAutoplayPrompt(true);
@@ -172,7 +213,13 @@ export function BackgroundMusicPlayer({
               sessionStorage.setItem('wedding-music-playing', 'true');
             })
             .catch((error) => {
-              console.log('Playback failed:', error);
+              console.error('🎵 Playback failed:', {
+                error,
+                url: musicUrl,
+                userAgent: navigator.userAgent,
+                networkState: audioRef.current?.networkState,
+                readyState: audioRef.current?.readyState
+              });
               setIsLoading(false);
             });
         }
@@ -222,6 +269,32 @@ export function BackgroundMusicPlayer({
     togglePlay();
   };
 
+  // Test network connectivity and audio format support
+  useEffect(() => {
+    if (musicUrl) {
+      console.log('🎵 Testing audio URL accessibility:', musicUrl);
+      
+      // Test if URL is accessible via server endpoint (avoids CORS issues)
+      const encodedUrl = encodeURIComponent(musicUrl);
+      fetch(`/api/test-audio/${encodedUrl}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log('🎵 Audio URL test result:', data);
+          if (!data.accessible) {
+            console.error('🎵 Audio URL not accessible:', data);
+            setHasError(true);
+            setErrorMessage(`Audio file not accessible: ${data.status} ${data.error || ''}`);
+          }
+        })
+        .catch(error => {
+          console.error('🎵 Audio URL test failed:', {
+            url: musicUrl,
+            error: error.message
+          });
+        });
+    }
+  }, [musicUrl]);
+
   if (!musicUrl) {
     return null;
   }
@@ -267,10 +340,17 @@ export function BackgroundMusicPlayer({
             onClick={togglePlay}
             size="sm"
             variant="ghost"
-            className="w-8 h-8 p-0 rounded-full hover:bg-gray-100 relative"
-            disabled={isLoading}
+            className={`w-8 h-8 p-0 rounded-full relative ${
+              hasError 
+                ? 'hover:bg-red-100' 
+                : 'hover:bg-gray-100'
+            }`}
+            disabled={isLoading || hasError}
+            title={hasError ? errorMessage : (isPlaying ? 'Pause music' : 'Play music')}
           >
-            {isLoading ? (
+            {hasError ? (
+              <div className="w-4 h-4 text-red-500" title={errorMessage}>⚠️</div>
+            ) : isLoading ? (
               <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
             ) : isPlaying ? (
               <Pause className="w-4 h-4 text-gray-700" />
@@ -281,11 +361,22 @@ export function BackgroundMusicPlayer({
 
           {/* Music Icon with playing indicator */}
           <div className="relative">
-            <Music className={`w-4 h-4 ${isPlaying ? 'text-amber-500' : isReady && !isPlaying ? 'text-amber-400 animate-pulse' : 'text-gray-600'}`} />
-            {isPlaying && (
+            <Music className={`w-4 h-4 ${
+              hasError 
+                ? 'text-red-500' 
+                : isPlaying 
+                  ? 'text-amber-500' 
+                  : isReady && !isPlaying 
+                    ? 'text-amber-400 animate-pulse' 
+                    : 'text-gray-600'
+            }`} />
+            {hasError && (
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+            )}
+            {isPlaying && !hasError && (
               <div className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
             )}
-            {isReady && !isPlaying && !isLoading && (
+            {isReady && !isPlaying && !isLoading && !hasError && (
               <div className="absolute -top-1 -right-1 w-2 h-2 bg-amber-400 rounded-full animate-ping" />
             )}
           </div>

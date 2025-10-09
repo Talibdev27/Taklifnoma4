@@ -1357,6 +1357,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test audio URL accessibility endpoint
+  app.get('/api/test-audio/*', async (req, res) => {
+    try {
+      const audioUrl = decodeURIComponent(req.params[0]);
+      console.log('Testing audio URL:', audioUrl);
+      
+      const response = await fetch(audioUrl, { method: 'HEAD' });
+      
+      res.json({
+        url: audioUrl,
+        accessible: response.ok,
+        status: response.status,
+        contentType: response.headers.get('content-type'),
+        contentLength: response.headers.get('content-length'),
+        lastModified: response.headers.get('last-modified'),
+        headers: Object.fromEntries(response.headers.entries())
+      });
+    } catch (error) {
+      console.error('Audio URL test error:', error);
+      res.status(500).json({
+        url: req.params[0],
+        accessible: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   // Background music upload endpoint for admin
   app.post('/api/upload/background-music', authenticateToken, requireAdmin, audioUpload.single('music'), async (req, res) => {
     try {
