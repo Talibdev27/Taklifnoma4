@@ -366,6 +366,16 @@
   "music.fileTooLarge": "File too large",
   "music.fileTooLargeDesc": "Please upload a file smaller than 10MB.",
   "music.removeMusic": "Remove music",
+  "welcome": {
+    "weddingTitle": "Welcome to {{bride}} & {{groom}}'s Wedding",
+    "birthdayTitle": "Welcome to {{name}}'s Birthday Celebration",
+    "weddingSubtitle": "Join us in celebrating their special day",
+    "birthdaySubtitle": "Join us in celebrating this special day",
+    "withMusic": "with background music",
+    "enterWedding": "Enter Wedding Site",
+    "enterBirthday": "Enter Birthday Site",
+    "clickToStart": "Click to start the experience"
+  },
   "birthday": {
     "celebration": "Birthday Celebration",
     "invitation": "You're invited to celebrate",

@@ -322,6 +322,16 @@
   "ad.createWebsite": "Өз әдемі той веб-сайтыңызды жасаңыз",
   "birthday.ad.orderInvitation": "Туған күн тойы веб-сайтын тапсырыс беру",
   "birthday.ad.createWebsite": "Өз әдемі туған күн тойы веб-сайтыңызды жасаңыз",
+  "welcome": {
+    "weddingTitle": "{{bride}} және {{groom}} үйлену тойына қош келдіңіз",
+    "birthdayTitle": "{{name}} туған күніне қош келдіңіз",
+    "weddingSubtitle": "Олардың ерекше күнін тойлауға бізге қосылыңыз",
+    "birthdaySubtitle": "Бұл ерекше күнді тойлауға бізге қосылыңыз",
+    "withMusic": "фондық музыкамен",
+    "enterWedding": "Үйлену сайтына кіру",
+    "enterBirthday": "Туған күн сайтына кіру",
+    "clickToStart": "Бастау үшін басыңыз"
+  },
   "wedding.flowerPhoto5": "Арнайы сәт",
   "wedding.flowerPhoto6": "Әдемі естелік"
 } 

@@ -7,13 +7,15 @@ interface BackgroundMusicPlayerProps {
   autoPlay?: boolean;
   loop?: boolean;
   className?: string;
+  triggerPlay?: boolean; // External trigger for immediate playback
 }
 
 export function BackgroundMusicPlayer({ 
   musicUrl, 
   autoPlay = true, 
   loop = true, 
-  className = '' 
+  className = '',
+  triggerPlay = false
 }: BackgroundMusicPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -22,8 +24,53 @@ export function BackgroundMusicPlayer({
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const [showAutoplayPrompt, setShowAutoplayPrompt] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const hasInteractedRef = useRef(false);
+  const previousTriggerRef = useRef(false);
+
+  // Initialize from session storage
+  useEffect(() => {
+    const savedVolume = sessionStorage.getItem('wedding-music-volume');
+    const savedMuted = sessionStorage.getItem('wedding-music-muted');
+    const savedPlaying = sessionStorage.getItem('wedding-music-playing');
+    
+    if (savedVolume) {
+      setVolume(parseFloat(savedVolume));
+    }
+    if (savedMuted === 'true') {
+      setIsMuted(true);
+    }
+    if (savedPlaying === 'true') {
+      setHasUserInteracted(true);
+    }
+  }, []);
+
+  // Handle external trigger for immediate playback
+  useEffect(() => {
+    if (triggerPlay && !previousTriggerRef.current && audioRef.current && isReady) {
+      previousTriggerRef.current = true;
+      setHasUserInteracted(true);
+      setShowAutoplayPrompt(false);
+      
+      // Immediate playback attempt
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        setIsLoading(true);
+        playPromise
+          .then(() => {
+            setIsPlaying(true);
+            setIsLoading(false);
+            sessionStorage.setItem('wedding-music-playing', 'true');
+          })
+          .catch((error) => {
+            console.log('Immediate playback failed:', error);
+            setIsLoading(false);
+            setShowAutoplayPrompt(true);
+          });
+      }
+    }
+  }, [triggerPlay, isReady]);
 
   // Handle user interaction to enable autoplay
   useEffect(() => {
@@ -69,14 +116,25 @@ export function BackgroundMusicPlayer({
     if (audioRef.current) {
       audioRef.current.volume = volume;
       audioRef.current.loop = loop;
+      audioRef.current.muted = isMuted;
       
       // Set up audio event listeners
       audioRef.current.addEventListener('loadstart', () => setIsLoading(true));
-      audioRef.current.addEventListener('canplay', () => setIsLoading(false));
-      audioRef.current.addEventListener('error', () => setIsLoading(false));
+      audioRef.current.addEventListener('canplay', () => {
+        setIsLoading(false);
+        setIsReady(true);
+      });
+      audioRef.current.addEventListener('error', () => {
+        setIsLoading(false);
+        setIsReady(false);
+      });
       
-      if (autoPlay && hasUserInteracted) {
-        // Try to autoplay after user interaction
+      // Save volume and mute state to session storage
+      sessionStorage.setItem('wedding-music-volume', volume.toString());
+      sessionStorage.setItem('wedding-music-muted', isMuted.toString());
+      
+      if (autoPlay && hasUserInteracted && !triggerPlay) {
+        // Try to autoplay after user interaction (but not if external trigger is active)
         const playPromise = audioRef.current.play();
         if (playPromise !== undefined) {
           setIsLoading(true);
@@ -84,6 +142,7 @@ export function BackgroundMusicPlayer({
             .then(() => {
               setIsPlaying(true);
               setIsLoading(false);
+              sessionStorage.setItem('wedding-music-playing', 'true');
             })
             .catch((error) => {
               console.log('Autoplay prevented:', error);
@@ -94,13 +153,14 @@ export function BackgroundMusicPlayer({
         }
       }
     }
-  }, [musicUrl, autoPlay, loop, volume, hasUserInteracted]);
+  }, [musicUrl, autoPlay, loop, volume, hasUserInteracted, isMuted, triggerPlay]);
 
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
+        sessionStorage.setItem('wedding-music-playing', 'false');
       } else {
         setIsLoading(true);
         const playPromise = audioRef.current.play();
@@ -109,6 +169,7 @@ export function BackgroundMusicPlayer({
             .then(() => {
               setIsPlaying(true);
               setIsLoading(false);
+              sessionStorage.setItem('wedding-music-playing', 'true');
             })
             .catch((error) => {
               console.log('Playback failed:', error);
@@ -220,9 +281,12 @@ export function BackgroundMusicPlayer({
 
           {/* Music Icon with playing indicator */}
           <div className="relative">
-            <Music className={`w-4 h-4 ${isPlaying ? 'text-amber-500' : 'text-gray-600'}`} />
+            <Music className={`w-4 h-4 ${isPlaying ? 'text-amber-500' : isReady && !isPlaying ? 'text-amber-400 animate-pulse' : 'text-gray-600'}`} />
             {isPlaying && (
               <div className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+            )}
+            {isReady && !isPlaying && !isLoading && (
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-amber-400 rounded-full animate-ping" />
             )}
           </div>
 

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'wouter';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -20,6 +20,7 @@ import { BirthdayTemplate } from '@/components/birthday-template';
 import { Anime1Template } from '@/components/anime-1-template';
 import { FlowerTemplate } from '@/components/flower-template';
 import { BackgroundMusicPlayer } from '@/components/background-music-player';
+import { WeddingWelcomeOverlay } from '@/components/wedding-welcome-overlay';
 import { formatDate } from '@/lib/utils';
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, ExternalLink, MessageCircle } from 'lucide-react';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
@@ -29,8 +30,35 @@ export default function WeddingSite() {
   const params = useParams();
   const uniqueUrl = params.uniqueUrl as string;
   
+  // Welcome overlay state
+  const [showWelcomeOverlay, setShowWelcomeOverlay] = useState(false);
+  const [triggerMusicPlay, setTriggerMusicPlay] = useState(false);
+  
   // For now, assume user is guest by default - owners can access via special URL
   const isOwner = false;
+
+  // Check if welcome overlay should be shown (only once per session)
+  useEffect(() => {
+    const hasSeenWelcome = sessionStorage.getItem(`wedding-welcome-${uniqueUrl}`);
+    if (!hasSeenWelcome) {
+      setShowWelcomeOverlay(true);
+    }
+  }, [uniqueUrl]);
+
+  // Handle user entering the site
+  const handleEnterSite = () => {
+    // Mark welcome as seen for this wedding
+    sessionStorage.setItem(`wedding-welcome-${uniqueUrl}`, 'true');
+    
+    // Hide overlay and trigger music
+    setShowWelcomeOverlay(false);
+    setTriggerMusicPlay(true);
+    
+    // Reset trigger after a short delay
+    setTimeout(() => {
+      setTriggerMusicPlay(false);
+    }, 1000);
+  };
 
   const { data: wedding, isLoading, error } = useQuery<Wedding>({
     queryKey: [`/api/weddings/url/${uniqueUrl}`],
@@ -95,7 +123,7 @@ export default function WeddingSite() {
   // Check for Anime1 template
   if (wedding?.template === 'anime_1') {
     console.log('Rendering Anime1 template for wedding:', wedding);
-    return <Anime1Template wedding={wedding} guests={[]} photos={photos} guestBookEntries={guestBookEntries} />;
+    return <Anime1Template wedding={wedding as any} guests={[]} photos={photos} guestBookEntries={guestBookEntries} />;
   }
 
   // Check for Flower template
@@ -228,6 +256,22 @@ export default function WeddingSite() {
 
   return (
     <div className={`min-h-screen bg-gradient-to-br ${config.bgGradient}`} style={customStyles}>
+      {/* Welcome Overlay */}
+      {showWelcomeOverlay && (
+              <WeddingWelcomeOverlay
+                weddingData={{
+                  bride: wedding.bride,
+                  groom: wedding.groom,
+                  template: wedding.template,
+                  eventType: wedding.eventType
+                }}
+                hasMusic={!!wedding.backgroundMusicUrl}
+                onEnter={handleEnterSite}
+                isVisible={showWelcomeOverlay}
+                defaultLanguage={wedding.defaultLanguage}
+              />
+      )}
+
       {/* Language switcher - Always show with 3 languages */}
       <div className="fixed top-4 right-4 z-50">
         <WeddingLanguageSwitcher 
@@ -670,6 +714,7 @@ export default function WeddingSite() {
           musicUrl={wedding.backgroundMusicUrl}
           autoPlay={true}
           loop={true}
+          triggerPlay={triggerMusicPlay}
         />
       )}
 

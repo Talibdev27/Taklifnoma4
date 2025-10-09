@@ -7,6 +7,8 @@ import { PhotoUpload } from '@/components/photo-upload';
 import { EpicRSVPForm } from '@/components/epic-rsvp-form';
 import { GuestBookForm } from '@/components/guest-book-form';
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
+import { WeddingWelcomeOverlay } from '@/components/wedding-welcome-overlay';
+import { BackgroundMusicPlayer } from '@/components/background-music-player';
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, Camera, Users, Gift, Cake, PartyPopper } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, Photo, GuestBookEntry } from '@shared/schema';
@@ -20,6 +22,33 @@ interface FlowerTemplateProps {
 export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
   const { t, i18n } = useTranslation();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  
+  // Welcome overlay state
+  const [showWelcomeOverlay, setShowWelcomeOverlay] = useState(false);
+  const [triggerMusicPlay, setTriggerMusicPlay] = useState(false);
+
+  // Check if welcome overlay should be shown (only once per session)
+  useEffect(() => {
+    const hasSeenWelcome = sessionStorage.getItem(`wedding-welcome-${wedding.uniqueUrl}`);
+    if (!hasSeenWelcome) {
+      setShowWelcomeOverlay(true);
+    }
+  }, [wedding.uniqueUrl]);
+
+  // Handle user entering the site
+  const handleEnterSite = () => {
+    // Mark welcome as seen for this wedding
+    sessionStorage.setItem(`wedding-welcome-${wedding.uniqueUrl}`, 'true');
+    
+    // Hide overlay and trigger music
+    setShowWelcomeOverlay(false);
+    setTriggerMusicPlay(true);
+    
+    // Reset trigger after a short delay
+    setTimeout(() => {
+      setTriggerMusicPlay(false);
+    }, 1000);
+  };
 
   // Force language based on wedding settings
   useEffect(() => {
@@ -88,6 +117,22 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f9f1e7', color: '#3b3b3b' }}>
+      {/* Welcome Overlay */}
+      {showWelcomeOverlay && (
+        <WeddingWelcomeOverlay
+          weddingData={{
+            bride: wedding.bride,
+            groom: wedding.groom,
+            template: wedding.template,
+            eventType: wedding.eventType
+          }}
+          hasMusic={!!wedding.backgroundMusicUrl}
+          onEnter={handleEnterSite}
+          isVisible={showWelcomeOverlay}
+          defaultLanguage={wedding.defaultLanguage}
+        />
+      )}
+
       {/* Navigation - Fixed at top */}
       <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-lg z-50">
         <div className="container mx-auto px-2 sm:px-4">
@@ -635,6 +680,16 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
           </div>
         </div>
       </footer>
+
+      {/* Background Music Player */}
+      {wedding.backgroundMusicUrl && (
+        <BackgroundMusicPlayer
+          musicUrl={wedding.backgroundMusicUrl}
+          autoPlay={true}
+          loop={true}
+          triggerPlay={triggerMusicPlay}
+        />
+      )}
     </div>
   );
 } 

@@ -606,6 +606,7 @@ export class DatabaseStorage implements IStorage {
       const weddingData = {
         ...insertWedding,
         userId,
+        uniqueUrl: insertWedding.uniqueUrl || nanoid(10), // Generate uniqueUrl if not provided
         timezone: insertWedding.timezone || 'Asia/Tashkent',
         defaultLanguage: insertWedding.defaultLanguage || 'en',
         availableLanguages: insertWedding.availableLanguages || ['en']

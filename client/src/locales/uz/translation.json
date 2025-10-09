@@ -382,6 +382,16 @@
     "partyBegins": "Bayram boshlanadi",
     "thankYouGuests": "Biz bilan nishonlashganingiz uchun rahmat!"
   },
+  "welcome": {
+    "weddingTitle": "{{bride}} va {{groom}} to'yiga xush kelibsiz",
+    "birthdayTitle": "{{name}} tug'ilgan kuniga xush kelibsiz",
+    "weddingSubtitle": "Ularning maxsus kunini nishonlashda bizga qo'shiling",
+    "birthdaySubtitle": "Bu maxsus kunni nishonlashda bizga qo'shiling",
+    "withMusic": "fon musiqasi bilan",
+    "enterWedding": "To'y saytiga kirish",
+    "enterBirthday": "Tug'ilgan kun saytiga kirish",
+    "clickToStart": "Boshlash uchun bosing"
+  },
   "wedding.flowerPhoto5": "Maxsus Lahza",
   "wedding.flowerPhoto6": "Go'zal Xotira"
 } 

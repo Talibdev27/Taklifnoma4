@@ -376,6 +376,16 @@
     "partyBegins": "Вечеринка начинается",
     "thankYouGuests": "Спасибо, что празднуете с нами!"
   },
+  "welcome": {
+    "weddingTitle": "Добро пожаловать на свадьбу {{bride}} и {{groom}}",
+    "birthdayTitle": "Добро пожаловать на день рождения {{name}}",
+    "weddingSubtitle": "Присоединяйтесь к нам в праздновании их особенного дня",
+    "birthdaySubtitle": "Присоединяйтесь к нам в праздновании этого особенного дня",
+    "withMusic": "с фоновой музыкой",
+    "enterWedding": "Войти на свадебный сайт",
+    "enterBirthday": "Войти на сайт дня рождения",
+    "clickToStart": "Нажмите, чтобы начать"
+  },
   "wedding.flowerPhoto5": "Особый момент",
   "wedding.flowerPhoto6": "Прекрасное воспоминание"
 } 

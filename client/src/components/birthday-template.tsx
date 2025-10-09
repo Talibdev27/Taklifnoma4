@@ -13,6 +13,8 @@ import type { Wedding, Photo, GuestBookEntry } from '@shared/schema';
 import { BirthdayAnimations } from '@/components/birthday-animations';
 import { BirthdayCountdown } from '@/components/birthday-countdown';
 import { BirthdayCake } from '@/components/birthday-cake';
+import { WeddingWelcomeOverlay } from '@/components/wedding-welcome-overlay';
+import { BackgroundMusicPlayer } from '@/components/background-music-player';
 
 interface BirthdayTemplateProps {
   wedding: Wedding;
@@ -21,6 +23,10 @@ interface BirthdayTemplateProps {
 export function BirthdayTemplate({ wedding }: BirthdayTemplateProps) {
   const { t, i18n } = useTranslation();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  
+  // Welcome overlay state
+  const [showWelcomeOverlay, setShowWelcomeOverlay] = useState(false);
+  const [triggerMusicPlay, setTriggerMusicPlay] = useState(false);
 
   // Use stored age for birthday events, calculate for other events
   const getAge = () => {
@@ -45,6 +51,29 @@ export function BirthdayTemplate({ wedding }: BirthdayTemplateProps) {
   const age = getAge();
   const numericAge = typeof age === 'string' ? parseInt(age) : age;
   const isMilestone = numericAge ? [1, 5, 10, 13, 16, 18, 21, 25, 30, 40, 50, 60, 70, 80, 90, 100].includes(numericAge) : false;
+
+  // Check if welcome overlay should be shown (only once per session)
+  useEffect(() => {
+    const hasSeenWelcome = sessionStorage.getItem(`wedding-welcome-${wedding.uniqueUrl}`);
+    if (!hasSeenWelcome) {
+      setShowWelcomeOverlay(true);
+    }
+  }, [wedding.uniqueUrl]);
+
+  // Handle user entering the site
+  const handleEnterSite = () => {
+    // Mark welcome as seen for this wedding
+    sessionStorage.setItem(`wedding-welcome-${wedding.uniqueUrl}`, 'true');
+    
+    // Hide overlay and trigger music
+    setShowWelcomeOverlay(false);
+    setTriggerMusicPlay(true);
+    
+    // Reset trigger after a short delay
+    setTimeout(() => {
+      setTriggerMusicPlay(false);
+    }, 1000);
+  };
 
   // Force language based on wedding settings
   useEffect(() => {
@@ -113,10 +142,26 @@ export function BirthdayTemplate({ wedding }: BirthdayTemplateProps) {
 
   return (
     <div className="min-h-screen">
+      {/* Welcome Overlay */}
+      {showWelcomeOverlay && (
+        <WeddingWelcomeOverlay
+          weddingData={{
+            bride: wedding.bride,
+            groom: wedding.groom,
+            template: wedding.template,
+            eventType: wedding.eventType
+          }}
+          hasMusic={!!wedding.backgroundMusicUrl}
+          onEnter={handleEnterSite}
+          isVisible={showWelcomeOverlay}
+          defaultLanguage={wedding.defaultLanguage}
+        />
+      )}
+
       {/* Birthday Animations */}
       <BirthdayAnimations 
         isMilestone={isMilestone}
-        age={age || undefined}
+        age={numericAge || undefined}
         primaryColor={primaryColor}
         accentColor={accentColor}
       />
@@ -250,12 +295,12 @@ export function BirthdayTemplate({ wedding }: BirthdayTemplateProps) {
             {/* Birthday Cake Animation */}
             {age && (
               <div className="flex justify-center mb-4">
-                <BirthdayCake
-                  age={numericAge}
-                  primaryColor={primaryColor}
-                  accentColor={accentColor}
-                  isAnimated={true}
-                />
+              <BirthdayCake
+                age={numericAge || 0}
+                primaryColor={primaryColor}
+                accentColor={accentColor}
+                isAnimated={true}
+              />
               </div>
             )}
             
@@ -272,14 +317,14 @@ export function BirthdayTemplate({ wedding }: BirthdayTemplateProps) {
 
             {/* Festive Birthday Countdown */}
             <div className="mb-6 sm:mb-8">
-              <BirthdayCountdown
-                weddingDate={typeof wedding.weddingDate === 'string' ? wedding.weddingDate : wedding.weddingDate.toISOString()}
-                weddingTime={wedding.weddingTime}
-                timezone={wedding.timezone}
-                age={numericAge || undefined}
-                primaryColor={primaryColor}
-                accentColor={accentColor}
-              />
+            <BirthdayCountdown
+              weddingDate={typeof wedding.weddingDate === 'string' ? wedding.weddingDate : wedding.weddingDate.toISOString()}
+              weddingTime={wedding.weddingTime}
+              timezone={wedding.timezone}
+              age={numericAge || 0}
+              primaryColor={primaryColor}
+              accentColor={accentColor}
+            />
             </div>
 
             {/* Party Venue Button - Centered and Balanced */}
@@ -647,6 +692,16 @@ export function BirthdayTemplate({ wedding }: BirthdayTemplateProps) {
           </div>
         </div>
       </footer>
+
+      {/* Background Music Player */}
+      {wedding.backgroundMusicUrl && (
+        <BackgroundMusicPlayer
+          musicUrl={wedding.backgroundMusicUrl}
+          autoPlay={true}
+          loop={true}
+          triggerPlay={triggerMusicPlay}
+        />
+      )}
     </div>
   );
 } 

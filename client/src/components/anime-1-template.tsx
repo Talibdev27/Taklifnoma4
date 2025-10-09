@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heart, Calendar, MapPin, Users, MessageSquare, Camera, Music } from 'lucide-react';
 import { BackgroundMusicPlayer } from './background-music-player';
+import { WeddingWelcomeOverlay } from './wedding-welcome-overlay';
 import { RSVPForm } from './rsvp-form';
 import { GuestBookForm } from './guest-book-form';
 import { PhotoGallery } from './photo-gallery';
@@ -13,6 +14,7 @@ import { LanguageToggle } from './language-toggle';
 interface Anime1TemplateProps {
   wedding: {
     id: number;
+    uniqueUrl: string;
     bride: string;
     groom: string;
     weddingDate: string | Date;
@@ -30,6 +32,8 @@ interface Anime1TemplateProps {
     accentColor?: string;
     availableLanguages: string[];
     defaultLanguage: string;
+    template: string;
+    eventType?: string;
   };
   guests: any[];
   photos: any[];
@@ -42,6 +46,33 @@ export function Anime1Template({ wedding, guests, photos, guestBookEntries }: An
   const [showRSVP, setShowRSVP] = useState(false);
   const [showGuestBook, setShowGuestBook] = useState(false);
   const [showPhotos, setShowPhotos] = useState(false);
+  
+  // Welcome overlay state
+  const [showWelcomeOverlay, setShowWelcomeOverlay] = useState(false);
+  const [triggerMusicPlay, setTriggerMusicPlay] = useState(false);
+
+  // Check if welcome overlay should be shown (only once per session)
+  useEffect(() => {
+    const hasSeenWelcome = sessionStorage.getItem(`wedding-welcome-${wedding.uniqueUrl}`);
+    if (!hasSeenWelcome) {
+      setShowWelcomeOverlay(true);
+    }
+  }, [wedding.uniqueUrl]);
+
+  // Handle user entering the site
+  const handleEnterSite = () => {
+    // Mark welcome as seen for this wedding
+    sessionStorage.setItem(`wedding-welcome-${wedding.uniqueUrl}`, 'true');
+    
+    // Hide overlay and trigger music
+    setShowWelcomeOverlay(false);
+    setTriggerMusicPlay(true);
+    
+    // Reset trigger after a short delay
+    setTimeout(() => {
+      setTriggerMusicPlay(false);
+    }, 1000);
+  };
 
   useEffect(() => {
     i18n.changeLanguage(currentLanguage);
@@ -167,6 +198,22 @@ export function Anime1Template({ wedding, guests, photos, guestBookEntries }: An
 
   return (
     <>
+      {/* Welcome Overlay */}
+      {showWelcomeOverlay && (
+        <WeddingWelcomeOverlay
+          weddingData={{
+            bride: wedding.bride,
+            groom: wedding.groom,
+            template: wedding.template,
+            eventType: wedding.eventType || 'wedding'
+          }}
+          hasMusic={!!wedding.backgroundMusicUrl}
+          onEnter={handleEnterSite}
+          isVisible={showWelcomeOverlay}
+          defaultLanguage={wedding.defaultLanguage}
+        />
+      )}
+
       <style>
         {`
           @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:wght@300;400;500;600&display=swap');
@@ -957,7 +1004,12 @@ export function Anime1Template({ wedding, guests, photos, guestBookEntries }: An
       </div>
 
       {wedding.backgroundMusicUrl && (
-        <BackgroundMusicPlayer musicUrl={wedding.backgroundMusicUrl} />
+        <BackgroundMusicPlayer 
+          musicUrl={wedding.backgroundMusicUrl}
+          autoPlay={true}
+          loop={true}
+          triggerPlay={triggerMusicPlay}
+        />
       )}
 
       {showRSVP && (
