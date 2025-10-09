@@ -29,10 +29,6 @@ export const audioStorage = new CloudinaryStorage({
     folder: 'wedding-music',
     resource_type: 'video', // Cloudinary treats audio as video
     allowed_formats: ['mp3', 'wav', 'ogg', 'm4a', 'aac'],
-    // Add CORS headers for audio files
-    transformation: [
-      { flags: 'attachment' }, // Ensure proper headers
-    ],
   } as any,
 });
 
