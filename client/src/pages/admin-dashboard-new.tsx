@@ -19,6 +19,7 @@ import type { Wedding, User, Guest, Photo } from "@shared/schema";
 import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
 import { GuestManagerAssignment } from '@/components/guest-manager-assignment';
 import { AdminGuestBookManager } from '@/components/admin-guest-book-manager';
+import { TEMPLATE_REGISTRY, EVENT_TYPES } from '@/lib/templates';
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -30,6 +31,7 @@ export default function AdminDashboard() {
   // Create wedding form state
   const [newWedding, setNewWedding] = useState({
     userId: '',
+    eventType: 'wedding', // NEW FIELD
     bride: '', // Will be used as "Birthday Person's Name" for birthday template
     groom: '', // Will be hidden for birthday template
     weddingDate: '', // Will be used as "Birthday Date" for birthday template
@@ -314,6 +316,7 @@ export default function AdminDashboard() {
       // Reset form
       setNewWedding({
         userId: '',
+        eventType: 'wedding',
         bride: '',
         groom: '',
         weddingDate: '',
@@ -541,6 +544,7 @@ export default function AdminDashboard() {
   const handleResetForm = () => {
     setNewWedding({
       userId: '',
+      eventType: 'wedding',
       bride: '',
       groom: '',
       weddingDate: '',
@@ -1382,6 +1386,26 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Event Type
+                      </label>
+                      <select 
+                        className="w-full p-3 border border-gray-200 rounded-lg bg-white"
+                        value={newWedding.eventType}
+                        onChange={(e) => {
+                          handleFormChange('eventType', e.target.value);
+                          // Reset template to first available for new event type
+                          const firstTemplate = TEMPLATE_REGISTRY[e.target.value as keyof typeof TEMPLATE_REGISTRY][0].value;
+                          handleFormChange('template', firstTemplate);
+                        }}
+                      >
+                        {EVENT_TYPES.map(type => (
+                          <option key={type.value} value={type.value}>{type.label}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Template
                       </label>
                       <select 
@@ -1389,17 +1413,11 @@ export default function AdminDashboard() {
                         value={newWedding.template}
                         onChange={(e) => handleFormChange('template', e.target.value)}
                       >
-                        <option value="standard">Standard</option>
-                        <option value="epic">Epic</option>
-                        <option value="birthday">Birthday</option>
-                        <option value="anime_1">Anime 1 (Animated)</option>
-                        <option value="flower">Flower</option>
-                        <option value="gardenRomance">Garden Romance</option>
-                        <option value="modernElegance">Modern Elegance</option>
-                        <option value="rusticCharm">Rustic Charm</option>
-                        <option value="beachBliss">Beach Bliss</option>
-                        <option value="classicTradition">Classic Tradition</option>
-                        <option value="bohoChic">Boho Chic</option>
+                        {TEMPLATE_REGISTRY[newWedding.eventType as keyof typeof TEMPLATE_REGISTRY].map(template => (
+                          <option key={template.value} value={template.value}>
+                            {template.label}
+                          </option>
+                        ))}
                       </select>
                     </div>
 

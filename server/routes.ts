@@ -526,7 +526,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Admin wedding creation request:", req.body);
 
-      const { userId, bride, groom, weddingDate, venue, venueAddress, template, story, dearGuestMessage, couplePhotoUrl, primaryColor, accentColor, age, partyTheme, rsvpDeadline, giftRegistryInfo, contactPerson, specialInstructions } = req.body;
+      const { userId, eventType, bride, groom, weddingDate, venue, venueAddress, template, story, dearGuestMessage, couplePhotoUrl, primaryColor, accentColor, age, partyTheme, rsvpDeadline, giftRegistryInfo, contactPerson, specialInstructions } = req.body;
 
       // Validate required fields
       const missingFields = [];
@@ -551,6 +551,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const weddingData = {
         uniqueUrl: uniqueUrl, // Include the generated uniqueUrl
+        eventType: eventType || "wedding", // NEW FIELD
         bride: bride.trim(),
         groom: groom?.trim() || (template === 'birthday' ? 'Birthday Celebration' : ''), // Default value for birthday template
         weddingDate: new Date(weddingDate),

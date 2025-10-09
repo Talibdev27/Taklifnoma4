@@ -21,6 +21,7 @@ export const weddings = pgTable("weddings", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
   uniqueUrl: varchar("unique_url", { length: 255 }).notNull().unique(),
+  eventType: varchar("event_type", { length: 50 }).notNull().default("wedding"),
   bride: varchar("bride", { length: 255 }).notNull(),
   groom: varchar("groom", { length: 255 }).notNull(),
   weddingDate: timestamp("wedding_date").notNull(),

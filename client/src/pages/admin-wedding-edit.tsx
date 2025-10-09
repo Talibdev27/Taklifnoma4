@@ -24,6 +24,7 @@ import { useState, useEffect } from "react";
 import type { User, Wedding, Guest, Photo } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { TEMPLATE_REGISTRY, EVENT_TYPES } from '@/lib/templates';
 
 export default function AdminWeddingEdit() {
   const params = useParams();
@@ -678,6 +679,30 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Event Type
+                      </label>
+                      {editMode ? (
+                        <select
+                          value={weddingData?.eventType || 'wedding'}
+                          onChange={(e) => {
+                            handleInputChange('eventType', e.target.value);
+                            // Reset template to first available for new event type
+                            const firstTemplate = TEMPLATE_REGISTRY[e.target.value as keyof typeof TEMPLATE_REGISTRY][0].value;
+                            handleInputChange('template', firstTemplate);
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          {EVENT_TYPES.map(type => (
+                            <option key={type.value} value={type.value}>{type.label}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <p className="p-3 bg-gray-50 rounded-lg capitalize">{wedding.eventType || 'wedding'}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Template
                       </label>
                       {editMode ? (
@@ -686,13 +711,11 @@ export default function AdminWeddingEdit() {
                           onChange={(e) => handleInputChange('template', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
-                          <option value="standard">Standard</option>
-                          <option value="epic">Epic</option>
-                          <option value="birthday">Birthday</option>
-                          <option value="anime_1">Anime 1 (Animated)</option>
-                          <option value="flower">Flower</option>
-                          <option value="modern">Modern</option>
-                          <option value="classic">Classic</option>
+                          {TEMPLATE_REGISTRY[(weddingData?.eventType || wedding?.eventType || 'wedding') as keyof typeof TEMPLATE_REGISTRY].map(template => (
+                            <option key={template.value} value={template.value}>
+                              {template.label}
+                            </option>
+                          ))}
                         </select>
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg capitalize">{wedding.template}</p>
