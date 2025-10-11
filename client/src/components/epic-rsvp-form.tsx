@@ -384,7 +384,8 @@ export function EpicRSVPForm({ wedding, primaryColor = '#1976d2', accentColor = 
 
       {/* Pre-registered Guest Search Form */}
       {(rsvpMode === 'preregistered' || (rsvpMode === 'both' && rsvpMethod === 'preregistered')) && (
-        <form onSubmit={handlePreRegisteredSubmit} className="space-y-6">
+        <Form {...form}>
+          <form onSubmit={handlePreRegisteredSubmit} className="space-y-6">
           {/* Guest Search */}
           <div className="space-y-4">
             <Label className="text-gray-700 font-medium">{t('rsvp.findYourName')}</Label>
@@ -581,7 +582,8 @@ export function EpicRSVPForm({ wedding, primaryColor = '#1976d2', accentColor = 
               </Button>
             </>
           )}
-        </form>
+          </form>
+        </Form>
       )}
     </div>
   );
