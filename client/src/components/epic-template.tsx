@@ -415,7 +415,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
               style={{ borderColor: `${primaryColor}20` }}
             >
               <EpicRSVPForm 
-                weddingId={wedding.id} 
+                wedding={wedding}
                 primaryColor={primaryColor}
                 accentColor={accentColor}
               />

@@ -470,7 +470,7 @@ export function BirthdayTemplate({ wedding }: BirthdayTemplateProps) {
               style={{ borderColor: `${primaryColor}20` }}
             >
               <EpicRSVPForm 
-                weddingId={wedding.id} 
+                wedding={wedding}
                 primaryColor={primaryColor}
                 accentColor={accentColor}
                 isBirthday={true}

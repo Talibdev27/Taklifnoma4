@@ -489,7 +489,7 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
           
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg">
             <EpicRSVPForm 
-              weddingId={wedding.id} 
+              wedding={wedding}
               primaryColor={primaryColor}
               accentColor={accentColor}
             />
