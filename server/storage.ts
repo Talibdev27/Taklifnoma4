@@ -695,7 +695,10 @@ export class DatabaseStorage implements IStorage {
   async updateGuestRSVP(guestId: number, update: RSVPUpdate): Promise<Guest | undefined> {
     const [guest] = await db
       .update(guests)
-      .set(update)
+      .set({
+        ...update,
+        respondedAt: new Date(),
+      })
       .where(eq(guests.id, guestId))
       .returning();
     return guest || undefined;

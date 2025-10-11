@@ -126,7 +126,6 @@ export function EpicRSVPForm({ wedding, primaryColor = '#1976d2', accentColor = 
           responseText: data.responseText,
           message: data.message,
           plusOne: data.plusOne,
-          respondedAt: new Date(),
         }),
       });
       
