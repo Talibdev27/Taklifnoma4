@@ -32,6 +32,7 @@ export default function AdminDashboard() {
   const [newWedding, setNewWedding] = useState({
     userId: '',
     eventType: 'wedding', // NEW FIELD
+    rsvpMode: 'both', // NEW FIELD
     bride: '', // Will be used as "Birthday Person's Name" for birthday template
     groom: '', // Will be hidden for birthday template
     weddingDate: '', // Will be used as "Birthday Date" for birthday template
@@ -317,6 +318,7 @@ export default function AdminDashboard() {
       setNewWedding({
         userId: '',
         eventType: 'wedding',
+        rsvpMode: 'both',
         bride: '',
         groom: '',
         weddingDate: '',
@@ -545,6 +547,7 @@ export default function AdminDashboard() {
     setNewWedding({
       userId: '',
       eventType: 'wedding',
+      rsvpMode: 'both',
       bride: '',
       groom: '',
       weddingDate: '',
@@ -1419,6 +1422,26 @@ export default function AdminDashboard() {
                           </option>
                         ))}
                       </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        RSVP Mode
+                      </label>
+                      <select
+                        className="w-full p-3 border border-gray-200 rounded-lg bg-white"
+                        value={newWedding.rsvpMode}
+                        onChange={(e) => handleFormChange('rsvpMode', e.target.value)}
+                      >
+                        <option value="both">Both (Manual Entry + Pre-registered Guest List)</option>
+                        <option value="manual">Manual Entry Only (Guest Book)</option>
+                        <option value="preregistered">Pre-registered Guest List Only</option>
+                      </select>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {newWedding.rsvpMode === 'both' && 'Guests can either enter their name manually or search from the pre-registered list'}
+                        {newWedding.rsvpMode === 'manual' && 'Guests will enter their name manually. No pre-registered list needed.'}
+                        {newWedding.rsvpMode === 'preregistered' && 'Guests can only RSVP if they are in the pre-registered list.'}
+                      </p>
                     </div>
 
                     <div>

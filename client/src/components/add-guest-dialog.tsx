@@ -42,7 +42,18 @@ export function AddGuestDialog({ weddingId, trigger }: AddGuestDialogProps) {
         weddingId,
       }),
     onSuccess: () => {
+      // Invalidate all guest-related queries with different key patterns
       queryClient.invalidateQueries({ queryKey: [`/api/guests/wedding/${weddingId}`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/guests', weddingId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/guests'] });
+      
+      // Force immediate refetch to ensure UI updates
+      queryClient.refetchQueries({ queryKey: [`/api/guests/wedding/${weddingId}`] });
+      queryClient.refetchQueries({ queryKey: ['/api/guests/wedding', weddingId] });
+      queryClient.refetchQueries({ queryKey: ['/api/admin/guests', weddingId] });
+      
       toast({
         title: t('guestList.guestAdded'),
         description: t('guestList.guestAddedSuccess'),

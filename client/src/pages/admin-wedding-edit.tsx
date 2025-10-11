@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   ArrowLeft,
   Edit,
@@ -16,12 +19,16 @@ import {
   MapPin,
   Eye,
   Settings,
-  Camera
+  Camera,
+  UserPlus
 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useState, useEffect } from "react";
-import type { User, Wedding, Guest, Photo } from "@shared/schema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import type { User, Wedding, Guest, Photo, insertGuestSchema } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { TEMPLATE_REGISTRY, EVENT_TYPES } from '@/lib/templates';
@@ -35,6 +42,32 @@ export default function AdminWeddingEdit() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [weddingData, setWeddingData] = useState<Wedding | null>(null);
+  const [isAddGuestDialogOpen, setIsAddGuestDialogOpen] = useState(false);
+
+  // Guest form schema
+  const addGuestSchema = z.object({
+    weddingId: z.number(),
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email").optional().or(z.literal("")),
+    phone: z.string().optional(),
+    rsvpStatus: z.enum(['pending', 'confirmed', 'declined', 'maybe', 'confirmed_with_guest']).default('pending'),
+    plusOne: z.boolean().default(false),
+  });
+
+  type AddGuestFormData = z.infer<typeof addGuestSchema>;
+
+  // Guest form
+  const guestForm = useForm<AddGuestFormData>({
+    resolver: zodResolver(addGuestSchema),
+    defaultValues: {
+      weddingId: 0,
+      name: '',
+      email: '',
+      phone: '',
+      rsvpStatus: 'pending',
+      plusOne: false,
+    },
+  });
 
   useEffect(() => {
     const adminStatus = localStorage.getItem('isAdmin');
@@ -56,7 +89,7 @@ export default function AdminWeddingEdit() {
   const { data: guests, isLoading: guestsLoading } = useQuery<Guest[]>({
     queryKey: ['/api/admin/guests', wedding?.id],
     enabled: isAdmin && !!wedding?.id,
-    queryFn: () => apiRequest('GET', `/api/admin/guests?weddingId=${wedding?.id}`).then(res => res.json())
+    queryFn: () => apiRequest('GET', `/api/admin/guests/${wedding?.id}`).then(res => res.json())
   });
 
   // Fetch photos for this wedding
@@ -182,6 +215,53 @@ export default function AdminWeddingEdit() {
       });
     },
   });
+
+  // Add guest mutation
+  const addGuestMutation = useMutation({
+    mutationFn: async (guestData: AddGuestFormData) => {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('/api/admin/guests', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(guestData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add guest');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Guest Added",
+        description: "Guest has been successfully added to the list.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/guests', wedding?.id] });
+      setIsAddGuestDialogOpen(false);
+      guestForm.reset();
+    },
+    onError: () => {
+      toast({
+        title: "Failed to Add Guest",
+        description: "There was an error adding the guest. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Form submission handler
+  const onSubmitGuest = (data: AddGuestFormData) => {
+    if (wedding?.id) {
+      addGuestMutation.mutate({
+        ...data,
+        weddingId: wedding.id,
+        email: data.email || undefined,
+        phone: data.phone || undefined,
+      });
+    }
+  };
 
   if (!isAdmin) {
     return null;
@@ -722,8 +802,93 @@ export default function AdminWeddingEdit() {
                       )}
                     </div>
 
+                    {/* Epic Template Specific Colors */}
+                    {(editMode ? weddingData?.template : wedding?.template) === 'epic' && (
+                      <div>
+                        <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          Epic Template Colors
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-6">Customize the color scheme for your Epic template</p>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                              Primary Color
+                            </label>
+                            <div className="flex items-center space-x-3">
+                              <input
+                                type="color"
+                                value={editMode ? (weddingData?.primaryColor || '#1976d2') : (wedding?.primaryColor || '#1976d2')}
+                                onChange={(e) => handleInputChange('primaryColor', e.target.value)}
+                                className="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer"
+                              />
+                              <Input
+                                value={editMode ? (weddingData?.primaryColor || '#1976d2') : (wedding?.primaryColor || '#1976d2')}
+                                onChange={(e) => handleInputChange('primaryColor', e.target.value)}
+                                placeholder="#1976d2"
+                                className="flex-1"
+                              />
+                            </div>
+                            <p className="text-xs text-gray-500 mt-1">Used for main elements and countdown</p>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                              Accent Color
+                            </label>
+                            <div className="flex items-center space-x-3">
+                              <input
+                                type="color"
+                                value={editMode ? (weddingData?.accentColor || '#1565c0') : (wedding?.accentColor || '#1565c0')}
+                                onChange={(e) => handleInputChange('accentColor', e.target.value)}
+                                className="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer"
+                              />
+                              <Input
+                                value={editMode ? (weddingData?.accentColor || '#1565c0') : (wedding?.accentColor || '#1565c0')}
+                                onChange={(e) => handleInputChange('accentColor', e.target.value)}
+                                placeholder="#1565c0"
+                                className="flex-1"
+                              />
+                            </div>
+                            <p className="text-xs text-gray-500 mt-1">Used for buttons and highlights</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        RSVP Mode
+                      </label>
+                      {editMode ? (
+                        <select
+                          value={weddingData?.rsvpMode || wedding?.rsvpMode || 'both'}
+                          onChange={(e) => handleInputChange('rsvpMode', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="both">Both (Manual Entry + Pre-registered Guest List)</option>
+                          <option value="manual">Manual Entry Only (Guest Book)</option>
+                          <option value="preregistered">Pre-registered Guest List Only</option>
+                        </select>
+                      ) : (
+                        <p className="p-3 bg-gray-50 rounded-lg capitalize">
+                          {wedding.rsvpMode === 'both' && 'Both (Manual Entry + Pre-registered Guest List)'}
+                          {wedding.rsvpMode === 'manual' && 'Manual Entry Only (Guest Book)'}
+                          {wedding.rsvpMode === 'preregistered' && 'Pre-registered Guest List Only'}
+                        </p>
+                      )}
+                      {editMode && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          {weddingData?.rsvpMode === 'both' && 'Guests can either enter their name manually or search from the pre-registered list'}
+                          {weddingData?.rsvpMode === 'manual' && 'Guests will enter their name manually. No pre-registered list needed.'}
+                          {weddingData?.rsvpMode === 'preregistered' && 'Guests can only RSVP if they are in the pre-registered list.'}
+                        </p>
+                      )}
+                    </div>
+
                     {/* Birthday-specific fields */}
-                    {wedding?.template === 'birthday' && (
+                    {(editMode ? weddingData?.template : wedding?.template) === 'birthday' && (
                       <>
                         <div>
                           <label className="block text-sm font-medium text-[#2C3338] mb-2">
@@ -911,7 +1076,7 @@ export default function AdminWeddingEdit() {
                 </div>
 
                 {/* Birthday-specific additional fields */}
-                {wedding?.template === 'birthday' && (
+                {(editMode ? weddingData?.template : wedding?.template) === 'birthday' && (
                   <div className="mt-8">
                     <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                       <Heart className="h-5 w-5 text-[#D4B08C]" />
@@ -971,10 +1136,108 @@ export default function AdminWeddingEdit() {
           <TabsContent value="guests" className="space-y-6">
             <Card className="wedding-card">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-[#D4B08C]" />
-                  Guest List ({guests?.length || 0} guests)
-                </CardTitle>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-[#D4B08C]" />
+                    Guest List ({guests?.length || 0} guests)
+                  </CardTitle>
+                  <Dialog open={isAddGuestDialogOpen} onOpenChange={setIsAddGuestDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button size="sm" className="bg-[#D4B08C] hover:bg-[#C19B75] text-white">
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        Add Guest
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-md">
+                      <DialogHeader>
+                        <DialogTitle>Add New Guest</DialogTitle>
+                      </DialogHeader>
+                      <Form {...guestForm}>
+                        <form onSubmit={guestForm.handleSubmit(onSubmitGuest)} className="space-y-4">
+                          <FormField
+                            control={guestForm.control}
+                            name="name"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Name *</FormLabel>
+                                <FormControl>
+                                  <Input {...field} placeholder="Enter guest name" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={guestForm.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                  <Input {...field} type="email" placeholder="Enter email address" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={guestForm.control}
+                            name="phone"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Phone</FormLabel>
+                                <FormControl>
+                                  <Input {...field} placeholder="Enter phone number" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={guestForm.control}
+                            name="rsvpStatus"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>RSVP Status</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select status" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="confirmed">Confirmed</SelectItem>
+                                    <SelectItem value="declined">Declined</SelectItem>
+                                    <SelectItem value="maybe">Maybe</SelectItem>
+                                    <SelectItem value="confirmed_with_guest">Confirmed with Guest</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => setIsAddGuestDialogOpen(false)}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              type="submit"
+                              className="bg-[#D4B08C] hover:bg-[#C19B75] text-white"
+                              disabled={addGuestMutation.isPending}
+                            >
+                              {addGuestMutation.isPending ? "Adding..." : "Add Guest"}
+                            </Button>
+                          </div>
+                        </form>
+                      </Form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </CardHeader>
               <CardContent>
                 {guestsLoading ? (
@@ -984,40 +1247,38 @@ export default function AdminWeddingEdit() {
                   </div>
                 ) : guests && guests.length > 0 ? (
                   <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <th className="p-3 text-left">Name</th>
-                      <th className="p-3 text-left">Email</th>
-                      <th className="p-3 text-left">Status</th>
-                      <th className="p-3 text-left">Message</th>
-                      <th className="p-3 text-left">Responded At</th>
+                    <div className="grid grid-cols-5 gap-4 text-sm font-medium text-gray-600 border-b pb-2">
+                      <div>Name</div>
+                      <div>Email</div>
+                      <div>Status</div>
+                      <div>Message</div>
+                      <div>Responded At</div>
                     </div>
-                    <tbody>
-                      {guests.map(guest => (
-                        <tr key={guest.id} className="border-b border-gray-200">
-                          <td className="p-3">{guest.name}</td>
-                          <td className="p-3">{guest.email || '-'}</td>
-                          <td className="p-3">
-                            <Badge 
-                              variant={
-                                guest.rsvpStatus === 'confirmed' ? 'default' :
-                                guest.rsvpStatus === 'declined' ? 'destructive' : 'secondary'
-                              }
-                              className="capitalize"
-                            >
-                              {guest.rsvpStatus}
-                            </Badge>
-                          </td>
-                          <td className="p-3">{guest.message || '-'}</td>
-                          <td className="p-3">
-                            {guest.respondedAt ? new Date(guest.respondedAt).toLocaleString() : '-'}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
+                    {guests.map(guest => (
+                      <div key={guest.id} className="grid grid-cols-5 gap-4 text-sm border-b border-gray-100 py-3">
+                        <div className="font-medium">{guest.name}</div>
+                        <div>{guest.email || '-'}</div>
+                        <div>
+                          <Badge 
+                            variant={
+                              guest.rsvpStatus === 'confirmed' ? 'default' :
+                              guest.rsvpStatus === 'declined' ? 'destructive' : 'secondary'
+                            }
+                            className="capitalize"
+                          >
+                            {guest.rsvpStatus}
+                          </Badge>
+                        </div>
+                        <div className="truncate">{guest.message || '-'}</div>
+                        <div className="text-xs text-gray-500">
+                          {guest.respondedAt ? new Date(guest.respondedAt).toLocaleString() : '-'}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <div className="text-center py-8 text-[#2C3338]/70">
-                    No guests added yet
+                    No guests added yet. Click "Add Guest" to get started.
                   </div>
                 )}
               </CardContent>
@@ -1132,7 +1393,7 @@ export default function AdminWeddingEdit() {
                     </div>
 
                     {/* Flower Template Specific Photos */}
-                    {wedding?.template === 'flower' && (
+                    {(editMode ? weddingData?.template : wedding?.template) === 'flower' && (
                       <div>
                         <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                           <Camera className="h-4 w-4" />
@@ -1426,6 +1687,7 @@ export default function AdminWeddingEdit() {
                         </div>
                       </div>
                     )}
+
 
                     {/* Memory Photos Section */}
                     <div>

@@ -51,6 +51,7 @@ export const weddings = pgTable("weddings", {
   giftRegistryInfo: text("gift_registry_info"),
   contactPerson: text("contact_person"),
   specialInstructions: text("special_instructions"),
+  rsvpMode: varchar("rsvp_mode", { length: 50 }).$type<"manual" | "preregistered" | "both">().notNull().default("both"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

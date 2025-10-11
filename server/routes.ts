@@ -368,6 +368,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       const user = await storage.createUser(userData);
 
+      // Generate unique URL
+      const uniqueUrl = nanoid(10);
+
       // Then create wedding
       const weddingData = {
         bride: data.bride,
@@ -379,10 +382,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         primaryColor: data.primaryColor || '#D4B08C',
         accentColor: data.accentColor || '#89916B',
         story: data.relationshipStory || '',
+        rsvpMode: data.rsvpMode || 'both',
         isPublic: data.isPublic !== false
       };
 
-      const wedding = await storage.createWedding(user.id, weddingData);
+      const wedding = await storage.createWedding(user.id, { ...weddingData, userId: user.id, uniqueUrl });
 
       res.status(201).json({
         user,
@@ -526,7 +530,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Admin wedding creation request:", req.body);
 
-      const { userId, eventType, bride, groom, weddingDate, venue, venueAddress, template, story, dearGuestMessage, couplePhotoUrl, primaryColor, accentColor, age, partyTheme, rsvpDeadline, giftRegistryInfo, contactPerson, specialInstructions } = req.body;
+      const { userId, eventType, rsvpMode, bride, groom, weddingDate, venue, venueAddress, template, story, dearGuestMessage, couplePhotoUrl, primaryColor, accentColor, age, partyTheme, rsvpDeadline, giftRegistryInfo, contactPerson, specialInstructions } = req.body;
 
       // Validate required fields
       const missingFields = [];
@@ -552,6 +556,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const weddingData = {
         uniqueUrl: uniqueUrl, // Include the generated uniqueUrl
         eventType: eventType || "wedding", // NEW FIELD
+        rsvpMode: rsvpMode || "both", // NEW FIELD
         bride: bride.trim(),
         groom: groom?.trim() || (template === 'birthday' ? 'Birthday Celebration' : ''), // Default value for birthday template
         weddingDate: new Date(weddingDate),
@@ -869,38 +874,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update RSVP for a guest - with ownership verification
-  app.put("/api/guests/:guestId/rsvp", authenticateToken, async (req: any, res) => {
+  // Update RSVP for a guest - public endpoint (no authentication required)
+  app.put("/api/guests/:guestId/rsvp", async (req, res) => {
     try {
       const guestId = parseInt(req.params.guestId);
-      const update = req.body;
+      const rsvpData = req.body;
       
-      // First get the guest to find the wedding
-      const guests = await storage.getGuestsByWeddingId(0); // This needs to be improved in storage
-      const guest = guests.find(g => g.id === guestId);
-      
+      const guest = await storage.updateGuestRSVP(guestId, rsvpData);
       if (!guest) {
         return res.status(404).json({ message: "Guest not found" });
       }
-
-      // Verify wedding ownership
-      const wedding = await storage.getWeddingById(guest.weddingId);
-      if (!wedding) {
-        return res.status(404).json({ message: "Wedding not found" });
+      
+      // Broadcast real-time update
+      const broadcastToWedding = (global as any).broadcastToWedding;
+      if (broadcastToWedding) {
+        broadcastToWedding(guest.weddingId, {
+          type: 'rsvp_updated',
+          guest: guest
+        });
       }
-
-      const user = await storage.getUserById(req.user.userId);
-      const isAdmin = user && (user.isAdmin === true || user.role === 'admin');
-
-      if (!isAdmin && wedding.userId !== req.user.userId) {
-        return res.status(403).json({ message: "Unauthorized access" });
-      }
-
-      const updatedGuest = await storage.updateGuestRSVP(guestId, update);
-      res.json(updatedGuest);
+      
+      res.json(guest);
     } catch (error) {
       console.error('RSVP update error:', error);
-      res.status(400).json({ message: "Failed to update RSVP" });
+      res.status(500).json({ message: "Failed to update RSVP" });
     }
   });
 
@@ -1360,7 +1357,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Test audio URL accessibility endpoint
   app.get('/api/test-audio/*', async (req, res) => {
     try {
-      const audioUrl = decodeURIComponent(req.params[0]);
+      const audioUrl = decodeURIComponent((req.params as any)[0]);
       console.log('Testing audio URL:', audioUrl);
       
       const response = await fetch(audioUrl, { method: 'HEAD' });
@@ -1377,7 +1374,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Audio URL test error:', error);
       res.status(500).json({
-        url: req.params[0],
+        url: (req.params as any)[0],
         accessible: false,
         error: error instanceof Error ? error.message : 'Unknown error'
       });
@@ -1481,12 +1478,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         defaultLanguage: weddingFields.defaultLanguage || "en",
         availableLanguages: weddingFields.availableLanguages || ["en"],
         dressCode: weddingFields.dressCode || null,
+        rsvpMode: weddingFields.rsvpMode || 'both',
         isPublic: true
       };
 
       console.log("Processed wedding data:", weddingData);
 
-      const wedding = await storage.createWedding(userId, weddingData);
+      const wedding = await storage.createWedding(userId, { ...weddingData, userId });
       console.log("Wedding created successfully:", wedding);
       res.status(201).json(wedding);
     } catch (error) {
@@ -1634,10 +1632,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isPublic: true,
         template: 'garden-romance',
         primaryColor: '#D4B08C',
-        accentColor: '#89916B'
+        accentColor: '#89916B',
+        rsvpMode: 'both'
       };
 
-      const wedding = await storage.createWedding(guestManagerId, weddingData);
+      const wedding = await storage.createWedding(guestManagerId, { ...weddingData, userId: guestManagerId, uniqueUrl: nanoid(10), venueAddress: '' });
 
       // Add some sample guests
       const sampleGuests = [
@@ -2033,30 +2032,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/guests/:id/rsvp", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const rsvpData = rsvpUpdateSchema.parse(req.body);
-
-      const guest = await storage.updateGuestRSVP(id, rsvpData);
-      if (!guest) {
-        return res.status(404).json({ message: "Guest not found" });
-      }
-
-      // Broadcast real-time RSVP update
-      const broadcastToWedding = (global as any).broadcastToWedding;
-      if (broadcastToWedding) {
-        broadcastToWedding(guest.weddingId, {
-          type: 'rsvp_updated',
-          guest: guest
-        });
-      }
-
-      res.json(guest);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid RSVP data" });
-    }
-  });
 
   // Guest update and delete endpoints
   app.patch("/api/guests/:id", authenticateToken, async (req, res) => {
