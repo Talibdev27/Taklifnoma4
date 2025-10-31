@@ -71,6 +71,7 @@ export function GuestBookForm({ weddingId, primaryColor = '#1976d2', accentColor
               placeholder={t('guestBook.form.namePlaceholder')}
               value={guestName}
               onChange={(e) => setGuestName(e.target.value)}
+              className="text-base h-12 px-4"
               required
             />
           </div>
@@ -79,7 +80,8 @@ export function GuestBookForm({ weddingId, primaryColor = '#1976d2', accentColor
               placeholder={t('guestBook.form.messagePlaceholder')}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              rows={4}
+              rows={5}
+              className="text-base min-h-[120px] px-4 py-3"
               required
             />
           </div>

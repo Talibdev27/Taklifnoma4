@@ -364,7 +364,7 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
               {t('rsvp.subtitle') || 'Sizni to`yimizda kutib qolamiz'}
             </p>
             
-            <div className="bg-white/80 rounded-xl p-6">
+            <div className="bg-white/80 rounded-xl p-6 overflow-hidden">
               <EpicRSVPForm 
                 wedding={wedding}
                 primaryColor={primaryColor}

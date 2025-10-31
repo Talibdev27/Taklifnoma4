@@ -202,16 +202,19 @@ export function EpicRSVPForm({ wedding, primaryColor = '#1976d2', accentColor = 
     <div className="space-y-6">
       {/* RSVP Mode Toggle - Only show if mode is 'both' */}
       {rsvpMode === 'both' && (
-        <div className="flex space-x-2 mb-6">
+        <div className="flex gap-2 mb-6 w-full">
           <Button
             type="button"
             variant={rsvpMethod === 'manual' ? 'default' : 'outline'}
             onClick={() => setRsvpMethod('manual')}
-            className="flex-1"
+            className="flex-1 min-w-0 py-4 text-base font-medium whitespace-normal break-words h-auto leading-tight"
             style={{
               backgroundColor: rsvpMethod === 'manual' ? primaryColor : 'transparent',
               borderColor: primaryColor,
               color: rsvpMethod === 'manual' ? 'white' : primaryColor,
+              minHeight: '52px',
+              paddingLeft: '12px',
+              paddingRight: '12px',
             }}
           >
             {t('rsvp.manualEntry')}
@@ -220,11 +223,14 @@ export function EpicRSVPForm({ wedding, primaryColor = '#1976d2', accentColor = 
             type="button"
             variant={rsvpMethod === 'preregistered' ? 'default' : 'outline'}
             onClick={() => setRsvpMethod('preregistered')}
-            className="flex-1"
+            className="flex-1 min-w-0 py-4 text-base font-medium whitespace-normal break-words h-auto leading-tight"
             style={{
               backgroundColor: rsvpMethod === 'preregistered' ? primaryColor : 'transparent',
               borderColor: primaryColor,
               color: rsvpMethod === 'preregistered' ? 'white' : primaryColor,
+              minHeight: '52px',
+              paddingLeft: '12px',
+              paddingRight: '12px',
             }}
           >
             {t('rsvp.findMyName')}
