@@ -319,6 +319,31 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
               />
             </div>
           )}
+
+          {/* Welcome Message for Guests */}
+          {wedding?.dearGuestMessage && (
+            <div className="max-w-[330px] mx-auto mt-8 mb-8">
+              <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[20px] p-6 shadow-lg">
+                <h3 
+                  className="text-[24px] font-semibold text-center mb-4 tracking-[2.4px] text-white"
+                  style={{ fontFamily: 'Montserrat, sans-serif' }}
+                >
+                  {t('sections.dearGuests') || 'Aziz Mehmonlar'}
+                </h3>
+                <div className="text-white/90 leading-relaxed mb-6 whitespace-pre-wrap text-center" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '14px', lineHeight: '1.8' }}>
+                  {wedding.dearGuestMessage}
+                </div>
+                <div className="text-center pt-4 border-t border-white/20">
+                  <p 
+                    className="text-[16px] font-medium"
+                    style={{ ...coupleNameStyle, fontFamily: 'Montserrat, sans-serif' }}
+                  >
+                    {wedding?.bride} {t('wedding.and') || 'va'} {wedding?.groom}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
