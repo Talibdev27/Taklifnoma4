@@ -60,6 +60,13 @@ const templateOptions = [
     image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop"
   },
   {
+    id: "gul",
+    name: "Gul",
+    nameUz: "Gul",
+    nameRu: "Гуль",
+    image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop"
+  },
+  {
     id: "birthday",
     name: "Birthday",
     nameUz: "Tug'ilgan kun",

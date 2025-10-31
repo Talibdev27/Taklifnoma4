@@ -4,6 +4,7 @@ export const TEMPLATE_REGISTRY = {
     { value: 'epic', label: 'Epic' },
     { value: 'anime_1', label: 'Anime 1 (Animated)' },
     { value: 'flower', label: 'Flower' },
+    { value: 'gul', label: 'Gul' },
     { value: 'gardenRomance', label: 'Garden Romance' },
     { value: 'modernElegance', label: 'Modern Elegance' },
     { value: 'rusticCharm', label: 'Rustic Charm' },

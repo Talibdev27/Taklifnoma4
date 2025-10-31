@@ -19,6 +19,7 @@ import { EpicTemplate } from '@/components/epic-template';
 import { BirthdayTemplate } from '@/components/birthday-template';
 import { Anime1Template } from '@/components/anime-1-template';
 import { FlowerTemplate } from '@/components/flower-template';
+import { GulTemplate } from '@/components/gul-template';
 import { BackgroundMusicPlayer } from '@/components/background-music-player';
 import { WeddingWelcomeOverlay } from '@/components/wedding-welcome-overlay';
 import { formatDate } from '@/lib/utils';
@@ -130,6 +131,12 @@ export default function WeddingSite() {
   if (wedding?.template === 'flower') {
     console.log('Rendering Flower template for wedding:', wedding);
     return <FlowerTemplate wedding={wedding} />;
+  }
+
+  // Check for Gul template
+  if (wedding?.template === 'gul') {
+    console.log('Rendering Gul template for wedding:', wedding);
+    return <GulTemplate wedding={wedding} />;
   }
 
   // Template-specific configurations
