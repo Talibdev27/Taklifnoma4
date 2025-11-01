@@ -94,7 +94,7 @@ export default function AdminWeddingEdit() {
 
   // Fetch photos for this wedding
   const { data: photos, isLoading: photosLoading } = useQuery<Photo[]>({
-    queryKey: [`/api/photos/wedding/${wedding?.id}`],
+    queryKey: ['/api/photos/wedding', wedding?.id],
     enabled: isAdmin && !!wedding?.id,
     queryFn: () => apiRequest('GET', `/api/photos/wedding/${wedding?.id}`).then(res => res.json())
   });
@@ -181,6 +181,7 @@ export default function AdminWeddingEdit() {
         description: "Photo has been successfully deleted.",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+      queryClient.invalidateQueries({ queryKey: [`/api/photos/wedding/${wedding?.id}`] });
     },
     onError: () => {
       toast({
@@ -1321,21 +1322,39 @@ export default function AdminWeddingEdit() {
                           <input
                             type="file"
                             accept="image/*"
-                            onChange={(e) => {
+                            onChange={async (e) => {
                               const file = e.target.files?.[0];
                               if (file) {
-                                const formData = new FormData();
-                                formData.append('photo', file);
-                                formData.append('photoType', 'couple');
-                                formData.append('weddingId', wedding?.id?.toString() || '');
-                                
-                                // Upload photo
-                                fetch('/api/photos/upload', {
-                                  method: 'POST',
-                                  body: formData,
-                                }).then(() => {
-                                  queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
-                                });
+                                try {
+                                  const formData = new FormData();
+                                  formData.append('photo', file);
+                                  formData.append('photoType', 'couple');
+                                  formData.append('weddingId', wedding?.id?.toString() || '');
+                                  
+                                  // Upload photo
+                                  const response = await fetch('/api/photos/upload', {
+                                    method: 'POST',
+                                    body: formData,
+                                  });
+                                  
+                                  if (response.ok) {
+                                    toast({
+                                      title: "Photo Uploaded",
+                                      description: "Photo has been successfully uploaded.",
+                                    });
+                                    queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                  } else {
+                                    throw new Error('Upload failed');
+                                  }
+                                } catch (error) {
+                                  toast({
+                                    title: "Upload Failed",
+                                    description: "Failed to upload photo. Please try again.",
+                                    variant: "destructive",
+                                  });
+                                }
+                                // Reset input to allow same file selection
+                                e.target.value = '';
                               }
                             }}
                             className="hidden"
@@ -1409,20 +1428,37 @@ export default function AdminWeddingEdit() {
                               <input
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => {
+                                onChange={async (e) => {
                                   const file = e.target.files?.[0];
                                   if (file) {
-                                    const formData = new FormData();
-                                    formData.append('photo', file);
-                                    formData.append('photoType', 'flower_photo_1');
-                                    formData.append('weddingId', wedding?.id?.toString() || '');
-                                    
-                                    fetch('/api/photos/upload', {
-                                      method: 'POST',
-                                      body: formData,
-                                    }).then(() => {
-                                      queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
-                                    });
+                                    try {
+                                      const formData = new FormData();
+                                      formData.append('photo', file);
+                                      formData.append('photoType', 'flower_photo_1');
+                                      formData.append('weddingId', wedding?.id?.toString() || '');
+                                      
+                                      const response = await fetch('/api/photos/upload', {
+                                        method: 'POST',
+                                        body: formData,
+                                      });
+                                      
+                                      if (response.ok) {
+                                        toast({
+                                          title: "Photo Uploaded",
+                                          description: "Photo 1 has been successfully uploaded.",
+                                        });
+                                        queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                      } else {
+                                        throw new Error('Upload failed');
+                                      }
+                                    } catch (error) {
+                                      toast({
+                                        title: "Upload Failed",
+                                        description: "Failed to upload photo. Please try again.",
+                                        variant: "destructive",
+                                      });
+                                    }
+                                    e.target.value = '';
                                   }
                                 }}
                                 className="hidden"
@@ -1456,20 +1492,37 @@ export default function AdminWeddingEdit() {
                               <input
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => {
+                                onChange={async (e) => {
                                   const file = e.target.files?.[0];
                                   if (file) {
-                                    const formData = new FormData();
-                                    formData.append('photo', file);
-                                    formData.append('photoType', 'flower_photo_2');
-                                    formData.append('weddingId', wedding?.id?.toString() || '');
-                                    
-                                    fetch('/api/photos/upload', {
-                                      method: 'POST',
-                                      body: formData,
-                                    }).then(() => {
-                                      queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
-                                    });
+                                    try {
+                                      const formData = new FormData();
+                                      formData.append('photo', file);
+                                      formData.append('photoType', 'flower_photo_2');
+                                      formData.append('weddingId', wedding?.id?.toString() || '');
+                                      
+                                      const response = await fetch('/api/photos/upload', {
+                                        method: 'POST',
+                                        body: formData,
+                                      });
+                                      
+                                      if (response.ok) {
+                                        toast({
+                                          title: "Photo Uploaded",
+                                          description: "Photo 2 has been successfully uploaded.",
+                                        });
+                                        queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                      } else {
+                                        throw new Error('Upload failed');
+                                      }
+                                    } catch (error) {
+                                      toast({
+                                        title: "Upload Failed",
+                                        description: "Failed to upload photo. Please try again.",
+                                        variant: "destructive",
+                                      });
+                                    }
+                                    e.target.value = '';
                                   }
                                 }}
                                 className="hidden"
@@ -1504,20 +1557,37 @@ export default function AdminWeddingEdit() {
                               <input
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => {
+                                onChange={async (e) => {
                                   const file = e.target.files?.[0];
                                   if (file) {
-                                    const formData = new FormData();
-                                    formData.append('photo', file);
-                                    formData.append('photoType', 'flower_photo_3');
-                                    formData.append('weddingId', wedding?.id?.toString() || '');
-                                    
-                                    fetch('/api/photos/upload', {
-                                      method: 'POST',
-                                      body: formData,
-                                    }).then(() => {
-                                      queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
-                                    });
+                                    try {
+                                      const formData = new FormData();
+                                      formData.append('photo', file);
+                                      formData.append('photoType', 'flower_photo_3');
+                                      formData.append('weddingId', wedding?.id?.toString() || '');
+                                      
+                                      const response = await fetch('/api/photos/upload', {
+                                        method: 'POST',
+                                        body: formData,
+                                      });
+                                      
+                                      if (response.ok) {
+                                        toast({
+                                          title: "Photo Uploaded",
+                                          description: "Photo 3 has been successfully uploaded.",
+                                        });
+                                        queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                      } else {
+                                        throw new Error('Upload failed');
+                                      }
+                                    } catch (error) {
+                                      toast({
+                                        title: "Upload Failed",
+                                        description: "Failed to upload photo. Please try again.",
+                                        variant: "destructive",
+                                      });
+                                    }
+                                    e.target.value = '';
                                   }
                                 }}
                                 className="hidden"
@@ -1552,20 +1622,37 @@ export default function AdminWeddingEdit() {
                               <input
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => {
+                                onChange={async (e) => {
                                   const file = e.target.files?.[0];
                                   if (file) {
-                                    const formData = new FormData();
-                                    formData.append('photo', file);
-                                    formData.append('photoType', 'flower_photo_4');
-                                    formData.append('weddingId', wedding?.id?.toString() || '');
-                                    
-                                    fetch('/api/photos/upload', {
-                                      method: 'POST',
-                                      body: formData,
-                                    }).then(() => {
-                                      queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
-                                    });
+                                    try {
+                                      const formData = new FormData();
+                                      formData.append('photo', file);
+                                      formData.append('photoType', 'flower_photo_4');
+                                      formData.append('weddingId', wedding?.id?.toString() || '');
+                                      
+                                      const response = await fetch('/api/photos/upload', {
+                                        method: 'POST',
+                                        body: formData,
+                                      });
+                                      
+                                      if (response.ok) {
+                                        toast({
+                                          title: "Photo Uploaded",
+                                          description: "Photo 4 has been successfully uploaded.",
+                                        });
+                                        queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                      } else {
+                                        throw new Error('Upload failed');
+                                      }
+                                    } catch (error) {
+                                      toast({
+                                        title: "Upload Failed",
+                                        description: "Failed to upload photo. Please try again.",
+                                        variant: "destructive",
+                                      });
+                                    }
+                                    e.target.value = '';
                                   }
                                 }}
                                 className="hidden"
@@ -1600,20 +1687,37 @@ export default function AdminWeddingEdit() {
                                 <input
                                   type="file"
                                   accept="image/*"
-                                  onChange={(e) => {
+                                  onChange={async (e) => {
                                     const file = e.target.files?.[0];
                                     if (file) {
-                                      const formData = new FormData();
-                                      formData.append('photo', file);
-                                      formData.append('photoType', 'flower_photo_5');
-                                      formData.append('weddingId', wedding?.id?.toString() || '');
-                                      
-                                      fetch('/api/photos/upload', {
-                                        method: 'POST',
-                                        body: formData,
-                                      }).then(() => {
-                                        queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
-                                      });
+                                      try {
+                                        const formData = new FormData();
+                                        formData.append('photo', file);
+                                        formData.append('photoType', 'flower_photo_5');
+                                        formData.append('weddingId', wedding?.id?.toString() || '');
+                                        
+                                        const response = await fetch('/api/photos/upload', {
+                                          method: 'POST',
+                                          body: formData,
+                                        });
+                                        
+                                        if (response.ok) {
+                                          toast({
+                                            title: "Photo Uploaded",
+                                            description: "Photo 5 has been successfully uploaded.",
+                                          });
+                                          queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                        } else {
+                                          throw new Error('Upload failed');
+                                        }
+                                      } catch (error) {
+                                        toast({
+                                          title: "Upload Failed",
+                                          description: "Failed to upload photo. Please try again.",
+                                          variant: "destructive",
+                                        });
+                                      }
+                                      e.target.value = '';
                                     }
                                   }}
                                   className="hidden"
@@ -1646,20 +1750,37 @@ export default function AdminWeddingEdit() {
                                 <input
                                   type="file"
                                   accept="image/*"
-                                  onChange={(e) => {
+                                  onChange={async (e) => {
                                     const file = e.target.files?.[0];
                                     if (file) {
-                                      const formData = new FormData();
-                                      formData.append('photo', file);
-                                      formData.append('photoType', 'flower_photo_6');
-                                      formData.append('weddingId', wedding?.id?.toString() || '');
-                                      
-                                      fetch('/api/photos/upload', {
-                                        method: 'POST',
-                                        body: formData,
-                                      }).then(() => {
-                                        queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
-                                      });
+                                      try {
+                                        const formData = new FormData();
+                                        formData.append('photo', file);
+                                        formData.append('photoType', 'flower_photo_6');
+                                        formData.append('weddingId', wedding?.id?.toString() || '');
+                                        
+                                        const response = await fetch('/api/photos/upload', {
+                                          method: 'POST',
+                                          body: formData,
+                                        });
+                                        
+                                        if (response.ok) {
+                                          toast({
+                                            title: "Photo Uploaded",
+                                            description: "Photo 6 has been successfully uploaded.",
+                                          });
+                                          queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                        } else {
+                                          throw new Error('Upload failed');
+                                        }
+                                      } catch (error) {
+                                        toast({
+                                          title: "Upload Failed",
+                                          description: "Failed to upload photo. Please try again.",
+                                          variant: "destructive",
+                                        });
+                                      }
+                                      e.target.value = '';
                                     }
                                   }}
                                   className="hidden"
@@ -1706,22 +1827,53 @@ export default function AdminWeddingEdit() {
                             type="file"
                             accept="image/*"
                             multiple
-                            onChange={(e) => {
+                            onChange={async (e) => {
                               const files = Array.from(e.target.files || []);
-                              files.forEach(file => {
-                                const formData = new FormData();
-                                formData.append('photo', file);
-                                formData.append('photoType', 'memory');
-                                formData.append('weddingId', wedding?.id?.toString() || '');
-                                
-                                // Upload photo
-                                fetch('/api/photos/upload', {
-                                  method: 'POST',
-                                  body: formData,
-                                }).then(() => {
-                                  queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                              if (files.length === 0) return;
+                              
+                              let successCount = 0;
+                              let errorCount = 0;
+                              
+                              for (const file of files) {
+                                try {
+                                  const formData = new FormData();
+                                  formData.append('photo', file);
+                                  formData.append('photoType', 'memory');
+                                  formData.append('weddingId', wedding?.id?.toString() || '');
+                                  
+                                  // Upload photo
+                                  const response = await fetch('/api/photos/upload', {
+                                    method: 'POST',
+                                    body: formData,
+                                  });
+                                  
+                                  if (response.ok) {
+                                    successCount++;
+                                  } else {
+                                    errorCount++;
+                                  }
+                                } catch (error) {
+                                  errorCount++;
+                                }
+                              }
+                              
+                              // Show toast based on results
+                              if (successCount > 0) {
+                                toast({
+                                  title: "Photos Uploaded",
+                                  description: `${successCount} photo(s) uploaded successfully${errorCount > 0 ? `. ${errorCount} failed.` : '.'}`,
                                 });
-                              });
+                                queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                              } else {
+                                toast({
+                                  title: "Upload Failed",
+                                  description: "Failed to upload photos. Please try again.",
+                                  variant: "destructive",
+                                });
+                              }
+                              
+                              // Reset input to allow same file selection
+                              e.target.value = '';
                             }}
                             className="hidden"
                             id="memory-photos-upload"

@@ -9,7 +9,9 @@ import { GuestBookForm } from '@/components/guest-book-form';
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingWelcomeOverlay } from '@/components/wedding-welcome-overlay';
 import { BackgroundMusicPlayer } from '@/components/background-music-player';
-import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, Camera, Users, Gift, Cake, PartyPopper } from 'lucide-react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, Camera, Users, Gift, Cake, PartyPopper, X } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, Photo, GuestBookEntry } from '@shared/schema';
 
@@ -27,6 +29,18 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
   // Welcome overlay state
   const [showWelcomeOverlay, setShowWelcomeOverlay] = useState(false);
   const [triggerMusicPlay, setTriggerMusicPlay] = useState(false);
+  
+  // Photo modal state
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+
+  // Helper functions for photo modal
+  const openPhotoModal = (index: number) => {
+    setSelectedPhotoIndex(index);
+  };
+
+  const closePhotoModal = () => {
+    setSelectedPhotoIndex(null);
+  };
 
   // Check if welcome overlay should be shown (only once per session)
   useEffect(() => {
@@ -288,21 +302,21 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
 
         <div className="text-center mb-8 relative z-10">
           {/* Couple Names - matching Figma design with solid golden-yellow color */}
-          <div className="flex flex-col items-center mb-8">
+          <div className="flex flex-col items-center mb-6 sm:mb-8">
             <h1 
-              className="text-[36px] font-bold mb-2 tracking-[3.6px]"
+              className="text-[28px] sm:text-[36px] font-bold mb-2 tracking-[2.8px] sm:tracking-[3.6px]"
               style={{ ...coupleNameStyle, fontFamily: 'Montserrat, sans-serif' }}
             >
               {wedding?.bride || 'Bride'}
             </h1>
             <p 
-              className="text-[24px] font-medium mb-2 tracking-[3.6px]"
+              className="text-[18px] sm:text-[24px] font-medium mb-2 tracking-[2.4px] sm:tracking-[3.6px]"
               style={{ ...coupleNameStyle, fontFamily: 'Montserrat, sans-serif' }}
             >
               {t('wedding.and') || 'va'}
             </p>
             <h1 
-              className="text-[36px] font-bold mb-4 tracking-[3.6px]"
+              className="text-[28px] sm:text-[36px] font-bold mb-4 tracking-[2.8px] sm:tracking-[3.6px]"
               style={{ ...coupleNameStyle, fontFamily: 'Montserrat, sans-serif' }}
             >
               {wedding?.groom || 'Groom'}
@@ -311,31 +325,31 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
 
           {/* Couple Photo */}
           {wedding?.couplePhotoUrl && (
-            <div className="mb-8">
+            <div className="mb-6 sm:mb-8">
               <img 
                 src={wedding.couplePhotoUrl} 
                 alt={`${wedding.bride} & ${wedding.groom}`}
-                className="w-[285px] h-[574px] rounded-[20px] border border-white/30 object-cover shadow-lg mx-auto"
+                className="w-[240px] sm:w-[285px] h-auto rounded-[15px] sm:rounded-[20px] border border-white/30 object-cover shadow-lg mx-auto"
               />
             </div>
           )}
 
           {/* Welcome Message for Guests */}
           {wedding?.dearGuestMessage && (
-            <div className="max-w-[330px] mx-auto mt-8 mb-8">
-              <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[20px] p-6 shadow-lg">
+            <div className="max-w-[330px] mx-auto mt-6 sm:mt-8 mb-6 sm:mb-8 px-4">
+              <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[15px] sm:rounded-[20px] p-4 sm:p-6 shadow-lg">
                 <h3 
-                  className="text-[24px] font-semibold text-center mb-4 tracking-[2.4px] text-white"
+                  className="text-[20px] sm:text-[24px] font-semibold text-center mb-3 sm:mb-4 tracking-[2px] sm:tracking-[2.4px] text-white"
                   style={{ fontFamily: 'Montserrat, sans-serif' }}
                 >
                   {t('sections.dearGuests') || 'Aziz Mehmonlar'}
                 </h3>
-                <div className="text-white/90 leading-relaxed mb-6 whitespace-pre-wrap text-center" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '14px', lineHeight: '1.8' }}>
+                <div className="text-white/90 leading-relaxed mb-4 sm:mb-6 whitespace-pre-wrap text-center text-[13px] sm:text-[14px]" style={{ fontFamily: 'Montserrat, sans-serif', lineHeight: '1.8' }}>
                   {wedding.dearGuestMessage}
                 </div>
-                <div className="text-center pt-4 border-t border-white/20">
+                <div className="text-center pt-3 sm:pt-4 border-t border-white/20">
                   <p 
-                    className="text-[16px] font-medium"
+                    className="text-[14px] sm:text-[16px] font-medium"
                     style={{ ...coupleNameStyle, fontFamily: 'Montserrat, sans-serif' }}
                   >
                     {wedding?.bride} {t('wedding.and') || 'va'} {wedding?.groom}
@@ -350,21 +364,21 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
       {/* RSVP Section */}
       <section 
         id="rsvp" 
-        className="relative py-16 px-4 bg-[#83487a]"
+        className="relative py-12 px-4 bg-[#83487a]"
       >
-        <div className="max-w-[315px] mx-auto">
-          <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-tl-[60px] rounded-br-[60px] p-8 shadow-[0px_4px_13.5px_0px_inset_#000000]">
+        <div className="max-w-[600px] mx-auto w-full">
+          <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-tl-[30px] sm:rounded-tl-[60px] rounded-br-[30px] sm:rounded-br-[60px] p-4 sm:p-8 shadow-[0px_4px_13.5px_0px_inset_#000000]">
             <h2 
-              className="text-[30px] font-semibold text-center mb-6 tracking-[3.6px] text-white"
+              className="text-[24px] sm:text-[30px] font-semibold text-center mb-4 sm:mb-6 tracking-[2.4px] sm:tracking-[3.6px] text-white"
               style={{ fontFamily: 'Montserrat, sans-serif' }}
             >
               {t('rsvp.title') || 'RSVP'}
             </h2>
-            <p className="text-[15px] text-white text-center mb-8 tracking-[1.8px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+            <p className="text-[14px] sm:text-[15px] text-white text-center mb-6 sm:mb-8 tracking-[1.5px] sm:tracking-[1.8px] px-2" style={{ fontFamily: 'Montserrat, sans-serif' }}>
               {t('rsvp.subtitle') || 'Sizni to`yimizda kutib qolamiz'}
             </p>
             
-            <div className="bg-white/80 rounded-xl p-6 overflow-hidden">
+            <div className="bg-white/80 rounded-xl p-4 sm:p-6 overflow-hidden">
               <EpicRSVPForm 
                 wedding={wedding}
                 primaryColor={primaryColor}
@@ -378,87 +392,72 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
       {/* Details Section (TAVSILOT) */}
       <section 
         id="details" 
-        className="relative py-16 px-4 bg-[#83487a]"
+        className="relative py-12 px-4 bg-[#83487a]"
       >
-        <div className="max-w-[369px] mx-auto">
-          <div className="bg-[#83487a] rounded-tl-[150px] rounded-br-[150px] p-8 shadow-[0px_4px_13.5px_0px_inset_#000000]">
+        <div className="max-w-[600px] mx-auto w-full">
+          <div className="bg-[#83487a] rounded-tl-[75px] sm:rounded-tl-[150px] rounded-br-[75px] sm:rounded-br-[150px] p-6 sm:p-8 shadow-[0px_4px_13.5px_0px_inset_#000000]">
             {/* Couple Names */}
-            <div className="text-center mb-8">
+            <div className="text-center mb-6 sm:mb-8">
               <h2 
-                className="text-[36px] font-bold mb-2 tracking-[3.6px]"
+                className="text-[28px] sm:text-[36px] font-bold mb-2 tracking-[2.8px] sm:tracking-[3.6px]"
                 style={{ ...coupleNameStyle, fontFamily: 'Montserrat, sans-serif' }}
               >
                 {wedding?.bride || 'Bride'}
               </h2>
               <p 
-                className="text-[24px] font-medium mb-2 tracking-[3.6px]"
+                className="text-[18px] sm:text-[24px] font-medium mb-2 tracking-[2.4px] sm:tracking-[3.6px]"
                 style={{ ...coupleNameStyle, fontFamily: 'Montserrat, sans-serif' }}
               >
                 {t('wedding.and') || 'va'}
               </p>
               <h2 
-                className="text-[36px] font-bold mb-6 tracking-[3.6px]"
+                className="text-[28px] sm:text-[36px] font-bold mb-4 sm:mb-6 tracking-[2.8px] sm:tracking-[3.6px]"
                 style={{ ...coupleNameStyle, fontFamily: 'Montserrat, sans-serif' }}
               >
                 {wedding?.groom || 'Groom'}
               </h2>
             </div>
 
-            {/* Photo Gallery Grid */}
-            {photos && photos.length > 0 && (
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                {photos.slice(0, 3).map((photo) => (
-                  <div key={photo.id} className="rounded-lg overflow-hidden">
-                    <img 
-                      src={photo.url} 
-                      alt={photo.caption || 'Wedding photo'}
-                      className="w-full h-[187px] object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-
             {/* Date and Countdown - Enhanced When Section */}
-            <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[20px] p-6 mb-6 shadow-lg">
+            <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[15px] sm:rounded-[20px] p-4 sm:p-6 mb-4 sm:mb-6 shadow-lg">
               {/* Calendar Icon and Title */}
-              <div className="flex items-center justify-center mb-4">
-                <Calendar className="w-8 h-8 mr-3" style={{ color: '#F4D03F' }} />
-                <p className="text-[18px] font-semibold text-white tracking-[1.92px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+              <div className="flex items-center justify-center mb-3 sm:mb-4">
+                <Calendar className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3" style={{ color: '#F4D03F' }} />
+                <p className="text-[16px] sm:text-[18px] font-semibold text-white tracking-[1.6px] sm:tracking-[1.92px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                   {t('details.when') || 'Qachon'}
                 </p>
               </div>
 
               {/* Date Display */}
-              <div className="mb-4 text-center">
-                <p className="text-[20px] font-bold text-white mb-2 tracking-[1.92px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+              <div className="mb-3 sm:mb-4 text-center">
+                <p className="text-[18px] sm:text-[20px] font-bold text-white mb-2 tracking-[1.8px] sm:tracking-[1.92px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                   {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'dd.MM.yyyy', { locale: getDateLocale() }) : t('details.dateTBD')}
                 </p>
                 {/* Wedding Start Time */}
                 {wedding?.weddingTime && (
-                  <p className="text-[14px] text-white/90 tracking-[1.44px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  <p className="text-[13px] sm:text-[14px] text-white/90 tracking-[1.3px] sm:tracking-[1.44px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                     {t('details.ceremonyBegins')} {wedding.weddingTime}
                   </p>
                 )}
               </div>
               
               {/* Countdown */}
-              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/20">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 pt-3 sm:pt-4 border-t border-white/20">
                 <div className="text-center">
-                  <p className="text-[24px] font-bold text-white mb-1" style={{ fontFamily: 'Montserrat, sans-serif' }}>{timeLeft.days}</p>
-                  <p className="text-[12px] font-medium text-white/90 uppercase tracking-[1.44px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  <p className="text-[20px] sm:text-[24px] font-bold text-white mb-1" style={{ fontFamily: 'Montserrat, sans-serif' }}>{timeLeft.days}</p>
+                  <p className="text-[11px] sm:text-[12px] font-medium text-white/90 uppercase tracking-[1.32px] sm:tracking-[1.44px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                     {t('countdown.days') || 'kun'}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[24px] font-bold text-white mb-1" style={{ fontFamily: 'Montserrat, sans-serif' }}>{timeLeft.hours}</p>
-                  <p className="text-[12px] font-medium text-white/90 uppercase tracking-[1.44px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  <p className="text-[20px] sm:text-[24px] font-bold text-white mb-1" style={{ fontFamily: 'Montserrat, sans-serif' }}>{timeLeft.hours}</p>
+                  <p className="text-[11px] sm:text-[12px] font-medium text-white/90 uppercase tracking-[1.32px] sm:tracking-[1.44px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                     {t('countdown.hours') || 'soat'}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[24px] font-bold text-white mb-1" style={{ fontFamily: 'Montserrat, sans-serif' }}>{timeLeft.minutes}</p>
-                  <p className="text-[12px] font-medium text-white/90 uppercase tracking-[1.44px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  <p className="text-[20px] sm:text-[24px] font-bold text-white mb-1" style={{ fontFamily: 'Montserrat, sans-serif' }}>{timeLeft.minutes}</p>
+                  <p className="text-[11px] sm:text-[12px] font-medium text-white/90 uppercase tracking-[1.32px] sm:tracking-[1.44px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                     {t('countdown.minutes') || 'daqiqa'}
                   </p>
                 </div>
@@ -477,62 +476,51 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
                   }
                 }
               }}
-              className={`bg-[rgba(255,255,255,0.32)] rounded-tl-[15px] rounded-br-[15px] p-6 shadow-lg mb-6 transition-all cursor-pointer ${
+              className={`bg-[rgba(255,255,255,0.32)] rounded-tl-[12px] sm:rounded-tl-[15px] rounded-br-[12px] sm:rounded-br-[15px] p-4 sm:p-6 shadow-lg mb-4 sm:mb-6 transition-all cursor-pointer ${
                 (wedding?.mapPinUrl || wedding?.venueAddress) 
                   ? 'hover:bg-[rgba(255,255,255,0.40)] hover:shadow-xl active:scale-[0.98]' 
                   : 'cursor-default'
               }`}
             >
               {/* MapPin Icon and Title */}
-              <div className="flex items-center justify-center mb-4">
-                <MapPin className="w-8 h-8 mr-3" style={{ color: '#F4D03F' }} />
-                <p className="text-[18px] font-semibold text-white tracking-[1.92px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+              <div className="flex items-center justify-center mb-3 sm:mb-4">
+                <MapPin className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3" style={{ color: '#F4D03F' }} />
+                <p className="text-[16px] sm:text-[18px] font-semibold text-white tracking-[1.6px] sm:tracking-[1.92px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                   {t('details.where') || 'Qayerda'}
                 </p>
                 {(wedding?.mapPinUrl || wedding?.venueAddress) && (
-                  <span className="ml-2 text-[12px] text-white/70">📍</span>
+                  <span className="ml-2 text-[11px] sm:text-[12px] text-white/70">📍</span>
                 )}
               </div>
 
               {/* Location Details */}
               <div className="space-y-2">
                 {wedding?.venue && (
-                  <p className="text-[16px] font-semibold text-white tracking-[1.44px] text-center" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  <p className="text-[15px] sm:text-[16px] font-semibold text-white tracking-[1.35px] sm:tracking-[1.44px] text-center" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                     {wedding.venue}
                   </p>
                 )}
                 {wedding?.venueAddress && (
-                  <p className="text-[14px] text-white/90 tracking-[1.44px] leading-relaxed text-center" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  <p className="text-[13px] sm:text-[14px] text-white/90 tracking-[1.3px] sm:tracking-[1.44px] leading-relaxed text-center" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                     {wedding.venueAddress}
                   </p>
                 )}
                 {(wedding?.mapPinUrl || wedding?.venueAddress) && (
-                  <p className="text-[12px] text-white/70 text-center mt-3 italic" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  <p className="text-[11px] sm:text-[12px] text-white/70 text-center mt-2 sm:mt-3 italic" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                     {t('details.showOnMap') || 'Xaritada ko\'rish uchun bosing'}
                   </p>
                 )}
               </div>
             </div>
 
-            {/* Map Button */}
-            {(wedding?.mapPinUrl || wedding?.venueAddress) && (
-              <button 
-                onClick={() => {
-                  const mapUrl = wedding?.mapPinUrl || wedding?.venueAddress;
-                  if (mapUrl) {
-                    if (mapUrl.startsWith('http')) {
-                      window.open(mapUrl, '_blank');
-                    } else {
-                      window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapUrl)}`, '_blank');
-                    }
-                  }
-                }}
-                className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[12px] px-6 py-2 text-white text-[20px] tracking-[2.4px] w-full transition-all hover:bg-white/40"
-                style={{ fontFamily: 'Namdhinggo, sans-serif' }}
-              >
-                {t('nav.home') || 'Bosh sahifa'}
-              </button>
-            )}
+            {/* Home Navigation Button */}
+            <button 
+              onClick={() => scrollToSection('home')}
+              className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[10px] sm:rounded-[12px] px-4 sm:px-6 py-2 text-white text-[18px] sm:text-[20px] tracking-[2px] sm:tracking-[2.4px] w-full transition-all hover:bg-white/40"
+              style={{ fontFamily: 'Namdhinggo, sans-serif' }}
+            >
+              {t('nav.home') || 'Bosh sahifa'}
+            </button>
           </div>
         </div>
       </section>
@@ -540,22 +528,25 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
       {/* Guest Book Section (MEXMONLAR) */}
       <section 
         id="guestbook" 
-        className="relative py-16 px-4 bg-[#83487a]"
+        className="relative py-12 px-4 bg-[#83487a]"
       >
-        <div className="max-w-[330px] mx-auto">
-          <div className="bg-[#83487a] rounded-tl-[100px] rounded-br-[100px] p-8 shadow-[0px_4px_13.5px_0px_inset_#000000]">
+        <div className="max-w-[600px] mx-auto w-full">
+          <div className="bg-[#83487a] rounded-tl-[60px] sm:rounded-tl-[100px] rounded-br-[60px] sm:rounded-br-[100px] p-6 sm:p-8 shadow-[0px_4px_13.5px_0px_inset_#000000]">
             <h2 
-              className="text-[30px] font-semibold text-center mb-4 tracking-[3.6px] text-white"
+              className="text-[24px] sm:text-[30px] font-semibold text-center mb-4 tracking-[2px] sm:tracking-[3.6px] text-white"
               style={{ fontFamily: 'Montserrat, sans-serif' }}
             >
               {t('sections.guestBook') || 'Mehmonlar'}
             </h2>
-            <p className="text-[20px] text-white text-center mb-8 tracking-[2.4px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+            <p 
+              className="text-[16px] sm:text-[20px] text-white text-center mb-6 sm:mb-8 tracking-[1.5px] sm:tracking-[2.4px] leading-relaxed px-2" 
+              style={{ fontFamily: 'Montserrat, sans-serif' }}
+            >
               {t('guestBook.subtitle') || 'Bizning kunimizga o`z tilaklaringiz bilan yanada chiroy bering'}
             </p>
 
             {/* Guest Book Form */}
-            <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[20px] p-6 mb-8">
+            <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[15px] sm:rounded-[20px] p-4 sm:p-6 mb-6 sm:mb-8">
               <GuestBookForm 
                 weddingId={wedding.id}
                 primaryColor={primaryColor}
@@ -564,26 +555,28 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
             </div>
 
             {/* Guest Book Messages */}
-            <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[20px] p-6">
+            <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[15px] sm:rounded-[20px] p-4 sm:p-6">
               <h3 
-                className="text-[30px] font-semibold text-center mb-6 tracking-[3.6px] text-white"
+                className="text-[22px] sm:text-[30px] font-semibold text-center mb-4 sm:mb-6 tracking-[2px] sm:tracking-[3.6px] text-white"
                 style={{ fontFamily: 'Montserrat, sans-serif' }}
               >
                 {t('guestBook.messages') || 'Yaqinilardan Tilaklar'}
               </h3>
-              <div className="space-y-4 max-h-[400px] overflow-y-auto">
+              <div className="space-y-3 sm:space-y-4 max-h-[350px] sm:max-h-[400px] overflow-y-auto pr-2">
                 {guestBookEntries.length > 0 ? (
                   guestBookEntries.map((entry) => (
                     <div 
                       key={entry.id} 
-                      className="bg-white/20 rounded-lg p-4 border border-white/30"
+                      className="bg-white/20 rounded-lg p-3 sm:p-4 border border-white/30"
                     >
-                      <p className="text-white mb-2 text-sm">{entry.message}</p>
-                      <p className="font-medium text-white/80 text-xs">— {entry.guestName}</p>
+                      <p className="text-white mb-2 text-[14px] sm:text-sm leading-relaxed">{entry.message}</p>
+                      <p className="font-medium text-white/80 text-[12px] sm:text-xs">— {entry.guestName}</p>
                     </div>
                   ))
                 ) : (
-                  <p className="text-white/60 italic text-center">{t('guestBook.noMessages') || 'Hozircha xabarlar yo`q'}</p>
+                  <p className="text-white/60 italic text-center text-sm sm:text-base">
+                    {t('guestBook.noMessages') || 'Hozircha xabarlar yo`q'}
+                  </p>
                 )}
               </div>
             </div>
@@ -592,32 +585,58 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
       </section>
 
       {/* Photo Gallery Section */}
-      {photos && photos.length > 0 && (
-        <section className="py-16 px-4 bg-[#83487a]">
-          <div className="max-w-4xl mx-auto">
+      <section className="relative py-12 px-4 bg-[#83487a]">
+        <div className="max-w-[600px] mx-auto w-full">
+          <div className="bg-[#83487a] rounded-tl-[75px] sm:rounded-tl-[150px] rounded-br-[75px] sm:rounded-br-[150px] p-6 sm:p-8 shadow-[0px_4px_13.5px_0px_inset_#000000]">
             <h2 
-              className="text-[30px] font-semibold text-center mb-8 tracking-[3.6px] text-white"
+              className="text-[24px] sm:text-[30px] font-semibold text-center mb-6 sm:mb-8 tracking-[2.4px] sm:tracking-[3.6px] text-white"
               style={{ fontFamily: 'Montserrat, sans-serif' }}
             >
               {t('wedding.photos') || 'Fotolavhalar'}
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {photos.map((photo) => (
-                <div key={photo.id} className="rounded-lg overflow-hidden">
-                  <img 
-                    src={photo.url} 
-                    alt={photo.caption || 'Wedding photo'}
-                    className="w-full h-48 object-cover"
-                  />
+            
+            {(() => {
+              // Filter out couple photos - only show memory photos in gallery
+              const memoryPhotos = photos.filter((photo: any) => photo.photoType === 'memory');
+              
+              return memoryPhotos.length > 0 ? (
+                <>
+                  {/* Photo Gallery Grid - Mobile-friendly 2-column layout */}
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
+                    {memoryPhotos.map((photo, index) => (
+                      <div 
+                        key={photo.id} 
+                        className="rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => openPhotoModal(index)}
+                      >
+                        <img 
+                          src={photo.url} 
+                          alt={photo.caption || 'Wedding photo'}
+                          className="w-full h-[160px] sm:h-[187px] object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                
+                  {/* Upload Section */}
+                  <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[15px] sm:rounded-[20px] p-4 sm:p-6">
+                    <div className="text-center">
+                      <PhotoUpload weddingId={wedding.id} />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[15px] sm:rounded-[20px] p-4 sm:p-6 text-center">
+                  <p className="text-white/80 mb-4 sm:mb-6 text-base sm:text-lg" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                    {t('wedding.noPhotosYet') || 'Hali fotolar yuklanmagan'}
+                  </p>
+                  <PhotoUpload weddingId={wedding.id} />
                 </div>
-              ))}
-            </div>
-            <div className="mt-8">
-              <PhotoUpload weddingId={wedding.id} />
-            </div>
+              );
+            })()}
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="bg-[#83487a] text-white py-12 px-4">
@@ -656,6 +675,45 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
           triggerPlay={triggerMusicPlay}
         />
       )}
+
+      {/* Photo Modal */}
+      <Dialog open={selectedPhotoIndex !== null} onOpenChange={(open) => !open && closePhotoModal()}>
+        <DialogContent className="max-w-4xl w-full p-0 bg-black border-none">
+          {selectedPhotoIndex !== null && (() => {
+            const memoryPhotos = photos.filter((photo: any) => photo.photoType === 'memory');
+            const currentPhoto = memoryPhotos[selectedPhotoIndex];
+            
+            if (!currentPhoto) return null;
+            
+            return (
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-4 right-4 z-10 text-white hover:bg-white hover:bg-opacity-20 rounded-full"
+                  onClick={closePhotoModal}
+                >
+                  <X className="h-6 w-6" />
+                </Button>
+
+                <img
+                  src={currentPhoto.url}
+                  alt={currentPhoto.caption || `Wedding photo ${selectedPhotoIndex + 1}`}
+                  className="w-full h-auto max-h-[90vh] object-contain"
+                />
+
+                {currentPhoto.caption && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white p-4">
+                    <p className="text-center" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                      {currentPhoto.caption}
+                    </p>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
