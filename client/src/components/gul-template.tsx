@@ -202,7 +202,7 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
       {/* Hero Section */}
       <section 
         id="home" 
-        className="relative min-h-screen flex flex-col items-center justify-center text-white pt-[70px] pb-10 px-4 overflow-hidden"
+        className="relative min-h-screen flex flex-col items-center justify-center text-white pt-[70px] pb-12 sm:pb-16 px-4 overflow-hidden"
         style={{
           backgroundImage: wedding?.couplePhotoUrl 
             ? `linear-gradient(rgba(131, 72, 122, 0.6), rgba(131, 72, 122, 0.8)), url(${wedding.couplePhotoUrl})`
@@ -325,7 +325,7 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
 
           {/* Couple Photo */}
           {wedding?.couplePhotoUrl && (
-            <div className="mb-6 sm:mb-8">
+            <div className="mb-8 sm:mb-12">
               <img 
                 src={wedding.couplePhotoUrl} 
                 alt={`${wedding.bride} & ${wedding.groom}`}
@@ -336,7 +336,7 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
 
           {/* Welcome Message for Guests */}
           {wedding?.dearGuestMessage && (
-            <div className="max-w-[330px] mx-auto mt-6 sm:mt-8 mb-6 sm:mb-8 px-4">
+            <div className="max-w-[330px] mx-auto mt-0 mb-8 sm:mb-12 px-4">
               <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[15px] sm:rounded-[20px] p-4 sm:p-6 shadow-lg">
                 <h3 
                   className="text-[20px] sm:text-[24px] font-semibold text-center mb-3 sm:mb-4 tracking-[2px] sm:tracking-[2.4px] text-white"
