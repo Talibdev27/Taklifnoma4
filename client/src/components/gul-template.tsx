@@ -11,7 +11,7 @@ import { WeddingWelcomeOverlay } from '@/components/wedding-welcome-overlay';
 import { BackgroundMusicPlayer } from '@/components/background-music-player';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, Camera, Users, Gift, Cake, PartyPopper, X } from 'lucide-react';
+import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, Camera, Users, Gift, Cake, PartyPopper, X, Instagram, Send } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, Photo, GuestBookEntry } from '@shared/schema';
 
@@ -663,6 +663,31 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
             <Heart className="inline h-4 w-4 mx-2" />
             <span className="font-semibold">Taklif</span>
           </div>
+
+        {/* Social links: Telegram & Instagram */}
+        <div className="mt-3 flex items-center justify-center gap-4 text-white/70" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+          <a
+            href="https://t.me/link_taklif"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 hover:text-white transition-colors"
+            aria-label="Telegram"
+          >
+            <Send className="h-5 w-5" />
+            <span>@link_taklif</span>
+          </a>
+          <span className="text-white/30">|</span>
+          <a
+            href="https://www.instagram.com/taklif_link/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 hover:text-white transition-colors"
+            aria-label="Instagram"
+          >
+            <Instagram className="h-5 w-5" />
+            <span>@taklif_link</span>
+          </a>
+        </div>
         </div>
       </footer>
 
