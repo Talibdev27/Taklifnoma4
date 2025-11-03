@@ -325,31 +325,31 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
 
           {/* Couple Photo */}
           {wedding?.couplePhotoUrl && (
-            <div className="mb-8 sm:mb-12">
+            <div className="mb-8 sm:mb-12 max-w-[600px] w-full mx-auto">
               <img 
                 src={wedding.couplePhotoUrl} 
                 alt={`${wedding.bride} & ${wedding.groom}`}
-                className="w-[240px] sm:w-[285px] h-auto rounded-[15px] sm:rounded-[20px] border border-white/30 object-cover shadow-lg mx-auto"
+                className="w-full h-auto rounded-[15px] sm:rounded-[20px] border border-white/30 object-cover shadow-lg"
               />
             </div>
           )}
 
           {/* Welcome Message for Guests */}
           {wedding?.dearGuestMessage && (
-            <div className="max-w-[330px] mx-auto mt-0 mb-8 sm:mb-12 px-4">
-              <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-[15px] sm:rounded-[20px] p-4 sm:p-6 shadow-lg">
+            <div className="max-w-[600px] w-full mx-auto mt-0 mb-8 sm:mb-12 px-0">
+              <div className="bg-[rgba(255,255,255,0.32)] border border-[#8b8b8b] rounded-tl-[30px] sm:rounded-tl-[60px] rounded-br-[30px] sm:rounded-br-[60px] p-4 sm:p-8 shadow-[0px_4px_13.5px_0px_inset_#000000]">
                 <h3 
-                  className="text-[20px] sm:text-[24px] font-semibold text-center mb-3 sm:mb-4 tracking-[2px] sm:tracking-[2.4px] text-white"
+                  className="text-[24px] sm:text-[30px] font-semibold text-center mb-4 sm:mb-6 tracking-[2.4px] sm:tracking-[3.6px] text-white"
                   style={{ fontFamily: 'Montserrat, sans-serif' }}
                 >
                   {t('sections.dearGuests') || 'Aziz Mehmonlar'}
                 </h3>
-                <div className="text-white/90 leading-relaxed mb-4 sm:mb-6 whitespace-pre-wrap text-center text-[13px] sm:text-[14px]" style={{ fontFamily: 'Montserrat, sans-serif', lineHeight: '1.8' }}>
+                <div className="text-white/90 leading-relaxed mb-6 sm:mb-8 whitespace-pre-wrap text-center text-[14px] sm:text-[16px] px-3 sm:px-6" style={{ fontFamily: 'Montserrat, sans-serif', lineHeight: '1.8' }}>
                   {wedding.dearGuestMessage}
                 </div>
-                <div className="text-center pt-3 sm:pt-4 border-t border-white/20">
+                <div className="text-center pt-4 sm:pt-6 border-t border-white/20">
                   <p 
-                    className="text-[14px] sm:text-[16px] font-medium"
+                    className="text-[16px] sm:text-[18px] font-medium"
                     style={{ ...coupleNameStyle, fontFamily: 'Montserrat, sans-serif' }}
                   >
                     {wedding?.bride} {t('wedding.and') || 'va'} {wedding?.groom}
