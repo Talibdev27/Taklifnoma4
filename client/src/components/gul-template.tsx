@@ -506,7 +506,7 @@ export function GulTemplate({ wedding }: GulTemplateProps) {
                   </p>
                 )}
                 {(wedding?.mapPinUrl || wedding?.venueAddress) && (
-                  <p className="text-[11px] sm:text-[12px] text-white/70 text-center mt-2 sm:mt-3 italic" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  <p className="text-[14px] sm:text-[15px] font-semibold text-[#F4D03F] text-center mt-3 sm:mt-4 underline decoration-2 underline-offset-2 hover:opacity-80 transition-opacity cursor-pointer" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                     {t('details.showOnMap') || 'Xaritada ko\'rish uchun bosing'}
                   </p>
                 )}
