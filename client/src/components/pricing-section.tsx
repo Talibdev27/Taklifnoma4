@@ -24,16 +24,17 @@ export function PricingSection() {
     {
       id: 'basic',
       name: t('pricing.basic'),
-      price: 299000,
+      price: 0,
       currency: 'UZS',
-      period: t('pricing.perYear'),
+      period: t('pricing.free'),
       features: [
         t('pricing.basicWebsite'),
         t('pricing.upToGuests'),
         t('pricing.rsvpManagement'),
-        t('pricing.photoGallery')
+        t('pricing.photoGallery'),
+        t('pricing.freeTemplates')
       ],
-      buttonText: t('pricing.chooseBasic'),
+      buttonText: t('pricing.getStartedFree'),
     },
     {
       id: 'premium',
@@ -92,19 +93,30 @@ export function PricingSection() {
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {plans.map((plan) => (
-            <Card key={plan.id} className={`relative ${plan.popular ? 'border-2 border-blue-500 shadow-lg' : ''}`}>
+            <Card key={plan.id} className={`relative ${plan.popular ? 'border-2 border-blue-500 shadow-lg' : ''} ${plan.id === 'basic' ? 'border-2 border-green-500' : ''}`}>
               {plan.popular && (
                 <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-500">
                   <Star className="w-4 h-4 mr-1" />
                   {t('pricing.mostPopular')}
                 </Badge>
               )}
+              {plan.id === 'basic' && (
+                <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500">
+                  {t('pricing.basicFree')}
+                </Badge>
+              )}
               
               <CardHeader className="text-center">
                 <CardTitle className="text-xl">{plan.name}</CardTitle>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold">{formatPrice(plan.price)}</span>
-                  <span className="text-gray-500">{plan.period}</span>
+                  {plan.price === 0 ? (
+                    <span className="text-4xl font-bold text-green-600">{t('pricing.free')}</span>
+                  ) : (
+                    <>
+                      <span className="text-4xl font-bold">{formatPrice(plan.price)}</span>
+                      <span className="text-gray-500">{plan.period}</span>
+                    </>
+                  )}
                 </div>
               </CardHeader>
 
@@ -120,12 +132,21 @@ export function PricingSection() {
               </CardContent>
 
               <CardFooter>
-                <Button 
-                  className={`w-full ${plan.popular ? 'bg-blue-500 hover:bg-blue-600' : ''}`}
-                  onClick={() => handlePayment(plan.id, plan.price)}
-                >
-                  {plan.buttonText}
-                </Button>
+                {plan.price === 0 ? (
+                  <Button 
+                    className="w-full bg-green-500 hover:bg-green-600"
+                    onClick={() => window.location.href = '/register'}
+                  >
+                    {plan.buttonText}
+                  </Button>
+                ) : (
+                  <Button 
+                    className={`w-full ${plan.popular ? 'bg-blue-500 hover:bg-blue-600' : ''}`}
+                    onClick={() => handlePayment(plan.id, plan.price)}
+                  >
+                    {plan.buttonText}
+                  </Button>
+                )}
               </CardFooter>
             </Card>
           ))}

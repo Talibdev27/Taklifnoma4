@@ -18,6 +18,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { formatDateForInput } from "@/lib/utils";
 import { Heart, Calendar, MapPin, Camera, Music, Palette, ChevronLeft, ChevronRight } from "lucide-react";
 import { CreateWeddingLoading } from "@/components/ui/loading";
+import { isFreeTemplate, isPremiumTemplate } from "@/lib/template-tiers";
 
 const createWeddingSchema = insertWeddingSchema.extend({
   weddingDate: insertWeddingSchema.shape.weddingDate
@@ -158,11 +159,18 @@ export default function CreateWedding() {
         }
         
         const user = await userResponse.json();
-        if (!user.hasPaidSubscription && !user.isAdmin) {
-          // Redirect to payment page
+        
+        // Check if template requires payment
+        const templateRequiresPayment = isPremiumTemplate(data.template);
+        
+        // Only require payment for premium templates (unless user has paid subscription or is admin)
+        if (templateRequiresPayment && !user.hasPaidSubscription && !user.isAdmin) {
+          // Redirect to payment page for premium templates
           setLocation('/payment');
           return;
         }
+        
+        // Free templates can be created without payment
         
         // Create wedding for registered user
         const weddingData = { 
@@ -560,6 +568,17 @@ export default function CreateWedding() {
                                 className="w-full h-48 object-cover"
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                              <div className="absolute top-2 right-2">
+                                {isFreeTemplate(template.id) ? (
+                                  <Badge className="bg-green-500 hover:bg-green-600">
+                                    {t('templates.freeTemplate')}
+                                  </Badge>
+                                ) : isPremiumTemplate(template.id) ? (
+                                  <Badge className="bg-blue-500 hover:bg-blue-600">
+                                    {t('templates.premiumTemplate')}
+                                  </Badge>
+                                ) : null}
+                              </div>
                               <div className="absolute bottom-4 left-4 right-4">
                                 <h3 className="text-white font-semibold text-lg">
                                   {getTemplateName(template)}

@@ -99,6 +99,33 @@ const audioUpload = process.env.CLOUDINARY_CLOUD_NAME ? uploadAudio : localAudio
 // JWT secret key - in production, use environment variable
 const JWT_SECRET = process.env.JWT_SECRET || 'wedding-platform-secret-key';
 
+// Template tier classification (must match client-side)
+const FREE_TEMPLATES = [
+  'standard',
+  'bohoChic',
+  'classicTradition',
+  'beachBliss',
+  'rusticCharm',
+  'modernElegance',
+  'gardenRomance'
+] as const;
+
+const PREMIUM_TEMPLATES = [
+  'epic',
+  'anime_1',
+  'flower',
+  'gul',
+  'birthday'
+] as const;
+
+function isFreeTemplate(template: string): boolean {
+  return (FREE_TEMPLATES as readonly string[]).includes(template);
+}
+
+function isPremiumTemplate(template: string): boolean {
+  return (PREMIUM_TEMPLATES as readonly string[]).includes(template);
+}
+
 // Middleware to verify JWT token
 const authenticateToken = (req: any, res: any, next: any) => {
   const authHeader = req.headers['authorization'];
@@ -367,6 +394,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         password: data.password
       };
       const user = await storage.createUser(userData);
+
+      // Check template tier - new users can only use free templates
+      const template = data.template || 'gardenRomance';
+      const templateRequiresPayment = isPremiumTemplate(template);
+      
+      if (templateRequiresPayment) {
+        // New users cannot create premium templates without payment
+        // Default to a free template if premium is selected
+        const defaultTemplate = 'gardenRomance';
+        console.log(`Premium template ${template} selected by new user, defaulting to ${defaultTemplate}`);
+        data.template = defaultTemplate;
+      }
 
       // Generate unique URL
       const uniqueUrl = nanoid(10);
@@ -1438,12 +1477,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Check if user has paid subscription
-      if (!user.hasPaidSubscription && !user.isAdmin) {
+      // Check template tier and payment requirements
+      const template = weddingFields.template || 'standard';
+      const templateRequiresPayment = isPremiumTemplate(template);
+      
+      // Only require payment for premium templates (unless user has paid subscription or is admin)
+      if (templateRequiresPayment && !user.hasPaidSubscription && !user.isAdmin) {
         return res.status(403).json({ 
-          message: "Payment required to create wedding website. Please complete payment first." 
+          message: "Premium templates require payment. Please complete payment first or choose a free template." 
         });
       }
+      
+      // Free templates can be created without payment
 
       // Validate required fields - only bride, groom, and weddingDate are required
       if (!weddingFields.bride || !weddingFields.groom || !weddingFields.weddingDate) {

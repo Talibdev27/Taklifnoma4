@@ -6,6 +6,7 @@ import { Calendar, MapPin, Heart, Users, Camera, MessageSquare } from "lucide-re
 import { CountdownTimer } from "@/components/countdown-timer";
 import { Link, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
+import { LanguageToggle } from "@/components/language-toggle";
 
 const templateConfigs = {
   gardenRomance: {
@@ -87,31 +88,6 @@ export default function DemoWedding() {
   
   return (
     <div className={`min-h-screen bg-gradient-to-b ${config.colorScheme}`}>
-      {/* Template Selector - Show current template and allow switching */}
-      <div className="fixed top-4 right-4 z-50">
-        <Card className="p-4 bg-white/95 backdrop-blur-sm shadow-lg">
-          <p className="text-sm font-medium text-gray-600 mb-2">{t('demo.templatePreview')}</p>
-          <p className="text-lg font-semibold mb-3" style={{ color: config.primaryColor }}>
-            {t(`templates.${currentTemplate}`)}
-          </p>
-          <div className="space-y-1">
-            {Object.keys(templateConfigs).map((templateKey) => (
-              <button
-                key={templateKey}
-                onClick={() => setCurrentTemplate(templateKey)}
-                className={`block w-full text-left px-2 py-1 rounded text-xs transition-colors ${
-                  currentTemplate === templateKey 
-                    ? 'bg-blue-100 text-blue-800' 
-                    : 'hover:bg-gray-100 text-gray-600'
-                }`}
-              >
-                {templateKey.charAt(0).toUpperCase() + templateKey.slice(1).replace(/([A-Z])/g, ' $1')}
-              </button>
-            ))}
-          </div>
-        </Card>
-      </div>
-
       {/* Hero Section */}
       <div 
         className="relative h-screen flex items-center justify-center bg-cover bg-center"
@@ -119,22 +95,29 @@ export default function DemoWedding() {
           backgroundImage: `url('${config.heroImage}')`
         }}
       >
+        {/* Language Selector - Top Right */}
+        <div className="fixed top-4 right-4 z-50">
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-1">
+            <LanguageToggle />
+          </div>
+        </div>
+        
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
           <h1 className="text-6xl md:text-8xl font-playfair font-bold mb-4">
-            {t('demo.couple')}
+            {t(`demo.${currentTemplate}.couple`)}
           </h1>
           <p className="text-2xl md:text-3xl font-light mb-8">
-            {t('demo.tagline')}
+            {t(`demo.${currentTemplate}.tagline`)}
           </p>
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-lg">
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5" />
-              <span>{t('demo.date')}</span>
+              <span>{t(`demo.${currentTemplate}.date`)}</span>
             </div>
             <div className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              <span>{t('demo.venue')}</span>
+              <span>{t(`demo.${currentTemplate}.venue`)}</span>
             </div>
           </div>
         </div>
@@ -163,7 +146,7 @@ export default function DemoWedding() {
             </div>
             <div className="text-left">
               <p className="text-lg text-[#2C3338]/80 leading-relaxed whitespace-pre-line">
-                {t('demo.loveStoryFull')}
+                {t(`demo.${currentTemplate}.story`)}
               </p>
             </div>
           </div>
@@ -181,15 +164,15 @@ export default function DemoWedding() {
               <CardContent className="text-center">
                 <Calendar className="h-12 w-12 text-[#D4B08C] mx-auto mb-4" />
                 <h3 className="text-2xl font-semibold text-[#2C3338] mb-2">{t('wedding.when')}</h3>
-                <p className="text-[#2C3338]/70 mb-2">{t('demo.date')}</p>
-                <p className="text-[#2C3338]/70">{t('demo.ceremony')}</p>
+                <p className="text-[#2C3338]/70 mb-2">{t(`demo.${currentTemplate}.date`)}</p>
+                <p className="text-[#2C3338]/70">{t(`demo.${currentTemplate}.ceremony`)}</p>
               </CardContent>
             </Card>
             <Card className="p-6 shadow-lg">
               <CardContent className="text-center">
                 <MapPin className="h-12 w-12 text-[#D4B08C] mx-auto mb-4" />
                 <h3 className="text-2xl font-semibold text-[#2C3338] mb-2">{t('wedding.where')}</h3>
-                <p className="text-[#2C3338]/70 mb-2">{t('demo.venue')}</p>
+                <p className="text-[#2C3338]/70 mb-2">{t(`demo.${currentTemplate}.venue`)}</p>
                 <Button variant="outline" className="mt-2 text-sm">
                   {t('demo.viewOnMap')}
                 </Button>
@@ -337,7 +320,7 @@ export default function DemoWedding() {
           {t('demo.withLove')}
         </p>
         <p className="text-sm opacity-70 mt-2">
-          {t('demo.date')} • {t('demo.venue')}
+          {t(`demo.${currentTemplate}.date`)} • {t(`demo.${currentTemplate}.venue`)}
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/get-started">

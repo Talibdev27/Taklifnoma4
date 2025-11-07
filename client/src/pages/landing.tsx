@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { LanguageToggle } from '@/components/language-toggle';
 import { 
   Heart, Palette, Calendar, Camera, Globe, MapPin, Music, 
   Check, Menu, X, Star, Users, MessageSquare 
 } from 'lucide-react';
 import { PricingSection } from '@/components/pricing-section';
+import { isFreeTemplate } from '@/lib/template-tiers';
 
 export default function Landing() {
   const { t } = useTranslation();
@@ -477,28 +479,45 @@ export default function Landing() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {templates.map((template, index) => (
-              <Card key={index} className="wedding-card overflow-hidden">
-                <img 
-                  src={template.image} 
-                  alt={t(template.nameKey)}
-                  className="w-full h-48 object-cover" 
-                />
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-playfair font-semibold text-charcoal mb-2">
-                    {t(template.nameKey)}
-                  </h3>
-                  <p className="text-sm text-charcoal opacity-70 mb-4">
-                    {t(template.descriptionKey)}
-                  </p>
-                  <Link href={`/demo?template=${template.nameKey.split('.')[1]}`}>
-                    <Button className="w-full wedding-button">
-                      {t('templates.previewTemplate')}
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
+            {templates.map((template, index) => {
+              const templateId = template.nameKey.split('.')[1];
+              const isFree = isFreeTemplate(templateId);
+              return (
+                <Card key={index} className="wedding-card overflow-hidden relative">
+                  <div className="relative">
+                    <img 
+                      src={template.image} 
+                      alt={t(template.nameKey)}
+                      className="w-full h-48 object-cover" 
+                    />
+                    <div className="absolute top-2 right-2">
+                      {isFree ? (
+                        <Badge className="bg-green-500 hover:bg-green-600">
+                          {t('templates.freeTemplate')}
+                        </Badge>
+                      ) : (
+                        <Badge className="bg-blue-500 hover:bg-blue-600">
+                          {t('templates.premiumTemplate')}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-playfair font-semibold text-charcoal mb-2">
+                      {t(template.nameKey)}
+                    </h3>
+                    <p className="text-sm text-charcoal opacity-70 mb-4">
+                      {t(template.descriptionKey)}
+                    </p>
+                    <Link href={`/demo?template=${templateId}`}>
+                      <Button className="w-full wedding-button">
+                        {t('templates.previewTemplate')}
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
