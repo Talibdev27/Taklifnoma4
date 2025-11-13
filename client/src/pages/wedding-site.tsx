@@ -20,6 +20,7 @@ import { BirthdayTemplate } from '@/components/birthday-template';
 import { Anime1Template } from '@/components/anime-1-template';
 import { FlowerTemplate } from '@/components/flower-template';
 import { GulTemplate } from '@/components/gul-template';
+import { Customer1Template } from '@/components/ccostumer-1-template';
 import { BackgroundMusicPlayer } from '@/components/background-music-player';
 import { WeddingWelcomeOverlay } from '@/components/wedding-welcome-overlay';
 import { formatDate } from '@/lib/utils';
@@ -137,6 +138,12 @@ export default function WeddingSite() {
   if (wedding?.template === 'gul') {
     console.log('Rendering Gul template for wedding:', wedding);
     return <GulTemplate wedding={wedding} />;
+  }
+
+  // Check for Customer 1 template
+  if (wedding?.template === 'ccostumer_1') {
+    console.log('Rendering Customer 1 template for wedding:', wedding);
+    return <Customer1Template wedding={wedding} />;
   }
 
   // Template-specific configurations
