@@ -512,5 +512,8 @@
   "customer1.wedding": "To'y",
   "customer1.contactSubmitted": "Xabaringiz uchun rahmat!",
   "rsvp.submitSuccess": "RSVP muvaffaqiyatli yuborildi!",
-  "rsvp.submitError": "RSVP yuborib bo'lmadi"
+  "rsvp.submitError": "RSVP yuborib bo'lmadi",
+  "modern.tagline": "Ikki yurak, bir go'zal yo'l",
+  "templates.modern": "Zamonaviy",
+  "templates.modernDesc": "Mobil qurilmalar uchun optimallashtirilgan zamonaviy va nafis dizayn."
 } 

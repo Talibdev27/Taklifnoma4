@@ -245,6 +245,7 @@ export function ProgressiveOnboarding() {
     { id: 'modernMinimal', name: t('templates.modernMinimal'), preview: '#6B7280' },
     { id: 'vintageChic', name: t('templates.vintageChic'), preview: '#92400E' },
     { id: 'bohoGarden', name: t('templates.bohoGarden'), preview: '#059669' },
+    { id: 'modern', name: t('templates.modern'), preview: '#b08968' },
   ];
 
   const features = [

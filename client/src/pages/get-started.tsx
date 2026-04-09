@@ -89,6 +89,13 @@ const templateOptions = [
     image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop"
   },
   {
+    id: "modern",
+    name: "Modern",
+    nameUz: "Zamonaviy",
+    nameRu: "Современный",
+    image: "https://images.unsplash.com/photo-1519741347686-c1e0aadf4611?w=400&h=300&fit=crop"
+  },
+  {
     id: "beachBliss",
     name: "Beach Bliss",
     nameUz: "Plyaj baxt",

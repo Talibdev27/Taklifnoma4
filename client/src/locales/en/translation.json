@@ -532,5 +532,8 @@
   "customer1.wedding": "Wedding",
   "customer1.contactSubmitted": "Thank you for your message!",
   "rsvp.submitSuccess": "RSVP submitted successfully!",
-  "rsvp.submitError": "Failed to submit RSVP"
+  "rsvp.submitError": "Failed to submit RSVP",
+  "modern.tagline": "Two hearts, one beautiful journey",
+  "templates.modern": "Modern",
+  "templates.modernDesc": "A sleek, mobile-first design with elegant typography and a dark countdown."
 } 

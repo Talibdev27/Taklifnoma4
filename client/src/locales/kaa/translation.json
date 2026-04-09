@@ -404,5 +404,8 @@
   "auth.freeBasicAccess": "7 әдемі үлгімен тегін үйлену веб-сайтыңызды жасауды бастаңыз",
   "auth.passwordsDontMatch": "Құпия сөздер сәйкес келмейді. Қайталап көріңіз.",
   "auth.passwordTooShort": "Құпия сөз кемінде 6 таңбадан тұруы керек.",
-  "auth.invalidCredentials": "Дұрыс емес электрондық пошта немесе құпия сөз. Қайталап көріңіз."
+  "auth.invalidCredentials": "Дұрыс емес электрондық пошта немесе құпия сөз. Қайталап көріңіз.",
+  "modern.tagline": "Eki jürek, bir gözel jol",
+  "templates.modern": "Zamanawi",
+  "templates.modernDesc": "Mobil qurilmalar ushın optimallastırılgan zamanawi hám näzik dizayn."
 } 

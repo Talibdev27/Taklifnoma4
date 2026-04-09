@@ -80,6 +80,11 @@ export default function Landing() {
       image: 'https://images.unsplash.com/photo-1478146896981-b80fe463b330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
       descriptionKey: 'templates.bohoChicDesc',
     },
+    {
+      nameKey: 'templates.modern',
+      image: 'https://images.unsplash.com/photo-1519741347686-c1e0aadf4611?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250',
+      descriptionKey: 'templates.modernDesc',
+    },
   ];
 
   const pricingPlans = [

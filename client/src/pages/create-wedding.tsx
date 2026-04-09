@@ -116,6 +116,13 @@ const templateOptions = [
     nameRu: "Стандартный",
     image: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=300&fit=crop"
   },
+  {
+    id: "modern",
+    name: "Modern",
+    nameUz: "Zamonaviy",
+    nameRu: "Современный",
+    image: "https://images.unsplash.com/photo-1519741347686-c1e0aadf4611?w=400&h=300&fit=crop"
+  },
 ];
 
 export default function CreateWedding() {
@@ -161,7 +168,7 @@ export default function CreateWedding() {
         const user = await userResponse.json();
         
         // Check if template requires payment
-        const templateRequiresPayment = isPremiumTemplate(data.template);
+        const templateRequiresPayment = isPremiumTemplate(data.template || 'gardenRomance');
         
         // Only require payment for premium templates (unless user has paid subscription or is admin)
         if (templateRequiresPayment && !user.hasPaidSubscription && !user.isAdmin) {

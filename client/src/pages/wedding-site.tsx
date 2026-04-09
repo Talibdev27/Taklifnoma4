@@ -15,12 +15,13 @@ import { EnhancedRSVPForm } from '@/components/enhanced-rsvp-form';
 import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher';
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
-import { EpicTemplate } from '@/components/epic-template';
-import { BirthdayTemplate } from '@/components/birthday-template';
-import { Anime1Template } from '@/components/anime-1-template';
-import { FlowerTemplate } from '@/components/flower-template';
-import { GulTemplate } from '@/components/gul-template';
-import { Customer1Template } from '@/components/ccostumer-1-template';
+import { EpicTemplate } from '@/components/templates/epic-template';
+import { BirthdayTemplate } from '@/components/templates/birthday-template';
+import { Anime1Template } from '@/components/templates/anime-1-template';
+import { FlowerTemplate } from '@/components/templates/flower-template';
+import { GulTemplate } from '@/components/templates/gul-template';
+import { Customer1Template } from '@/components/templates/ccostumer-1-template';
+import { AzamatTemplate } from '@/components/templates/azamat-template';
 import { BackgroundMusicPlayer } from '@/components/background-music-player';
 import { WeddingWelcomeOverlay } from '@/components/wedding-welcome-overlay';
 import { formatDate } from '@/lib/utils';
@@ -144,6 +145,11 @@ export default function WeddingSite() {
   if (wedding?.template === 'ccostumer_1') {
     console.log('Rendering Customer 1 template for wedding:', wedding);
     return <Customer1Template wedding={wedding} />;
+  }
+
+  // Check for Modern template
+  if (wedding?.template === 'modern') {
+    return <AzamatTemplate wedding={wedding} />;
   }
 
   // Template-specific configurations

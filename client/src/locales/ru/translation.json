@@ -506,5 +506,8 @@
   "customer1.wedding": "Свадьба",
   "customer1.contactSubmitted": "Спасибо за ваше сообщение!",
   "rsvp.submitSuccess": "RSVP успешно отправлен!",
-  "rsvp.submitError": "Не удалось отправить RSVP"
+  "rsvp.submitError": "Не удалось отправить RSVP",
+  "modern.tagline": "Два сердца, один прекрасный путь",
+  "templates.modern": "Современный",
+  "templates.modernDesc": "Лаконичный дизайн с элегантной типографикой, оптимизированный для мобильных устройств."
 } 
