@@ -16,7 +16,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
-  
+
   if (req.method === 'OPTIONS') {
     res.sendStatus(200);
   } else {
@@ -42,7 +42,7 @@ app.use(helmet({
 // Rate limiting for authentication endpoints only in production
 if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
-  
+
   const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 10, // limit each IP to 10 requests per windowMs
@@ -108,7 +108,7 @@ app.use((req, res, next) => {
 
     // Log the error for debugging but don't throw after response
     console.error('Error:', err);
-    
+
     if (!res.headersSent) {
       res.status(status).json({ message });
     }

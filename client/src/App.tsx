@@ -6,24 +6,31 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/lib/i18n';
 import { AuthProvider } from '@/hooks/useAuth';
-import { ProtectedRoute, AdminProtectedRoute } from '@/components/protected-route';
-import NotFound from "@/pages/not-found";
-import Landing from "@/pages/landing";
-import CreateWedding from "@/pages/create-wedding";
-import GetStarted from "@/pages/get-started";
-import { ProgressiveOnboarding } from "@/components/progressive-onboarding";
-// import GuestWeddingView from "@/pages/guest-wedding-view";
-import UserDashboard from "@/pages/user-dashboard";
-import WeddingSite from "@/pages/wedding-site";
-import AdminDashboard from "@/pages/admin-dashboard-new";
-import AdminLogin from "@/pages/admin-login";
-import AdminWeddingEdit from "@/pages/admin-wedding-edit";
-import WeddingManage from "@/pages/wedding-manage";
-import UserLogin from "@/pages/user-login";
-import DemoWedding from "@/pages/demo-wedding";
-import Payment from "@/pages/payment";
-import PaymentSuccess from "@/pages/payment-success";
-import RestrictedGuestManagerDashboard from "@/pages/restricted-guest-manager-dashboard";
+import { ProtectedRoute, AdminProtectedRoute } from '@/shared/components/protected-route';
+
+// Website (Public) Pages
+import NotFound from "@/website/pages/NotFound";
+import Landing from "@/website/pages/Landing";
+import WeddingSite from "@/website/pages/WeddingSite";
+import DemoWedding from "@/website/pages/DemoWedding";
+
+// Admin Pages
+import AdminDashboard from "@/admin/pages/AdminDashboard";
+import AdminLogin from "@/admin/pages/AdminLogin";
+import AdminWeddingEdit from "@/admin/pages/WeddingEdit";
+import WeddingManage from "@/admin/pages/WeddingManage";
+import UserDashboard from "@/admin/pages/UserDashboard";
+import CreateWedding from "@/admin/pages/CreateWedding";
+import GuestManagerDashboard from "@/admin/pages/GuestManagerDashboard";
+
+// Admin Components
+import { ProgressiveOnboarding } from "@/admin/components/progressive-onboarding";
+
+// Shared Pages
+import UserLogin from "@/shared/pages/UserLogin";
+import GetStarted from "@/shared/pages/GetStarted";
+import Payment from "@/shared/pages/Payment";
+import PaymentSuccess from "@/shared/pages/PaymentSuccess";
 
 function Router() {
   return (
@@ -115,7 +122,7 @@ function Router() {
       </Route>
 
       {/* Restricted Guest Manager Dashboard */}
-      <Route path="/guest-manager" component={RestrictedGuestManagerDashboard} />
+      <Route path="/guest-manager" component={GuestManagerDashboard} />
 
 
 

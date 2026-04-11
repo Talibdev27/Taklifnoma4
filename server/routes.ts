@@ -8,8 +8,8 @@ import fs from "fs";
 import { nanoid } from "nanoid";
 import { uploadImage, uploadAudio, deleteFromCloudinary, getPublicIdFromUrl } from "./cloudinary";
 import { storage } from "./storage";
-import { 
-  insertUserSchema, insertWeddingSchema, insertGuestSchema, 
+import {
+  insertUserSchema, insertWeddingSchema, insertGuestSchema,
   insertPhotoSchema, insertGuestBookEntrySchema, rsvpUpdateSchema,
   insertInvitationSchema, insertGuestCollaboratorSchema, insertWeddingAccessSchema
 } from "@shared/schema";
@@ -184,15 +184,15 @@ const requireAdmin = async (req: any, res: any, next: any) => {
   try {
     const userId = req.user.userId;
     console.log('requireAdmin - checking user ID:', userId);
-    
+
     const user = await storage.getUserById(userId);
     console.log('requireAdmin - user found:', user ? { id: user.id, email: user.email, isAdmin: user.isAdmin, role: user.role } : 'null');
-    
+
     if (!user || (!user.isAdmin && user.role !== 'admin')) {
       console.log('requireAdmin - access denied for user:', userId);
       return res.status(403).json({ message: 'Admin privileges required' });
     }
-    
+
     console.log('requireAdmin - access granted for user:', userId);
     next();
   } catch (error) {
@@ -211,7 +211,7 @@ const authenticateAdmin = async (req: any, res: any, next: any) => {
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, JWT_SECRET) as any;
-    
+
     const user = await storage.getUserById(decoded.userId);
     if (!user || (!user.isAdmin && user.role !== 'admin')) {
       return res.status(403).json({ message: 'Admin privileges required' });
@@ -266,11 +266,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Generate JWT token
       const token = jwt.sign(
-        { 
-          userId: user.id, 
+        {
+          userId: user.id,
           email: user.email,
           role: user.role,
-          isAdmin: user.isAdmin 
+          isAdmin: user.isAdmin
         },
         JWT_SECRET,
         { expiresIn: '7d' }
@@ -278,10 +278,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Return user data without password
       const { password: _, ...userWithoutPassword } = user;
-      res.status(201).json({ 
-        user: userWithoutPassword, 
+      res.status(201).json({
+        user: userWithoutPassword,
         token,
-        message: "Registration successful" 
+        message: "Registration successful"
       });
 
     } catch (error) {
@@ -313,11 +313,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Generate JWT token
       const token = jwt.sign(
-        { 
-          userId: user.id, 
+        {
+          userId: user.id,
           email: user.email,
           role: user.role,
-          isAdmin: user.isAdmin 
+          isAdmin: user.isAdmin
         },
         JWT_SECRET,
         { expiresIn: '7d' }
@@ -325,10 +325,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Return user data without password
       const { password: _, ...userWithoutPassword } = user;
-      res.json({ 
-        user: userWithoutPassword, 
+      res.json({
+        user: userWithoutPassword,
         token,
-        message: "Login successful" 
+        message: "Login successful"
       });
 
     } catch (error) {
@@ -362,15 +362,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Validate required fields
       if (!data.email || !data.password || !data.name || !data.bride || !data.groom) {
-        console.log("Missing required fields:", { 
-          email: !!data.email, 
-          password: !!data.password, 
-          name: !!data.name, 
-          bride: !!data.bride, 
-          groom: !!data.groom 
+        console.log("Missing required fields:", {
+          email: !!data.email,
+          password: !!data.password,
+          name: !!data.name,
+          bride: !!data.bride,
+          groom: !!data.groom
         });
-        return res.status(400).json({ 
-          message: "Missing required fields: email, password, name, bride, and groom are required" 
+        return res.status(400).json({
+          message: "Missing required fields: email, password, name, bride, and groom are required"
         });
       }
 
@@ -382,8 +382,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // First, check if user already exists
       const existingUser = await storage.getUserByEmail(data.email);
       if (existingUser) {
-        return res.status(400).json({ 
-          message: "User with this email already exists. Please login instead." 
+        return res.status(400).json({
+          message: "User with this email already exists. Please login instead."
         });
       }
 
@@ -398,7 +398,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check template tier - new users can only use free templates
       const template = data.template || 'gardenRomance';
       const templateRequiresPayment = isPremiumTemplate(template);
-      
+
       if (templateRequiresPayment) {
         // New users cannot create premium templates without payment
         // Default to a free template if premium is selected
@@ -434,9 +434,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Get started error:", error);
-      res.status(400).json({ 
-        message: "Failed to create account and wedding website", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(400).json({
+        message: "Failed to create account and wedding website",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -448,9 +448,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(user);
     } catch (error) {
       console.error("User creation error:", error);
-      res.status(400).json({ 
-        message: "Failed to create user", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(400).json({
+        message: "Failed to create user",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -463,11 +463,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check credentials against environment variables (trim to handle whitespace)
       const expectedUsername = process.env.ADMIN_USERNAME?.trim();
       const expectedPassword = process.env.ADMIN_PASSWORD?.trim();
-      
+
       if (username === expectedUsername && password === expectedPassword) {
         // Create or get admin user
         let adminUser = await storage.getUserByEmail('admin@wedding-platform.com');
-        
+
         if (!adminUser) {
           // Create admin user if it doesn't exist
           adminUser = await storage.createUser({
@@ -488,7 +488,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
 
         const { password: _, ...userWithoutPassword } = adminUser;
-        
+
         res.json({
           user: userWithoutPassword,
           token,
@@ -507,10 +507,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/verify", authenticateAdmin, async (req: any, res) => {
     try {
       // If authenticateAdmin middleware passes, user is verified admin
-      res.json({ 
-        success: true, 
+      res.json({
+        success: true,
         message: "Admin access verified",
-        user: req.user 
+        user: req.user
       });
     } catch (error) {
       res.status(500).json({ message: "Server error during verification" });
@@ -532,17 +532,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = parseInt(req.params.userId);
       const updates = req.body;
-      
+
       const updatedUser = await storage.updateUser(userId, updates);
       if (!updatedUser) {
         return res.status(404).json({ message: "User not found" });
       }
-      
+
       res.json(updatedUser);
     } catch (error) {
-      res.status(400).json({ 
-        message: "Failed to update user", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(400).json({
+        message: "Failed to update user",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -631,9 +631,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(wedding);
     } catch (error) {
       console.error("Admin wedding creation error:", error);
-      res.status(500).json({ 
-        message: "Failed to create wedding", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(500).json({
+        message: "Failed to create wedding",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -643,30 +643,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const weddingId = parseInt(req.params.id);
       const updates = req.body;
-      
+
       console.log("Admin updating wedding:", weddingId, "with data:", updates);
-      
+
       // Convert date string to Date object if needed
       if (updates.weddingDate && typeof updates.weddingDate === 'string') {
         updates.weddingDate = new Date(updates.weddingDate);
       }
-      
+
       // Convert birthday-specific date fields if needed
       if (updates.rsvpDeadline && typeof updates.rsvpDeadline === 'string') {
         updates.rsvpDeadline = new Date(updates.rsvpDeadline);
       }
-      
+
       // Handle boolean conversion for isPublic
       if (updates.isPublic !== undefined) {
         updates.isPublic = updates.isPublic === true || updates.isPublic === 'true';
       }
-      
+
       const wedding = await storage.updateWedding(weddingId, updates);
-      
+
       if (!wedding) {
         return res.status(404).json({ message: "Wedding not found" });
       }
-      
+
       console.log("Wedding updated successfully:", wedding);
       res.json(wedding);
     } catch (error) {
@@ -698,13 +698,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updates = req.body;
       console.log('Updating wedding ID:', weddingId);
       console.log('Update data:', JSON.stringify(updates, null, 2));
-      
+
       // Convert date string to Date object if needed
       if (updates.weddingDate && typeof updates.weddingDate === 'string') {
         updates.weddingDate = new Date(updates.weddingDate);
         console.log('Converted wedding date to:', updates.weddingDate);
       }
-      
+
       const wedding = await storage.updateWedding(weddingId, updates);
       console.log('Update result:', wedding);
 
@@ -715,9 +715,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       console.error('Wedding update error:', error);
-      res.status(400).json({ 
-        message: "Failed to update wedding", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(400).json({
+        message: "Failed to update wedding",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -756,7 +756,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.userId;
       const user = await storage.getUserById(userId);
-      
+
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -791,18 +791,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const weddingId = parseInt(req.params.id);
       const updates = req.body;
-      
+
       // Convert date string to Date object if needed
       if (updates.weddingDate && typeof updates.weddingDate === 'string') {
         updates.weddingDate = new Date(updates.weddingDate);
       }
-      
+
       const wedding = await storage.updateWedding(weddingId, updates);
 
       if (!wedding) {
         return res.status(404).json({ message: "Wedding not found" });
       }
-      
+
       res.json(wedding);
     } catch (error) {
       console.error('Update wedding error:', error);
@@ -815,11 +815,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const weddingId = parseInt(req.params.id);
       const wedding = await storage.getWeddingById(weddingId);
-      
+
       if (!wedding) {
         return res.status(404).json({ message: "Wedding not found" });
       }
-      
+
       res.json({
         availableLanguages: wedding.availableLanguages || ['en'],
         defaultLanguage: wedding.defaultLanguage || 'en'
@@ -835,22 +835,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const weddingId = parseInt(req.params.id);
       const { availableLanguages, defaultLanguage } = req.body;
-      
+
       // Validate languages
       const supportedLanguages = ['en', 'uz', 'ru'];
       if (!Array.isArray(availableLanguages) || availableLanguages.length === 0) {
         return res.status(400).json({ message: "At least one language must be selected" });
       }
-      
+
       const invalidLanguages = availableLanguages.filter(lang => !supportedLanguages.includes(lang));
       if (invalidLanguages.length > 0) {
         return res.status(400).json({ message: `Unsupported languages: ${invalidLanguages.join(', ')}` });
       }
-      
+
       if (!availableLanguages.includes(defaultLanguage)) {
         return res.status(400).json({ message: "Default language must be in available languages list" });
       }
-      
+
       const updatedWedding = await storage.updateWedding(weddingId, {
         availableLanguages,
         defaultLanguage
@@ -859,7 +859,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!updatedWedding) {
         return res.status(404).json({ message: "Wedding not found" });
       }
-      
+
       res.json({
         availableLanguages: updatedWedding.availableLanguages,
         defaultLanguage: updatedWedding.defaultLanguage
@@ -875,7 +875,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const weddingId = parseInt(req.params.id);
       const success = await storage.deleteWedding(weddingId);
-      
+
       if (success) {
         res.json({ message: "Wedding deleted successfully" });
       } else {
@@ -904,7 +904,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const weddingId = parseInt(req.params.id);
       const guestData = { ...req.body, weddingId };
-      
+
       const guest = await storage.createGuest(guestData);
       res.status(201).json(guest);
     } catch (error) {
@@ -918,12 +918,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const guestId = parseInt(req.params.guestId);
       const rsvpData = req.body;
-      
+
       const guest = await storage.updateGuestRSVP(guestId, rsvpData);
       if (!guest) {
         return res.status(404).json({ message: "Guest not found" });
       }
-      
+
       // Broadcast real-time update
       const broadcastToWedding = (global as any).broadcastToWedding;
       if (broadcastToWedding) {
@@ -932,7 +932,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           guest: guest
         });
       }
-      
+
       res.json(guest);
     } catch (error) {
       console.error('RSVP update error:', error);
@@ -956,7 +956,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/weddings/:id/photos", authenticateToken, verifyWeddingOwnership, upload.single('photo'), async (req: any, res) => {
     try {
       const weddingId = parseInt(req.params.id);
-      
+
       if (!req.file) {
         return res.status(400).json({ message: "Photo file required" });
       }
@@ -967,7 +967,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         caption: req.body.caption || '',
         uploadedBy: req.body.uploadedBy || 'Wedding Owner'
       };
-      
+
       const photo = await storage.createPhoto(photoData);
       res.status(201).json(photo);
     } catch (error) {
@@ -980,7 +980,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/photos/:id", authenticateToken, async (req: any, res) => {
     try {
       const photoId = parseInt(req.params.id);
-      
+
       // Get all photos to find the one being deleted (this needs storage improvement)
       const allUsers = await storage.getAllUsers();
       let targetPhoto = null;
@@ -1013,7 +1013,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const success = await storage.deletePhoto(photoId);
-      
+
       if (success) {
         res.json({ message: "Photo deleted successfully" });
       } else {
@@ -1123,11 +1123,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       for (const user of users) {
         const userWeddings = await storage.getWeddingsByUserId(user.id);
-        
+
         for (const wedding of userWeddings) {
           const guests = await storage.getGuestsByWeddingId(wedding.id);
           totalRSVPs += guests.length;
-          
+
           guests.forEach(guest => {
             switch (guest.rsvpStatus) {
               case 'confirmed':
@@ -1166,7 +1166,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       for (const user of users) {
         const userWeddings = await storage.getWeddingsByUserId(user.id);
-        
+
         for (const wedding of userWeddings) {
           const guests = await storage.getGuestsByWeddingId(wedding.id);
           allGuests.push(...guests.map(guest => ({
@@ -1196,7 +1196,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       for (const user of users) {
         const userWeddings = await storage.getWeddingsByUserId(user.id);
-        
+
         for (const wedding of userWeddings) {
           const photos = await storage.getPhotosByWeddingId(wedding.id);
           allPhotos.push(...photos.map(photo => ({
@@ -1231,7 +1231,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const photoId = parseInt(req.params.id);
       const updates = req.body;
-      
+
       // Note: This would need to be implemented in storage interface
       res.json({ message: "Photo updated" });
     } catch (error) {
@@ -1243,7 +1243,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const photoId = parseInt(req.params.id);
       const success = await storage.deletePhoto(photoId);
-      
+
       if (success) {
         res.json({ message: "Photo deleted successfully" });
       } else {
@@ -1271,9 +1271,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(user);
     } catch (error) {
       console.error("Guest user creation error:", error);
-      res.status(400).json({ 
-        message: "Failed to create guest user", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(400).json({
+        message: "Failed to create guest user",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -1327,11 +1327,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid payment method" });
       }
 
-      res.json({ 
-        orderId, 
+      res.json({
+        orderId,
         paymentUrl,
         amount,
-        paymentMethod 
+        paymentMethod
       });
     } catch (error) {
       console.error("Payment creation error:", error);
@@ -1362,10 +1362,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
 
-      res.json({ 
-        success: true, 
+      res.json({
+        success: true,
         message: "Payment verified successfully",
-        user 
+        user
       });
     } catch (error) {
       console.error("Payment verification error:", error);
@@ -1382,8 +1382,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Use Cloudinary URL if available, otherwise fallback to local
       const photoUrl = req.file.path || `/uploads/${req.file.filename}`;
-      res.json({ 
-        url: photoUrl, 
+      res.json({
+        url: photoUrl,
         message: 'Couple photo uploaded successfully',
         publicId: req.file.filename // For Cloudinary deletion later
       });
@@ -1398,9 +1398,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const audioUrl = decodeURIComponent((req.params as any)[0]);
       console.log('Testing audio URL:', audioUrl);
-      
+
       const response = await fetch(audioUrl, { method: 'HEAD' });
-      
+
       res.json({
         url: audioUrl,
         accessible: response.ok,
@@ -1426,7 +1426,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Background music upload request received');
       console.log('Request headers:', req.headers);
       console.log('Request file:', req.file);
-      
+
       if (!req.file) {
         console.log('No file uploaded');
         return res.status(400).json({ message: 'No file uploaded' });
@@ -1442,11 +1442,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Use Cloudinary URL if available, otherwise fallback to local
       const musicUrl = req.file.path || `/uploads/${req.file.filename}`;
-      
+
       console.log('Music URL generated:', musicUrl);
-      
-      res.json({ 
-        url: musicUrl, 
+
+      res.json({
+        url: musicUrl,
         message: 'Background music uploaded successfully',
         publicId: req.file.filename // For Cloudinary deletion later
       });
@@ -1472,22 +1472,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Prevent guest users from creating weddings
       if (user.email.includes('guest_')) {
-        return res.status(403).json({ 
-          message: "Guest users cannot create weddings. Please register for a full account." 
+        return res.status(403).json({
+          message: "Guest users cannot create weddings. Please register for a full account."
         });
       }
 
       // Check template tier and payment requirements
       const template = weddingFields.template || 'standard';
       const templateRequiresPayment = isPremiumTemplate(template);
-      
+
       // Only require payment for premium templates (unless user has paid subscription or is admin)
       if (templateRequiresPayment && !user.hasPaidSubscription && !user.isAdmin) {
-        return res.status(403).json({ 
-          message: "Premium templates require payment. Please complete payment first or choose a free template." 
+        return res.status(403).json({
+          message: "Premium templates require payment. Please complete payment first or choose a free template."
         });
       }
-      
+
       // Free templates can be created without payment
 
       // Validate required fields - only bride, groom, and weddingDate are required
@@ -1538,9 +1538,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error("Error details:", error.message);
         console.error("Error stack:", error.stack);
       }
-      res.status(500).json({ 
-        message: "Failed to create wedding", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(500).json({
+        message: "Failed to create wedding",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -1641,7 +1641,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const accessId = parseInt(req.params.accessId);
       const success = await storage.deleteWeddingAccess(accessId);
-      
+
       if (!success) {
         return res.status(404).json({ message: "Access not found" });
       }
@@ -1737,7 +1737,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.createGuest(guestData);
       }
 
-      res.json({ 
+      res.json({
         message: "Wedding and sample guests created successfully for guest manager",
         wedding: wedding,
         guestsCreated: sampleGuests.length
@@ -1753,20 +1753,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/guest-manager/weddings", authenticateToken, async (req: any, res) => {
     try {
       const userId = req.user.userId;
-      
+
       // Check if user has guest_manager role
       const user = await storage.getUserById(userId);
       if (!user || user.role !== 'guest_manager') {
         return res.json([]);
       }
-      
+
       // Get only user's own weddings - guest managers should only see their own created weddings
       const ownedWeddings = await storage.getWeddingsByUserId(userId);
-      
+
       // Get weddings they have guest manager access to (but mark them as managed, not owned)
       const accessRecords = await storage.getWeddingAccessByUserId(userId);
       const managedWeddings = [];
-      
+
       for (const access of accessRecords) {
         const wedding = await storage.getWeddingById(access.weddingId);
         if (wedding && wedding.userId !== userId) { // Only include if not owned by user
@@ -1779,13 +1779,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
       }
-      
+
       // Combine owned and managed weddings
       const allWeddings = [
         ...ownedWeddings.map(w => ({ ...w, isManaged: false })),
         ...managedWeddings
       ];
-      
+
       res.json(allWeddings);
     } catch (error) {
       console.error('Guest manager weddings error:', error);
@@ -1798,20 +1798,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = parseInt(req.params.userId);
       const weddingId = parseInt(req.params.weddingId);
-      
+
       // Only allow users to check their own access or admin users
       const requestingUserId = req.user.userId;
       const requestingUser = await storage.getUserById(requestingUserId);
-      
+
       if (requestingUserId !== userId && !requestingUser?.isAdmin) {
         return res.status(403).json({ message: "Access denied" });
       }
-      
+
       const access = await storage.getUserWeddingPermissions(userId, weddingId);
       if (!access) {
         return res.status(404).json({ message: "No access found" });
       }
-      
+
       res.json(access);
     } catch (error) {
       console.error('Wedding access check error:', error);
@@ -1835,37 +1835,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const weddingId = parseInt(req.params.weddingId);
       const { guestName, message } = req.body;
-      
+
       // Validate input
       if (!guestName?.trim() || !message?.trim()) {
         return res.status(400).json({ message: "Guest name and message are required" });
       }
-      
+
       // Check if user has access to this wedding
       const userId = req.user.userId;
       const user = await storage.getUserById(userId);
       const wedding = await storage.getWeddingById(weddingId);
-      
+
       if (!wedding) {
         return res.status(404).json({ message: "Wedding not found" });
       }
-      
+
       // Check access: owner, admin, or guest manager with wedding access
       const isOwner = wedding.userId === userId;
       const isAdmin = user?.isAdmin || user?.role === 'admin';
-      const hasGuestManagerAccess = user?.role === 'guest_manager' && 
+      const hasGuestManagerAccess = user?.role === 'guest_manager' &&
         await storage.getUserWeddingPermissions(userId, weddingId);
-      
+
       if (!isOwner && !isAdmin && !hasGuestManagerAccess) {
         return res.status(403).json({ message: "Access denied" });
       }
-      
+
       const entry = await storage.createGuestBookEntry({
         weddingId,
         guestName: guestName.trim(),
         message: message.trim(),
       });
-      
+
       res.json(entry);
     } catch (error) {
       console.error('Create guest book entry error:', error);
@@ -1878,28 +1878,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const entryId = parseInt(req.params.entryId);
       const userId = req.user.userId;
       const user = await storage.getUserById(userId);
-      
+
       // Get the entry to check wedding ownership
       const entries = await storage.getGuestBookEntriesByWeddingId(0); // Get all entries to find this one
       const entry = entries.find(e => e.id === entryId);
-      
+
       if (!entry) {
         return res.status(404).json({ message: "Entry not found" });
       }
-      
+
       const wedding = await storage.getWeddingById(entry.weddingId);
       if (!wedding) {
         return res.status(404).json({ message: "Wedding not found" });
       }
-      
+
       // Only owner or admin can delete entries
       const isOwner = wedding.userId === userId;
       const isAdmin = user?.isAdmin || user?.role === 'admin';
-      
+
       if (!isOwner && !isAdmin) {
         return res.status(403).json({ message: "Access denied" });
       }
-      
+
       // Note: We'll need to implement deleteGuestBookEntry in storage
       // For now, return success
       res.json({ success: true });
@@ -1955,7 +1955,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const guestData = insertGuestSchema.parse(req.body);
       const guest = await storage.createGuest(guestData);
-      
+
       // Broadcast real-time update
       const broadcastToWedding = (global as any).broadcastToWedding;
       if (broadcastToWedding) {
@@ -1964,7 +1964,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           guest: guest
         });
       }
-      
+
       res.status(201).json(guest);
     } catch (error) {
       res.status(400).json({ message: "Invalid guest data" });
@@ -1975,7 +1975,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const weddingId = parseInt(req.params.weddingId);
       const userId = req.user.userId;
-      
+
       // Verify user has access to this wedding
       const wedding = await storage.getWeddingById(weddingId);
       if (!wedding) {
@@ -1992,7 +1992,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const isOwner = wedding.userId === userId;
       // Allow guest managers to access any wedding for now (temporary fix)
       const isGuestManager = user.role === 'guest_manager';
-      
+
       if (!isAdmin && !isOwner && !isGuestManager) {
         return res.status(403).json({ message: "Access denied. You don't have permission to view guests for this wedding." });
       }
@@ -2009,7 +2009,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/guests/public/:weddingId", async (req, res) => {
     try {
       const weddingId = parseInt(req.params.weddingId);
-      
+
       // Verify wedding exists and is public
       const wedding = await storage.getWeddingById(weddingId);
       if (!wedding) {
@@ -2021,7 +2021,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const guests = await storage.getGuestsByWeddingId(weddingId);
-      
+
       // Filter out sensitive information for public access
       const publicGuests = guests.map(guest => ({
         id: guest.id,
@@ -2030,7 +2030,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         rsvpStatus: guest.rsvpStatus,
         // Remove sensitive fields like phone, address, notes, etc.
       }));
-      
+
       res.json(publicGuests);
     } catch (error) {
       console.error("Get public wedding guests error:", error);
@@ -2042,7 +2042,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/weddings/:weddingId/rsvp", async (req, res) => {
     try {
       const weddingId = parseInt(req.params.weddingId);
-      
+
       // Verify wedding exists and is public
       const wedding = await storage.getWeddingById(weddingId);
       if (!wedding) {
@@ -2058,9 +2058,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...req.body,
         weddingId: weddingId
       });
-      
+
       const guest = await storage.createGuest(guestData);
-      
+
       // Broadcast real-time update
       const broadcastToWedding = (global as any).broadcastToWedding;
       if (broadcastToWedding) {
@@ -2069,7 +2069,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           guest: guest
         });
       }
-      
+
       res.status(201).json(guest);
     } catch (error) {
       console.error('Public RSVP creation error:', error);
@@ -2085,10 +2085,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updateData = req.body;
 
       // Get the guest first to check wedding ownership
-      const existingGuest = await storage.getGuestsByWeddingId(0).then(guests => 
+      const existingGuest = await storage.getGuestsByWeddingId(0).then(guests =>
         guests.find(g => g.id === id)
       );
-      
+
       if (!existingGuest) {
         return res.status(404).json({ message: "Guest not found" });
       }
@@ -2118,37 +2118,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const userId = req.user.userId;
-      
+
       // First, get the guest to find the wedding it belongs to
       const guest = await storage.getGuestById(id);
       if (!guest) {
         return res.status(404).json({ message: "Guest not found" });
       }
-      
+
       // Get the wedding to check ownership
       const wedding = await storage.getWeddingById(guest.weddingId);
       if (!wedding) {
         return res.status(404).json({ message: "Wedding not found" });
       }
-      
+
       // Get user details
       const user = await storage.getUserById(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      
+
       // Check permissions: admin, wedding owner, or guest manager with wedding access
       const isAdmin = user.isAdmin === true || user.role === 'admin';
       const isOwner = wedding.userId === userId;
-      const hasGuestManagerAccess = user.role === 'guest_manager' && 
+      const hasGuestManagerAccess = user.role === 'guest_manager' &&
         await storage.getUserWeddingPermissions(userId, guest.weddingId);
-      
+
       if (!isAdmin && !isOwner && !hasGuestManagerAccess) {
         return res.status(403).json({ message: "Access denied" });
       }
-      
+
       const deleted = await storage.deleteGuest(id);
-      
+
       if (!deleted) {
         return res.status(404).json({ message: "Guest not found" });
       }
@@ -2198,7 +2198,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         caption: caption || null,
         photoType: photoType || 'memory',
       });
-      
+
       // If it's a couple photo, also update the main wedding record's couplePhotoUrl
       if (photoType === 'couple') {
         await storage.updateWedding(parsedWeddingId, {
@@ -2267,16 +2267,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log('Delete guest book entry request:', req.params.entryId);
       console.log('User making request:', (req as any).user);
-      
+
       const entryId = parseInt(req.params.entryId);
       const deleted = await storage.deleteGuestBookEntry(entryId);
-      
+
       console.log('Delete result:', deleted);
-      
+
       if (!deleted) {
         return res.status(404).json({ message: "Guest book entry not found" });
       }
-      
+
       res.json({ message: "Guest book entry deleted successfully" });
     } catch (error) {
       console.error('Delete guest book entry error:', error);
@@ -2289,25 +2289,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log('Guest manager delete request:', req.params.entryId);
       console.log('User making request:', (req as any).user);
-      
+
       const entryId = parseInt(req.params.entryId);
       const userId = (req as any).user.userId;
-      
+
       // Get the guest book entry - we need to find it by ID
       // First, let's get all guest book entries and find the one we want
       const allEntries = await storage.getAllGuestBookEntries();
       const entry = allEntries.find((e: any) => e.id === entryId);
-      
+
       if (!entry) {
         return res.status(404).json({ message: "Guest book entry not found" });
       }
-      
+
       // Check if user owns the wedding or is a guest manager for this wedding
       const wedding = await storage.getWeddingById(entry.weddingId);
       if (!wedding) {
         return res.status(404).json({ message: "Wedding not found" });
       }
-      
+
       // Check if user is the wedding owner or has guest manager access
       if (wedding.userId !== userId) {
         // Check if user has guest manager access to this wedding
@@ -2315,23 +2315,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (!user || user.role !== 'guest_manager') {
           return res.status(403).json({ message: "Access denied" });
         }
-        
+
         // Additional check: verify guest manager has access to this specific wedding
         // This could be enhanced with a proper access control system
         const userWeddings = await storage.getWeddingsByUserId(userId);
         const hasAccess = userWeddings.some(w => w.id === entry.weddingId);
-        
+
         if (!hasAccess) {
           return res.status(403).json({ message: "Access denied to this wedding" });
         }
       }
-      
+
       const deleted = await storage.deleteGuestBookEntry(entryId);
-      
+
       if (!deleted) {
         return res.status(404).json({ message: "Guest book entry not found" });
       }
-      
+
       res.json({ message: "Guest book entry deleted successfully" });
     } catch (error) {
       console.error('Guest manager delete error:', error);
@@ -2467,30 +2467,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use('/api/payments', paymentsRouter);
 
   const httpServer = createServer(app);
-  
+
   // WebSocket server for real-time updates
   const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
-  
+
   // Store active connections by wedding ID
   const weddingConnections = new Map<number, Set<WebSocket>>();
-  
+
   wss.on('connection', (ws, request) => {
     console.log('WebSocket connection established');
-    
+
     ws.on('message', (data) => {
       try {
         const message = JSON.parse(data.toString());
-        
+
         if (message.type === 'join_wedding' && message.weddingId) {
           const weddingId = parseInt(message.weddingId);
-          
+
           if (!weddingConnections.has(weddingId)) {
             weddingConnections.set(weddingId, new Set());
           }
-          
+
           weddingConnections.get(weddingId)!.add(ws);
           console.log(`Client joined wedding ${weddingId}`);
-          
+
           // Send confirmation
           ws.send(JSON.stringify({
             type: 'joined',
@@ -2501,7 +2501,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error('WebSocket message error:', error);
       }
     });
-    
+
     ws.on('close', () => {
       // Remove connection from all wedding rooms
       weddingConnections.forEach((connections, weddingId) => {
@@ -2512,7 +2512,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     });
   });
-  
+
   // Function to broadcast updates to wedding subscribers
   function broadcastToWedding(weddingId: number, data: any) {
     const connections = weddingConnections.get(weddingId);
@@ -2525,9 +2525,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   }
-  
+
   // Store broadcast function globally for use in routes
   (global as any).broadcastToWedding = broadcastToWedding;
-  
+
   return httpServer;
 }
