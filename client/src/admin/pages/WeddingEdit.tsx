@@ -961,6 +961,51 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Available Languages
+                      </label>
+                      <p className="text-xs text-gray-500 mb-3">
+                        Select which languages guests can switch between on the site.
+                      </p>
+                      {editMode ? (
+                        <div className="flex flex-wrap gap-3">
+                          {[
+                            { value: 'en', label: 'English' },
+                            { value: 'ru', label: 'Русский' },
+                            { value: 'uz', label: "O'zbekcha" },
+                            { value: 'kk', label: 'Қазақша' },
+                            { value: 'kaa', label: 'Қарақалпақша' },
+                          ].map(({ value, label }) => {
+                            const langs: string[] = weddingData?.availableLanguages || ['en'];
+                            const checked = langs.includes(value);
+                            return (
+                              <label key={value} className="flex items-center gap-2 cursor-pointer select-none">
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  onChange={() => {
+                                    const next = checked
+                                      ? langs.filter(l => l !== value)
+                                      : [...langs, value];
+                                    setWeddingData(prev => prev ? { ...prev, availableLanguages: next.length ? next : [value] } : null);
+                                  }}
+                                  className="w-4 h-4 accent-blue-600"
+                                />
+                                <span className="text-sm text-[#2C3338]">{label}</span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <p className="p-3 bg-gray-50 rounded-lg">
+                          {(wedding.availableLanguages || ['en']).map(l => ({
+                            en: 'English', ru: 'Русский', uz: "O'zbekcha", kk: 'Қазақша', kaa: 'Қарақалпақша'
+                          }[l] || l)).join(', ')}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Default Language
                       </label>
                       {editMode ? (

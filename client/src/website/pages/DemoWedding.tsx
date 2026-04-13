@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import { CountdownTimer } from "@/website/components/countdown-timer";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { LanguageToggle } from "@/website/components/language-toggle";
+import { AzamatScrollMusic, type AzamatScrollMusicHandle } from "@/website/components/azamat-scroll-music";
 import { motion, AnimatePresence } from "framer-motion";
 
 const templateConfigs = {
@@ -93,7 +94,8 @@ const templateConfigs = {
     venue: "Skyline Rooftop Venue",
     date: "May 30, 2025",
     ceremony: "Ceremony at 4:30 PM",
-    story: "Aisha and Kamol met through a mutual friend's dinner party. One conversation led to another, and soon they were inseparable."
+    story: "Aisha and Kamol met through a mutual friend's dinner party. One conversation led to another, and soon they were inseparable.",
+    backgroundMusicUrl: "https://cdn.pixabay.com/download/audio/2022/03/10/audio_d1718ab41b.mp3" // Romantic piano music
   }
 };
 
@@ -113,6 +115,8 @@ function ModernDemoPreview() {
   const [envelopeOpening, setEnvelopeOpening] = useState(false);
   const [envelopeFullyOpened, setEnvelopeFullyOpened] = useState(false);
   const weddingDate = useMemo(() => new Date('2025-09-27T16:00:00'), []);
+  const musicRef = useRef<AzamatScrollMusicHandle | null>(null);
+  const musicUrl = templateConfigs.modern.backgroundMusicUrl;
 
   // Always start previews from the top.
   useEffect(() => {
@@ -142,9 +146,15 @@ function ModernDemoPreview() {
 
   const handleOpenEnvelope = () => {
     if (envelopeOpening) return;
+    console.log('Demo wedding: envelope open started');
+    musicRef.current?.startPlayback();
     setEnvelopeOpening(true);
-    setTimeout(() => setEnvelopeFullyOpened(true), 650);
     setTimeout(() => {
+      console.log('Demo wedding: envelope fully opened');
+      setEnvelopeFullyOpened(true);
+    }, 650);
+    setTimeout(() => {
+      console.log('Demo wedding: intro overlay hidden');
       setShowEnvelopeIntro(false);
     }, 1500);
   };
@@ -168,6 +178,8 @@ function ModernDemoPreview() {
 
   return (
     <div className="min-h-screen bg-[#070707] text-white overflow-x-hidden">
+      {musicUrl && <AzamatScrollMusic ref={musicRef} musicUrl={musicUrl} />}
+
       <style>{`
         @keyframes luxuryBgShift {
           0%, 100% { transform: scale(1.04) translate3d(0, 0, 0); }
@@ -306,12 +318,22 @@ function ModernDemoPreview() {
 
       {/* ── Envelope intro on demo ── */}
       {showEnvelopeIntro && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[#0f0d0a]/95 px-4">
+        <div
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-[#0f0d0a]/95 px-4"
+          onClick={() => {
+            console.log('Demo wedding: intro container clicked');
+            handleOpenEnvelope();
+          }}
+        >
           <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(212,176,140,0.16),transparent_60%)]" />
 
           <button
             type="button"
-            onClick={handleOpenEnvelope}
+            onClick={(event) => {
+              event.stopPropagation();
+              console.log('Demo wedding: envelope button clicked');
+              handleOpenEnvelope();
+            }}
             className="relative w-[min(92vw,430px)] h-[280px] cursor-pointer focus:outline-none"
             aria-label="Open invitation envelope"
           >

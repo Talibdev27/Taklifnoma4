@@ -8,8 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { EpicRSVPForm } from '@/website/components/epic-rsvp-form';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { EnhancedSocialShare } from '@/website/components/enhanced-social-share';
-import { WeddingWelcomeOverlay } from '@/website/components/wedding-welcome-overlay';
-import { BackgroundMusicPlayer } from '@/website/components/background-music-player';
+import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
 import {
   MapPin, Heart, MessageSquare, Calendar, Users, ChevronDown, ChevronUp, Sparkles,
 } from 'lucide-react';
@@ -38,39 +37,47 @@ export function AzamatTemplate({ wedding }: AzamatTemplateProps) {
   }
 
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [showWelcomeOverlay, setShowWelcomeOverlay] = useState(false);
-  const [triggerMusicPlay, setTriggerMusicPlay] = useState(false);
   const [activeNav, setActiveNav] = useState('home');
   const [showEnvelopeIntro, setShowEnvelopeIntro] = useState(false);
   const [envelopeOpening, setEnvelopeOpening] = useState(false);
   const [envelopeFullyOpened, setEnvelopeFullyOpened] = useState(false);
+  const musicRef = useRef<AzamatScrollMusicHandle | null>(null);
 
-  const welcomeStorageKey = `wedding-welcome-${wedding.uniqueUrl}`;
-
-  // Show welcome overlay on first visit
   useEffect(() => {
-    const seen = sessionStorage.getItem(welcomeStorageKey);
-    if (!seen) {
-      setShowWelcomeOverlay(true);
-    } else {
-      // Already seen welcome — show envelope
-      setShowEnvelopeIntro(true);
-    }
-  }, [welcomeStorageKey]);
-
-  const handleEnterSite = () => {
-    sessionStorage.setItem(welcomeStorageKey, 'true');
-    setShowWelcomeOverlay(false);
     setShowEnvelopeIntro(true);
-    setTriggerMusicPlay(true);
-    setTimeout(() => setTriggerMusicPlay(false), 1000);
-  };
+  }, []);
+
+  useEffect(() => {
+    if (wedding?.backgroundMusicUrl) {
+      console.log('Azamat template: background music URL found', {
+        backgroundMusicUrl: wedding.backgroundMusicUrl,
+      });
+      return;
+    }
+
+    console.warn('Azamat template: no background music URL configured');
+  }, [wedding?.backgroundMusicUrl]);
 
   const handleOpenEnvelope = () => {
     if (envelopeOpening) return;
+    console.log('Azamat template: envelope open started');
+
+    if (!wedding?.backgroundMusicUrl) {
+      console.warn('Azamat template: music not started because backgroundMusicUrl is empty');
+    } else if (!musicRef.current) {
+      console.warn('Azamat template: music not started because player ref is not mounted');
+    }
+
+    musicRef.current?.startPlayback();
     setEnvelopeOpening(true);
-    setTimeout(() => setEnvelopeFullyOpened(true), 650);
-    setTimeout(() => setShowEnvelopeIntro(false), 1500);
+    setTimeout(() => {
+      console.log('Azamat template: envelope fully opened');
+      setEnvelopeFullyOpened(true);
+    }, 650);
+    setTimeout(() => {
+      console.log('Azamat template: intro overlay hidden');
+      setShowEnvelopeIntro(false);
+    }, 1500);
   };
 
   const getDateLocale = () => {
@@ -240,29 +247,8 @@ export function AzamatTemplate({ wedding }: AzamatTemplateProps) {
         }
       `}</style>
 
-      {/* ── Welcome overlay ── */}
-      {showWelcomeOverlay && (
-        <WeddingWelcomeOverlay
-          weddingData={{
-            bride: wedding.groom,
-            groom: wedding.bride,
-            template: wedding.template,
-            eventType: wedding.eventType,
-          }}
-          hasMusic={!!wedding.backgroundMusicUrl}
-          onEnter={handleEnterSite}
-          isVisible={showWelcomeOverlay}
-          defaultLanguage={wedding.defaultLanguage}
-        />
-      )}
-
       {/* ── Background music ── */}
-      {wedding.backgroundMusicUrl && (
-        <BackgroundMusicPlayer
-          musicUrl={wedding.backgroundMusicUrl}
-          triggerPlay={triggerMusicPlay}
-        />
-      )}
+      <AzamatScrollMusic ref={musicRef} musicUrl={wedding.backgroundMusicUrl ?? ''} />
 
       {/* ── Luxury background ── */}
       <div className="lux-bg" aria-hidden>
@@ -272,11 +258,21 @@ export function AzamatTemplate({ wedding }: AzamatTemplateProps) {
 
       {/* ── Envelope intro ── */}
       {showEnvelopeIntro && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[#0f0d0a]/95 px-4">
+        <div
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-[#0f0d0a]/95 px-4"
+          onClick={() => {
+            console.log('Azamat template: intro container clicked');
+            handleOpenEnvelope();
+          }}
+        >
           <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(212,176,140,0.16),transparent_60%)]" />
           <button
             type="button"
-            onClick={handleOpenEnvelope}
+            onClick={(event) => {
+              event.stopPropagation();
+              console.log('Azamat template: envelope button clicked');
+              handleOpenEnvelope();
+            }}
             className="relative w-[min(92vw,430px)] h-[280px] cursor-pointer focus:outline-none"
             aria-label="Taklifnomani ochish"
           >
@@ -389,7 +385,7 @@ export function AzamatTemplate({ wedding }: AzamatTemplateProps) {
       {/* ════════════ HERO ════════════ */}
       <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
         <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover scale-105" preload="metadata">
-          <source src="/bg_video.mp4" type="video/mp4" />
+          <source src="/uploads/azamat_temp_bg.mp4" type="video/mp4" />
         </video>
         {/* Fallback/overlay using couple photo */}
         {wedding.couplePhotoUrl && (
@@ -713,7 +709,7 @@ export function AzamatTemplate({ wedding }: AzamatTemplateProps) {
             variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="glass-card rounded-3xl p-7"
           >
-            <EpicRSVPForm wedding={wedding} primaryColor="#c9a96e" accentColor="#a07840" />
+            <EpicRSVPForm wedding={wedding} primaryColor="#c9a96e" accentColor="#a07840" labelColor="text-[#e8d5b0]" />
           </motion.div>
         </div>
       </section>

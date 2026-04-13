@@ -1380,8 +1380,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'No file uploaded' });
       }
 
-      // Use Cloudinary URL if available, otherwise fallback to local
-      const photoUrl = req.file.path || `/uploads/${req.file.filename}`;
+      // Always use the web-accessible path; req.file.path is a filesystem path
+      const photoUrl = `/uploads/${req.file.filename}`;
       res.json({
         url: photoUrl,
         message: 'Couple photo uploaded successfully',
@@ -1440,8 +1440,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         path: req.file.path
       });
 
-      // Use Cloudinary URL if available, otherwise fallback to local
-      const musicUrl = req.file.path || `/uploads/${req.file.filename}`;
+      // Always use the web-accessible path; req.file.path is a filesystem path
+      // and cannot be fetched by the browser.
+      const musicUrl = `/uploads/${req.file.filename}`;
 
       console.log('Music URL generated:', musicUrl);
 
@@ -2188,8 +2189,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Invalid Wedding ID format.' });
       }
 
-      // Use Cloudinary URL if available, otherwise fallback to local
-      const photoUrl = req.file.path || `/uploads/${req.file.filename}`;
+      // Always use the web-accessible path; req.file.path is a filesystem path
+      const photoUrl = `/uploads/${req.file.filename}`;
 
       // Create the photo entry in the photos table
       const newPhoto = await storage.createPhoto({
