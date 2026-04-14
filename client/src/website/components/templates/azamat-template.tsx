@@ -749,7 +749,12 @@ export function AzamatTemplate({ wedding }: AzamatTemplateProps) {
                 </h3>
               </div>
               <div className="h-px w-full bg-gradient-to-r from-[#c9a96e]/20 via-[#c9a96e]/40 to-[#c9a96e]/20 mb-6" />
-              <GuestBookForm weddingId={wedding.id} primaryColor="#c9a96e" accentColor="#a07840" />
+              <GuestBookForm
+                weddingId={wedding.id}
+                primaryColor="#c9a96e"
+                accentColor="#a07840"
+                showSuccessToast={false}
+              />
             </motion.div>
 
             {/* @ts-ignore Framer Motion className typing issue */}

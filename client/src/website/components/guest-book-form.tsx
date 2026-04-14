@@ -9,9 +9,15 @@ interface GuestBookFormProps {
   weddingId: number;
   primaryColor?: string;
   accentColor?: string;
+  showSuccessToast?: boolean;
 }
 
-export function GuestBookForm({ weddingId, primaryColor = '#c9a96e', accentColor = '#a07840' }: GuestBookFormProps) {
+export function GuestBookForm({
+  weddingId,
+  primaryColor = '#c9a96e',
+  accentColor = '#a07840',
+  showSuccessToast = true,
+}: GuestBookFormProps) {
   const { t } = useTranslation();
   const [guestName, setGuestName] = useState('');
   const [message, setMessage] = useState('');
@@ -30,10 +36,12 @@ export function GuestBookForm({ weddingId, primaryColor = '#c9a96e', accentColor
       return response.json();
     },
     onSuccess: () => {
-      toast({
-        title: t('guestBook.messageAdded'),
-        description: t('guestBook.messageAddedDesc'),
-      });
+      if (showSuccessToast) {
+        toast({
+          title: t('guestBook.messageAdded'),
+          description: t('guestBook.messageAddedDesc'),
+        });
+      }
       setGuestName('');
       setMessage('');
       queryClient.invalidateQueries({ queryKey: ['/api/guest-book/wedding', weddingId] });
