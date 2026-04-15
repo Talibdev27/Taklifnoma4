@@ -65,7 +65,25 @@ export default function WeddingSite() {
 
   const { data: wedding, isLoading, error } = useQuery<Wedding>({
     queryKey: [`/api/weddings/url/${uniqueUrl}`],
-    queryFn: () => fetch(`/api/weddings/url/${uniqueUrl}`).then(res => res.json()),
+    queryFn: async () => {
+      const token = localStorage.getItem('token');
+      const headers: HeadersInit = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`/api/weddings/url/${uniqueUrl}`, { headers });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (errorData.pendingApproval) {
+          throw new Error('PENDING_APPROVAL');
+        }
+        throw new Error('Wedding not found');
+      }
+      
+      return response.json();
+    },
     enabled: !!uniqueUrl,
   });
 
@@ -93,6 +111,36 @@ export default function WeddingSite() {
     return <WeddingPageLoading message={t('common.loading')} />;
   }
 
+  // Check if wedding is pending approval
+  if (error && (error as Error).message === 'PENDING_APPROVAL') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-taklif-cream via-white to-taklif-gold/10 flex items-center justify-center p-4">
+        <Card className="wedding-card max-w-md mx-4">
+          <CardContent className="pt-8 pb-8 text-center">
+            <div className="text-6xl mb-4">⏳</div>
+            <h2 className="text-2xl font-playfair font-semibold text-taklif-navy mb-3">
+              {t('wedding.pendingApproval')}
+            </h2>
+            <p className="text-taklif-navy/70 mb-6">
+              {t('wedding.pendingApprovalMessage')}
+            </p>
+            <div className="bg-taklif-gold/10 rounded-lg p-4 mb-6">
+              <p className="text-sm text-taklif-navy/80">
+                {t('wedding.contactAdminMessage')}
+              </p>
+            </div>
+            <Button 
+              onClick={() => window.location.href = '/'}
+              className="bg-taklif-burgundy hover:bg-taklif-burgundy/90 text-white"
+            >
+              {t('common.backToHome')}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (error || !wedding) {
     return (
       <div className="min-h-screen bg-soft-white flex items-center justify-center">
@@ -100,10 +148,10 @@ export default function WeddingSite() {
           <CardContent className="pt-6 text-center">
             <div className="text-6xl mb-4">💔</div>
             <h2 className="text-xl font-playfair font-semibold text-charcoal mb-2">
-              Wedding Not Found
+              {t('wedding.notFound')}
             </h2>
             <p className="text-charcoal opacity-70">
-              This wedding website doesn't exist or has been made private.
+              {t('wedding.notFoundMessage')}
             </p>
           </CardContent>
         </Card>

@@ -42,6 +42,7 @@ export const weddings = pgTable("weddings", {
   backgroundMusicUrl: text("background_music_url"),
   dressCode: text("dress_code"),
   isPublic: boolean("is_public").notNull().default(true),
+  isApproved: boolean("is_approved").notNull().default(false),
   availableLanguages: json("available_languages").$type<string[]>().notNull().default(['en']),
   defaultLanguage: varchar("default_language", { length: 10 }).notNull().default("en"),
   // Birthday-specific fields

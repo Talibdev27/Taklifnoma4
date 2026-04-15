@@ -64,23 +64,42 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F8F1F1] to-[#89916B]/10 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md wedding-card elegant-shadow">
-        <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 bg-[#D4B08C] rounded-full flex items-center justify-center">
-            <Shield className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-taklif-cream to-taklif-gold/10">
+      {/* Top Navigation */}
+      <div className="w-full bg-white/80 backdrop-blur-sm border-b border-taklif-gold/10 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <img 
+              src="/takliflinklogo.jpg" 
+              alt="Taklif Link" 
+              className="h-10 w-10 object-contain rounded-full shadow-md"
+            />
+            <h1 className="text-2xl font-playfair font-bold text-taklif-burgundy">
+              Taklif Link
+            </h1>
           </div>
-          <CardTitle className="text-2xl font-playfair font-bold text-[#2C3338]">
-            Admin Login
-          </CardTitle>
-          <p className="text-[#2C3338]/70">
-            Access the invitation platform management dashboard
-          </p>
-        </CardHeader>
-        <CardContent>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex items-center justify-center p-4 min-h-[calc(100vh-73px)]">
+        <Card className="w-full max-w-md wedding-card elegant-shadow">
+          <CardHeader className="text-center space-y-4">
+            <div className="mx-auto w-16 h-16 bg-taklif-burgundy rounded-full flex items-center justify-center shadow-lg">
+              <Shield className="w-8 h-8 text-white" />
+            </div>
+            <CardTitle className="text-2xl font-playfair font-bold text-taklif-navy text-center">
+              Admin Login
+            </CardTitle>
+            <p className="text-taklif-navy/70 text-center">
+              Access the invitation platform management dashboard
+            </p>
+          </CardHeader>
+          <CardContent className="px-6">
+            <div className="w-full">
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-[#2C3338] font-semibold">
+              <Label htmlFor="username" className="text-taklif-navy font-semibold">
                 Username
               </Label>
               <Input
@@ -95,7 +114,7 @@ export default function AdminLogin() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-[#2C3338] font-semibold">
+              <Label htmlFor="password" className="text-taklif-navy font-semibold">
                 Password
               </Label>
               <div className="relative">
@@ -116,9 +135,9 @@ export default function AdminLogin() {
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-[#2C3338]/50" />
+                    <EyeOff className="h-4 w-4 text-taklif-navy/50" />
                   ) : (
-                    <Eye className="h-4 w-4 text-[#2C3338]/50" />
+                    <Eye className="h-4 w-4 text-taklif-navy/50" />
                   )}
                 </Button>
               </div>
@@ -132,10 +151,10 @@ export default function AdminLogin() {
               {isLoading ? "Signing In..." : "Sign In"}
             </Button>
           </form>
-
-
+          </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

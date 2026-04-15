@@ -237,8 +237,8 @@ export default function WeddingManage() {
       <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D4B08C] mx-auto mb-4"></div>
-            <p className="text-[#2C3338]/70">Loading authentication...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-taklif-gold mx-auto mb-4"></div>
+            <p className="text-taklif-navy/70">Loading authentication...</p>
           </CardContent>
         </Card>
       </div>
@@ -250,8 +250,8 @@ export default function WeddingManage() {
       <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
-            <h2 className="text-xl font-semibold text-[#2C3338] mb-2">Wedding Not Found</h2>
-            <p className="text-[#2C3338]/70 mb-4">The wedding you're looking for doesn't exist or has been removed.</p>
+            <h2 className="text-xl font-semibold text-taklif-navy mb-2">Wedding Not Found</h2>
+            <p className="text-taklif-navy/70 mb-4">The wedding you're looking for doesn't exist or has been removed.</p>
             <Button onClick={() => setLocation('/dashboard')} className="wedding-button">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
@@ -268,8 +268,8 @@ export default function WeddingManage() {
       <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
-            <h2 className="text-xl font-semibold text-[#2C3338] mb-2">{t('auth.loginRequired')}</h2>
-            <p className="text-[#2C3338]/70 mb-4">{t('auth.pleaseLogin')}</p>
+            <h2 className="text-xl font-semibold text-taklif-navy mb-2">{t('auth.loginRequired')}</h2>
+            <p className="text-taklif-navy/70 mb-4">{t('auth.pleaseLogin')}</p>
             <Button onClick={() => setLocation('/login')} className="wedding-button">
               <ArrowLeft className="w-4 h-4 mr-2" />
               {t('auth.goToLogin')}
@@ -285,8 +285,8 @@ export default function WeddingManage() {
       <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
-            <h2 className="text-xl font-semibold text-[#2C3338] mb-2">{t('manage.accessDenied')}</h2>
-            <p className="text-[#2C3338]/70 mb-4">{t('manage.noPermission')}</p>
+            <h2 className="text-xl font-semibold text-taklif-navy mb-2">{t('manage.accessDenied')}</h2>
+            <p className="text-taklif-navy/70 mb-4">{t('manage.noPermission')}</p>
             <Button onClick={() => {
               // SECURITY FIX: Use server-verified role, not localStorage
               if (currentUser.role === 'guest_manager') {
@@ -315,15 +315,15 @@ export default function WeddingManage() {
               <Button 
                 variant="ghost" 
                 onClick={handleBackToDashboard}
-                className="text-[#2C3338] hover:bg-[#F8F1F1]"
+                className="text-taklif-navy hover:bg-taklif-cream"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 {t('manage.backToDashboard')}
               </Button>
               <div className="h-6 w-px bg-gray-200"></div>
               <div>
-                <h1 className="text-2xl font-bold text-[#2C3338]">{t('manage.weddingManagement')}</h1>
-                <p className="text-sm text-[#2C3338]/70">
+                <h1 className="text-2xl font-bold text-taklif-navy">{t('manage.weddingManagement')}</h1>
+                <p className="text-sm text-taklif-navy/70">
                   {wedding.bride} & {wedding.groom} • {formatDate(wedding.weddingDate)}
                 </p>
               </div>
@@ -343,7 +343,7 @@ export default function WeddingManage() {
                       variant="outline"
                       size="sm"
                       onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
-                      className="border-[#D4B08C] text-[#D4B08C] hover:bg-[#D4B08C] hover:text-white"
+                      className="border-taklif-gold text-taklif-gold hover:bg-taklif-gold hover:text-white"
                     >
                       <ExternalLink className="w-4 h-4 mr-2" />
                       {t('manage.viewSite')}
@@ -386,7 +386,7 @@ export default function WeddingManage() {
             <Card className="wedding-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5 text-[#D4B08C]" />
+                  <Settings className="h-5 w-5 text-taklif-gold" />
                   {t('manage.weddingInformation')}
                 </CardTitle>
               </CardHeader>

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -19,6 +19,7 @@ import { formatDateForInput } from "@/lib/utils";
 import { Heart, Calendar, MapPin, Camera, Music, Palette, ChevronLeft, ChevronRight } from "lucide-react";
 import { CreateWeddingLoading } from "@/components/ui/loading";
 import { isFreeTemplate, isPremiumTemplate } from "@/lib/template-tiers";
+import { z } from "zod";
 
 const createWeddingSchema = insertWeddingSchema.extend({
   weddingDate: insertWeddingSchema.shape.weddingDate
@@ -31,6 +32,10 @@ const createWeddingSchema = insertWeddingSchema.extend({
       message: "Wedding date must be today or in the future",
     }),
   weddingTime: insertWeddingSchema.shape.weddingTime.optional().default("18:00"),
+}).partial().required({
+  bride: true,
+  groom: true,
+  weddingDate: true,
 });
 
 type CreateWeddingFormData = InsertWedding & {
@@ -131,9 +136,12 @@ export default function CreateWedding() {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
+  const [uploadingMusic, setUploadingMusic] = useState(false);
+  const [musicFileName, setMusicFileName] = useState<string>("");
 
   const form = useForm<CreateWeddingFormData>({
-    resolver: zodResolver(createWeddingSchema),
+    // No resolver for multi-step form - validate manually in onSubmit
+    mode: "onChange",
     defaultValues: {
       bride: "",
       groom: "",
@@ -142,8 +150,8 @@ export default function CreateWedding() {
       venue: "",
       venueAddress: "",
       template: "gardenRomance",
-      primaryColor: "#D4B08C",
-      accentColor: "#89916B",
+      primaryColor: "#D4AF76",
+      accentColor: "#7A1E3E",
       story: "",
       backgroundMusicUrl: "",
       isPublic: true,
@@ -153,25 +161,30 @@ export default function CreateWedding() {
   const createWedding = useMutation({
     mutationFn: async (data: CreateWeddingFormData) => {
       try {
-        // Check if user is logged in
-        const currentUserId = localStorage.getItem('currentUserId');
-        if (!currentUserId) {
+        // Get current user from API using auth token
+        const token = localStorage.getItem('token');
+        if (!token) {
           throw new Error('Please register or login to create a wedding website');
         }
 
-        // Check if user has paid subscription first
-        const userResponse = await fetch(`/api/users/${currentUserId}`);
-        if (!userResponse.ok) {
-          throw new Error('Failed to verify user status');
+        const currentUserResponse = await fetch('/api/user/current', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (!currentUserResponse.ok) {
+          throw new Error('Please register or login to create a wedding website');
         }
-        
-        const user = await userResponse.json();
-        
+
+        const currentUser = await currentUserResponse.json();
+        console.log('Current user:', currentUser);
+
         // Check if template requires payment
         const templateRequiresPayment = isPremiumTemplate(data.template || 'gardenRomance');
         
         // Only require payment for premium templates (unless user has paid subscription or is admin)
-        if (templateRequiresPayment && !user.hasPaidSubscription && !user.isAdmin) {
+        if (templateRequiresPayment && !currentUser.hasPaidSubscription && !currentUser.isAdmin) {
           // Redirect to payment page for premium templates
           setLocation('/payment');
           return;
@@ -181,7 +194,7 @@ export default function CreateWedding() {
         
         // Create wedding for registered user
         const weddingData = { 
-          userId: parseInt(currentUserId),
+          userId: currentUser.id,
           bride: data.bride,
           groom: data.groom,
           weddingDate: data.weddingDate.toISOString(),
@@ -192,14 +205,18 @@ export default function CreateWedding() {
           template: data.template,
           primaryColor: data.primaryColor,
           accentColor: data.accentColor,
-          isPublic: data.isPublic
+          isPublic: data.isPublic,
+          backgroundMusicUrl: data.backgroundMusicUrl || "",
         };
         
         console.log('Sending wedding data:', weddingData);
         
         const weddingResponse = await fetch('/api/weddings', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
           body: JSON.stringify(weddingData)
         });
         
@@ -240,10 +257,120 @@ export default function CreateWedding() {
     },
   });
 
-  const onSubmit = (data: CreateWeddingFormData) => {
+  const handleMusicUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file type
+    const allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a', 'audio/aac', 'audio/mp4'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "Xato",
+        description: "Faqat audio fayllar qabul qilinadi (MP3, WAV, OGG, M4A, AAC)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check file size (10MB max)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "Xato",
+        description: "Fayl hajmi 10MB dan oshmasligi kerak",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadingMusic(true);
+    setMusicFileName(file.name);
+
+    try {
+      const formData = new FormData();
+      formData.append('music', file);
+
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/upload/wedding-music', {
+        method: 'POST',
+        headers: {
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload music');
+      }
+
+      const data = await response.json();
+      
+      // Update form with the uploaded music URL
+      form.setValue('backgroundMusicUrl', data.url);
+      
+      toast({
+        title: "Muvaffaqiyat!",
+        description: "Fon musiqasi yuklandi",
+      });
+    } catch (error) {
+      console.error('Music upload error:', error);
+      toast({
+        title: "Xato",
+        description: "Fon musiqasini yuklashda xatolik yuz berdi",
+        variant: "destructive",
+      });
+      setMusicFileName("");
+    } finally {
+      setUploadingMusic(false);
+    }
+  };
+
+  const onSubmit = async (data: CreateWeddingFormData) => {
+    console.log('Form submitted, current step:', currentStep);
+    console.log('Form data:', data);
+    
     if (currentStep < totalSteps) {
+      // Validate required fields for current step
+      if (currentStep === 1) {
+        if (!data.bride?.trim() || !data.groom?.trim()) {
+          toast({
+            title: t('createWedding.error'),
+            description: "Kelin va kuyov ismlarini to'ldiring",
+            variant: "destructive",
+          });
+          return;
+        }
+        if (!data.weddingDate) {
+          toast({
+            title: t('createWedding.error'),
+            description: "To'y sanasini tanlang",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+      
+      // Move to next step
+      console.log('Moving to next step...');
       nextStep();
     } else {
+      // Final step - validate and create the wedding
+      console.log('Final step - validating and creating wedding...');
+      
+      // Final validation
+      if (!data.bride?.trim() || !data.groom?.trim()) {
+        toast({
+          title: t('createWedding.error'),
+          description: "Kelin va kuyov ismlarini to'ldiring",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Ensure template is selected
+      if (!data.template) {
+        data.template = "gardenRomance";
+      }
+      
       createWedding.mutate(data);
     }
   };
@@ -267,27 +394,43 @@ export default function CreateWedding() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-white to-sage/10 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-taklif-cream via-white to-taklif-gold/10">
+      {/* Top Navigation */}
+      <div className="w-full bg-white/80 backdrop-blur-sm border-b border-taklif-gold/10 px-4 sm:px-6 py-4 sticky top-0 z-50">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <img 
+              src="/takliflinklogo.jpg" 
+              alt="Taklif Link" 
+              className="h-8 w-8 sm:h-10 sm:w-10 object-contain rounded-full shadow-md"
+            />
+            <h1 className="text-lg sm:text-2xl font-playfair font-bold text-taklif-burgundy">
+              Taklif Link
+            </h1>
+          </Link>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto py-4 sm:py-8 px-4">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-playfair font-bold text-charcoal mb-4">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-playfair font-bold text-taklif-navy mb-2 sm:mb-4">
             {t('createWedding.title')}
           </h1>
-          <p className="text-lg text-charcoal/70 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base lg:text-lg text-taklif-navy/70 max-w-2xl mx-auto px-4">
             {t('createWedding.subtitle')}
           </p>
         </div>
 
         {/* Progress Steps */}
-        <div className="flex justify-center mb-8">
-          <div className="flex items-center space-x-4">
+        <div className="flex justify-center mb-6 sm:mb-8">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {[1, 2, 3].map((step) => (
               <div key={step} className="flex items-center">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
+                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all ${
                     step <= currentStep
-                      ? "bg-gold text-white shadow-lg"
+                      ? "bg-taklif-gold text-white shadow-lg"
                       : "bg-gray-200 text-gray-500"
                   }`}
                 >
@@ -295,8 +438,8 @@ export default function CreateWedding() {
                 </div>
                 {step < 3 && (
                   <div
-                    className={`w-12 h-0.5 mx-2 transition-all ${
-                      step < currentStep ? "bg-gold" : "bg-gray-200"
+                    className={`w-8 sm:w-12 h-0.5 mx-1 sm:mx-2 transition-all ${
+                      step < currentStep ? "bg-taklif-gold" : "bg-gray-200"
                     }`}
                   />
                 )}
@@ -311,28 +454,28 @@ export default function CreateWedding() {
             {currentStep === 1 && (
               <Card className="wedding-card">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-2xl font-playfair font-bold text-charcoal flex items-center justify-center gap-2">
-                    <Heart className="text-gold" />
+                  <CardTitle className="text-xl sm:text-2xl font-playfair font-bold text-taklif-navy flex items-center justify-center gap-2">
+                    <Heart className="text-taklif-gold" />
                     {t('createWedding.basicInfo')}
                   </CardTitle>
-                  <p className="text-charcoal/70">
+                  <p className="text-sm sm:text-base text-taklif-navy/70">
                     {t('createWedding.basicInfoDescription')}
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid sm:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="bride"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-charcoal font-semibold">
+                          <FormLabel className="text-taklif-navy font-semibold">
                             {t('createWedding.brideName')}
                           </FormLabel>
                           <FormControl>
                             <Input
                               placeholder={t('createWedding.brideNamePlaceholder')}
-                              className="wedding-input"
+                              className="wedding-input border-taklif-gold/20 focus:border-taklif-gold focus:ring-taklif-gold/30"
                               {...field}
                             />
                           </FormControl>
@@ -346,13 +489,13 @@ export default function CreateWedding() {
                       name="groom"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-charcoal font-semibold">
+                          <FormLabel className="text-taklif-navy font-semibold">
                             {t('createWedding.groomName')}
                           </FormLabel>
                           <FormControl>
                             <Input
                               placeholder={t('createWedding.groomNamePlaceholder')}
-                              className="wedding-input"
+                              className="wedding-input border-taklif-gold/20 focus:border-taklif-gold focus:ring-taklif-gold/30"
                               {...field}
                             />
                           </FormControl>
@@ -367,14 +510,14 @@ export default function CreateWedding() {
                     name="weddingDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-charcoal font-semibold flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-gold" />
+                        <FormLabel className="text-taklif-navy font-semibold flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-taklif-gold" />
                           {t('createWedding.weddingDate')}
                         </FormLabel>
                         <FormControl>
                           <Input
                             type="date"
-                            className="wedding-input"
+                            className="wedding-input border-taklif-gold/20 focus:border-taklif-gold focus:ring-taklif-gold/30"
                             value={formatDateForInput(field.value)}
                             onChange={(e) => field.onChange(new Date(e.target.value))}
                           />
@@ -384,19 +527,19 @@ export default function CreateWedding() {
                     )}
                   />
 
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid sm:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="weddingTime"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-charcoal font-semibold">
+                          <FormLabel className="text-taklif-navy font-semibold">
                             {t('createWedding.ceremonyTime')}
                           </FormLabel>
                           <FormControl>
                             <Input
                               placeholder={t('createWedding.ceremonyTimePlaceholder')}
-                              className="wedding-input"
+                              className="wedding-input border-taklif-gold/20 focus:border-taklif-gold focus:ring-taklif-gold/30"
                               {...field}
                             />
                           </FormControl>
@@ -411,14 +554,14 @@ export default function CreateWedding() {
                     name="venue"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-charcoal font-semibold flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-gold" />
+                        <FormLabel className="text-taklif-navy font-semibold flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-taklif-gold" />
                           {t('createWedding.venue')}
                         </FormLabel>
                         <FormControl>
                           <Input
                             placeholder={t('createWedding.venuePlaceholder')}
-                            className="wedding-input"
+                            className="wedding-input border-taklif-gold/20 focus:border-taklif-gold focus:ring-taklif-gold/30"
                             {...field}
                           />
                         </FormControl>
@@ -432,13 +575,13 @@ export default function CreateWedding() {
                     name="venueAddress"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-charcoal font-semibold">
+                        <FormLabel className="text-taklif-navy font-semibold">
                           {t('createWedding.venueAddress')}
                         </FormLabel>
                         <FormControl>
                           <Input
                             placeholder={t('createWedding.venueAddressPlaceholder')}
-                            className="wedding-input"
+                            className="wedding-input border-taklif-gold/20 focus:border-taklif-gold focus:ring-taklif-gold/30"
                             {...field}
                           />
                         </FormControl>
@@ -454,11 +597,11 @@ export default function CreateWedding() {
             {currentStep === 2 && (
               <Card className="wedding-card">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-2xl font-playfair font-bold text-charcoal flex items-center justify-center gap-2">
-                    <Camera className="text-gold" />
+                  <CardTitle className="text-xl sm:text-2xl font-playfair font-bold text-taklif-navy flex items-center justify-center gap-2">
+                    <Camera className="text-taklif-gold" />
                     {t('createWedding.storyDetails')}
                   </CardTitle>
-                  <p className="text-charcoal/70">
+                  <p className="text-sm sm:text-base text-taklif-navy/70">
                     {t('createWedding.storyDetailsDescription')}
                   </p>
                 </CardHeader>
@@ -468,13 +611,13 @@ export default function CreateWedding() {
                     name="story"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-charcoal font-semibold">
+                        <FormLabel className="text-taklif-navy font-semibold">
                           {t('createWedding.loveStory')}
                         </FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder={t('createWedding.loveStoryPlaceholder')}
-                            className="wedding-input min-h-[120px]"
+                            className="wedding-input border-taklif-gold/20 focus:border-taklif-gold focus:ring-taklif-gold/30 min-h-[100px] sm:min-h-[120px]"
                             {...field}
                             value={field.value || ""}
                           />
@@ -489,18 +632,42 @@ export default function CreateWedding() {
                     name="backgroundMusicUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-charcoal font-semibold flex items-center gap-2">
-                          <Music className="w-4 h-4 text-gold" />
+                        <FormLabel className="text-taklif-navy font-semibold flex items-center gap-2">
+                          <Music className="w-4 h-4 text-taklif-gold" />
                           {t('createWedding.backgroundMusic')}
                         </FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder={t('createWedding.backgroundMusicPlaceholder')}
-                            className="wedding-input"
-                            {...field}
-                            value={field.value || ""}
-                          />
+                          <div className="space-y-2">
+                            <Input
+                              type="file"
+                              accept="audio/mp3,audio/mpeg,audio/wav,audio/ogg,audio/m4a,audio/aac,audio/mp4"
+                              onChange={handleMusicUpload}
+                              disabled={uploadingMusic}
+                              className="wedding-input border-taklif-gold/20 focus:border-taklif-gold focus:ring-taklif-gold/30 cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-taklif-gold file:text-white hover:file:bg-taklif-gold/90 file:cursor-pointer"
+                            />
+                            {uploadingMusic && (
+                              <div className="flex items-center gap-2 text-sm text-taklif-navy/70">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-taklif-gold"></div>
+                                <span>Yuklanmoqda...</span>
+                              </div>
+                            )}
+                            {musicFileName && !uploadingMusic && (
+                              <div className="flex items-center gap-2 text-sm text-taklif-navy/70">
+                                <Music className="w-4 h-4 text-taklif-gold" />
+                                <span className="truncate">{musicFileName}</span>
+                              </div>
+                            )}
+                            {field.value && (
+                              <audio controls className="w-full mt-2">
+                                <source src={field.value} type="audio/mpeg" />
+                                Brauzeringiz audio elementni qo'llab-quvvatlamaydi.
+                              </audio>
+                            )}
+                          </div>
                         </FormControl>
+                        <p className="text-xs text-taklif-navy/60">
+                          MP3, WAV, OGG, M4A, AAC (10MB gacha)
+                        </p>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -510,12 +677,12 @@ export default function CreateWedding() {
                     control={form.control}
                     name="isPublic"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border border-sage/20 p-4">
-                        <div className="space-y-0.5">
-                          <FormLabel className="text-base font-semibold text-charcoal">
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border border-taklif-gold/20 p-4">
+                        <div className="space-y-0.5 flex-1 pr-4">
+                          <FormLabel className="text-sm sm:text-base font-semibold text-taklif-navy">
                             {t('createWedding.makePublic')}
                           </FormLabel>
-                          <p className="text-sm text-charcoal/70">
+                          <p className="text-xs sm:text-sm text-taklif-navy/70">
                             {t('createWedding.makePublicDescription')}
                           </p>
                         </div>
@@ -536,11 +703,11 @@ export default function CreateWedding() {
             {currentStep === 3 && (
               <Card className="wedding-card">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-2xl font-playfair font-bold text-charcoal flex items-center justify-center gap-2">
-                    <Palette className="text-gold" />
+                  <CardTitle className="text-xl sm:text-2xl font-playfair font-bold text-taklif-navy flex items-center justify-center gap-2">
+                    <Palette className="text-taklif-gold" />
                     {t('createWedding.designTemplate')}
                   </CardTitle>
-                  <p className="text-charcoal/70">
+                  <p className="text-sm sm:text-base text-taklif-navy/70">
                     {t('createWedding.designTemplateDescription')}
                   </p>
                 </CardHeader>
@@ -550,17 +717,17 @@ export default function CreateWedding() {
                     name="template"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-lg font-semibold text-charcoal">
+                        <FormLabel className="text-base sm:text-lg font-semibold text-taklif-navy">
                           {t('createWedding.chooseTemplate')}
                         </FormLabel>
-                        <div className="grid md:grid-cols-2 gap-6 mt-4">
+                        <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mt-4">
                           {templateOptions.map((template) => (
                             <div
                               key={template.id}
-                              className={`relative cursor-pointer rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 ${
+                              className={`relative cursor-pointer rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 touch-manipulation ${
                                 field.value === template.id
-                                  ? "ring-4 ring-gold shadow-2xl"
-                                  : "ring-2 ring-gray-200 hover:ring-gold/50"
+                                  ? "ring-4 ring-taklif-gold shadow-2xl"
+                                  : "ring-2 ring-gray-200 hover:ring-taklif-gold/50"
                               }`}
                               onClick={() => {
                                 console.log('Template clicked:', template.id);
@@ -572,7 +739,7 @@ export default function CreateWedding() {
                               <img
                                 src={template.image}
                                 alt={getTemplateName(template)}
-                                className="w-full h-48 object-cover"
+                                className="w-full h-40 sm:h-48 object-cover"
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                               <div className="absolute top-2 right-2">
@@ -587,11 +754,11 @@ export default function CreateWedding() {
                                 ) : null}
                               </div>
                               <div className="absolute bottom-4 left-4 right-4">
-                                <h3 className="text-white font-semibold text-lg">
+                                <h3 className="text-white font-semibold text-base sm:text-lg truncate">
                                   {getTemplateName(template)}
                                 </h3>
                                 {field.value === template.id && (
-                                  <Badge className="mt-2 bg-gold hover:bg-gold/90">
+                                  <Badge className="mt-2 bg-taklif-gold hover:bg-taklif-gold/90">
                                     {t('createWedding.selected')}
                                   </Badge>
                                 )}
@@ -603,21 +770,21 @@ export default function CreateWedding() {
                     )}
                   />
 
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid sm:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="primaryColor"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-charcoal font-semibold">
+                          <FormLabel className="text-taklif-navy font-semibold">
                             {t('createWedding.primaryColor')}
                           </FormLabel>
                           <div className="flex items-center space-x-3">
                             <FormControl>
-                              <Input type="color" className="w-12 h-12 rounded-lg border" {...field} />
+                              <Input type="color" className="w-12 h-12 rounded-lg border border-taklif-gold/20" {...field} />
                             </FormControl>
                             <FormControl>
-                              <Input placeholder="#D4B08C" {...field} />
+                              <Input placeholder="#D4AF76" {...field} className="border-taklif-gold/20 focus:border-taklif-gold focus:ring-taklif-gold/30" />
                             </FormControl>
                           </div>
                           <FormMessage />
@@ -630,15 +797,15 @@ export default function CreateWedding() {
                       name="accentColor"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-charcoal font-semibold">
+                          <FormLabel className="text-taklif-navy font-semibold">
                             {t('createWedding.accentColor')}
                           </FormLabel>
                           <div className="flex items-center space-x-3">
                             <FormControl>
-                              <Input type="color" className="w-12 h-12 rounded-lg border" {...field} />
+                              <Input type="color" className="w-12 h-12 rounded-lg border border-taklif-gold/20" {...field} />
                             </FormControl>
                             <FormControl>
-                              <Input placeholder="#89916B" {...field} />
+                              <Input placeholder="#7A1E3E" {...field} className="border-taklif-gold/20 focus:border-taklif-gold focus:ring-taklif-gold/30" />
                             </FormControl>
                           </div>
                           <FormMessage />
@@ -651,20 +818,21 @@ export default function CreateWedding() {
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between items-center pt-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between items-stretch sm:items-center gap-4 pt-6">
               <Button
                 type="button"
                 variant="outline"
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className="flex items-center gap-2"
+                className="flex items-center justify-center gap-2 border-taklif-gold/30 text-taklif-navy hover:bg-taklif-gold/10 order-2 sm:order-1"
               >
                 <ChevronLeft className="w-4 h-4" />
-                {t('createWedding.previous')}
+                <span className="hidden sm:inline">{t('createWedding.previous')}</span>
+                <span className="sm:hidden">Previous</span>
               </Button>
 
-              <div className="text-center">
-                <p className="text-sm text-charcoal/60">
+              <div className="text-center order-1 sm:order-2">
+                <p className="text-xs sm:text-sm text-taklif-navy/60 font-medium">
                   {t('createWedding.step')} {currentStep} {t('createWedding.of')} {totalSteps}
                 </p>
               </div>
@@ -672,16 +840,18 @@ export default function CreateWedding() {
               <Button
                 type="submit"
                 disabled={createWedding.isPending}
-                className="wedding-button flex items-center gap-2"
+                className="bg-taklif-burgundy hover:bg-taklif-burgundy/90 text-white flex items-center justify-center gap-2 order-3"
               >
                 {currentStep === totalSteps ? (
                   <>
-                    {createWedding.isPending ? t('createWedding.creating') : t('createWedding.createWebsite')}
+                    <span className="hidden sm:inline">{createWedding.isPending ? t('createWedding.creating') : t('createWedding.createWebsite')}</span>
+                    <span className="sm:hidden">{createWedding.isPending ? 'Creating...' : 'Create'}</span>
                     <Heart className="w-4 h-4" />
                   </>
                 ) : (
                   <>
-                    {t('createWedding.next')}
+                    <span className="hidden sm:inline">{t('createWedding.next')}</span>
+                    <span className="sm:hidden">Next</span>
                     <ChevronRight className="w-4 h-4" />
                   </>
                 )}

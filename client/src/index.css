@@ -104,11 +104,20 @@
   --ring: 20 14% 20%;
   --radius: 0.75rem;
 
-  /* Custom wedding colors */
-  --romantic-gold: 35 32% 70%;
+  /* Custom wedding colors - Taklif Link Brand */
+  --taklif-gold: 38 52% 66%;        /* #D4AF76 - Logo gold */
+  --taklif-burgundy: 343 59% 30%;   /* #7A1E3E - Logo burgundy */
+  --taklif-navy: 210 100% 14%;      /* #002147 - Logo navy */
+  --taklif-cream: 42 25% 96%;       /* Soft cream background */
+  --romantic-gold: 38 52% 66%;      /* Keep for compatibility */
   --soft-white: 42 25% 96%;
   --sage-green: 72 17% 57%;
-  --charcoal: 20 14% 20%;
+  --charcoal: 210 100% 14%;         /* Updated to navy */
+  
+  /* Brand color aliases */
+  --brand-primary: var(--taklif-gold);
+  --brand-secondary: var(--taklif-burgundy);
+  --brand-accent: var(--taklif-navy);
 
   /* Mobile-specific variables */
   --mobile-padding: 12px;
@@ -162,6 +171,30 @@
   background-color: hsl(var(--romantic-gold));
 }
 
+.text-taklif-gold {
+  color: hsl(var(--taklif-gold));
+}
+
+.bg-taklif-gold {
+  background-color: hsl(var(--taklif-gold));
+}
+
+.text-taklif-burgundy {
+  color: hsl(var(--taklif-burgundy));
+}
+
+.bg-taklif-burgundy {
+  background-color: hsl(var(--taklif-burgundy));
+}
+
+.text-taklif-navy {
+  color: hsl(var(--taklif-navy));
+}
+
+.bg-taklif-navy {
+  background-color: hsl(var(--taklif-navy));
+}
+
 .text-sage-green {
   color: hsl(var(--sage-green));
 }
@@ -182,6 +215,10 @@
   background-color: hsl(var(--soft-white));
 }
 
+.bg-taklif-cream {
+  background-color: hsl(var(--taklif-cream));
+}
+
 .font-playfair {
   font-family: 'Playfair Display', serif;
 }
@@ -200,18 +237,18 @@
 }
 
 .wedding-button {
-  background-color: hsl(var(--romantic-gold));
+  background-color: hsl(var(--taklif-burgundy));
   @apply text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition-all duration-200 shadow-sm hover:shadow-md;
 }
 
 .wedding-button-outline {
-  border: 2px solid hsl(var(--romantic-gold));
-  color: hsl(var(--romantic-gold));
-  @apply px-6 py-3 rounded-xl font-medium hover:text-white transition-all duration-200;
+  border: 2px solid hsl(var(--taklif-gold));
+  color: hsl(var(--taklif-navy));
+  @apply px-6 py-3 rounded-xl font-medium hover:bg-taklif-gold hover:text-white transition-all duration-200;
 }
 
 .wedding-button-outline:hover {
-  background-color: hsl(var(--romantic-gold));
+  background-color: hsl(var(--taklif-gold));
 }
 
 .hero-section {

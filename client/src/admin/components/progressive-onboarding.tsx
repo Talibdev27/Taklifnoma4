@@ -50,7 +50,7 @@ const progressiveOnboardingSchema = z.object({
   
   // Step 4: Personalization
   template: z.string().default("gardenRomance"),
-  primaryColor: z.string().default("#D4B08C"),
+  primaryColor: z.string().default("#D4AF76"),
   accentColor: z.string().default("#89916B"),
   isPublic: z.boolean().default(true),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -127,7 +127,7 @@ export function ProgressiveOnboarding() {
       venueAddress: '',
       guestCount: 50,
       template: 'gardenRomance',
-      primaryColor: '#D4B08C',
+      primaryColor: '#D4AF76',
       accentColor: '#89916B',
       isPublic: true,
     },
@@ -241,7 +241,7 @@ export function ProgressiveOnboarding() {
   };
 
   const templateOptions = [
-    { id: 'gardenRomance', name: t('templates.gardenRomance'), preview: '#D4B08C' },
+    { id: 'gardenRomance', name: t('templates.gardenRomance'), preview: '#D4AF76' },
     { id: 'modernMinimal', name: t('templates.modernMinimal'), preview: '#6B7280' },
     { id: 'vintageChic', name: t('templates.vintageChic'), preview: '#92400E' },
     { id: 'bohoGarden', name: t('templates.bohoGarden'), preview: '#059669' },

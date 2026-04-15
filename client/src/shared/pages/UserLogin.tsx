@@ -133,49 +133,58 @@ export default function UserLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F8F1F1] to-[#89916B]/10 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md wedding-card elegant-shadow">
-        <CardHeader className="text-center space-y-4">
-          <div className="flex items-center justify-between mb-2">
-            <Link href="/" className="flex items-center justify-center flex-1">
-              <Heart className="h-8 w-8 text-[#D4B08C] mr-2" />
-              <h1 className="text-2xl font-playfair font-bold text-[#2C3338]">
-                LoveStory
-              </h1>
-            </Link>
-            <div className="flex-shrink-0">
-              <LanguageToggle />
-            </div>
-          </div>
-          <CardTitle className="text-xl font-playfair text-[#2C3338]">
-            {t('auth.welcomeBack')}
-          </CardTitle>
-          <p className="text-[#2C3338]/70">
-            {t('auth.signInDescription')}
-          </p>
-          <p className="text-sm text-[#2C3338]/60 mt-2">
-            {t('auth.freeBasicAccess')}
-          </p>
-        </CardHeader>
+    <div className="min-h-screen bg-gradient-to-br from-taklif-cream to-taklif-gold/10">
+      {/* Top Navigation */}
+      <div className="w-full bg-white/80 backdrop-blur-sm border-b border-taklif-gold/10 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <img 
+              src="/takliflinklogo.jpg" 
+              alt="Taklif Link" 
+              className="h-10 w-10 object-contain rounded-full shadow-md"
+            />
+            <h1 className="text-2xl font-playfair font-bold text-taklif-burgundy">
+              Taklif Link
+            </h1>
+          </Link>
+          <LanguageToggle />
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex items-center justify-center p-4 min-h-[calc(100vh-73px)]">
+        <Card className="w-full max-w-md wedding-card elegant-shadow">
+          <CardHeader className="text-center space-y-4">
+            <CardTitle className="text-xl font-playfair text-taklif-navy text-center">
+              {t('auth.welcomeBack')}
+            </CardTitle>
+            <p className="text-taklif-navy/70 text-center">
+              {t('auth.signInDescription')}
+            </p>
+            <p className="text-sm text-taklif-navy/60 mt-2 text-center">
+              {t('auth.freeBasicAccess')}
+            </p>
+          </CardHeader>
         
-        <CardContent>
-          <Tabs defaultValue="login" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login" className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                {t('auth.signIn')}
-              </TabsTrigger>
-              <TabsTrigger value="register" className="flex items-center gap-2">
-                <UserPlus className="h-4 w-4" />
-                {t('auth.register')}
-              </TabsTrigger>
+        <CardContent className="px-6">
+          <div className="w-full">
+            <Tabs defaultValue="login" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="login" className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  {t('auth.signIn')}
+                </TabsTrigger>
+                <TabsTrigger value="register" className="flex items-center gap-2">
+                  <UserPlus className="h-4 w-4" />
+                  {t('auth.register')}
+                </TabsTrigger>
             </TabsList>
 
             {/* Login Tab */}
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-email" className="text-[#2C3338] font-semibold">
+                  <Label htmlFor="login-email" className="text-taklif-navy font-semibold">
                     {t('auth.emailAddress')}
                   </Label>
                   <Input
@@ -190,7 +199,7 @@ export default function UserLogin() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="login-password" className="text-[#2C3338] font-semibold">
+                  <Label htmlFor="login-password" className="text-taklif-navy font-semibold">
                     {t('auth.password')}
                   </Label>
                   <div className="relative">
@@ -211,9 +220,9 @@ export default function UserLogin() {
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-[#2C3338]/50" />
+                        <EyeOff className="h-4 w-4 text-taklif-navy/50" />
                       ) : (
-                        <Eye className="h-4 w-4 text-[#2C3338]/50" />
+                        <Eye className="h-4 w-4 text-taklif-navy/50" />
                       )}
                     </Button>
                   </div>
@@ -233,7 +242,7 @@ export default function UserLogin() {
             <TabsContent value="register">
               <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="register-name" className="text-[#2C3338] font-semibold">
+                  <Label htmlFor="register-name" className="text-taklif-navy font-semibold">
                     {t('auth.fullName')}
                   </Label>
                   <Input
@@ -248,7 +257,7 @@ export default function UserLogin() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="register-email" className="text-[#2C3338] font-semibold">
+                  <Label htmlFor="register-email" className="text-taklif-navy font-semibold">
                     {t('auth.emailAddress')}
                   </Label>
                   <Input
@@ -263,7 +272,7 @@ export default function UserLogin() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="register-password" className="text-[#2C3338] font-semibold">
+                  <Label htmlFor="register-password" className="text-taklif-navy font-semibold">
                     {t('auth.password')}
                   </Label>
                   <Input
@@ -278,7 +287,7 @@ export default function UserLogin() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confirm-password" className="text-[#2C3338] font-semibold">
+                  <Label htmlFor="confirm-password" className="text-taklif-navy font-semibold">
                     {t('auth.confirmPassword')}
                   </Label>
                   <Input
@@ -304,12 +313,14 @@ export default function UserLogin() {
           </Tabs>
 
           <div className="mt-6 text-center">
-            <Link href="/" className="text-sm text-[#2C3338]/70 hover:text-[#D4B08C] transition-colors">
+            <Link href="/" className="text-sm text-taklif-navy/70 hover:text-taklif-gold transition-colors">
               {t('auth.backToHome')}
             </Link>
           </div>
+          </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

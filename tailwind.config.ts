@@ -61,6 +61,15 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Taklif Link brand colors
+        "taklif-gold": "hsl(var(--taklif-gold))",
+        "taklif-burgundy": "hsl(var(--taklif-burgundy))",
+        "taklif-navy": "hsl(var(--taklif-navy))",
+        "taklif-cream": "hsl(var(--taklif-cream))",
+        "romantic-gold": "hsl(var(--romantic-gold))",
+        "sage-green": "hsl(var(--sage-green))",
+        "soft-white": "hsl(var(--soft-white))",
+        "charcoal": "hsl(var(--charcoal))",
       },
       keyframes: {
         "accordion-down": {

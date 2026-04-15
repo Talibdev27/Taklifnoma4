@@ -129,7 +129,7 @@ export function MilestoneCountdown({
       {/* Celebration Animation */}
       {celebrationVisible && (
         <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-          <div className="bg-gradient-to-r from-[#D4B08C] to-[#89916B] text-white px-8 py-6 rounded-lg shadow-xl animate-bounce max-w-md text-center">
+          <div className="bg-gradient-to-r from-taklif-gold to-taklif-burgundy text-white px-8 py-6 rounded-lg shadow-xl animate-bounce max-w-md text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Sparkles className="h-6 w-6 animate-spin" />
               <Star className="h-8 w-8 animate-pulse" />
@@ -142,47 +142,47 @@ export function MilestoneCountdown({
       )}
 
       {/* Main Countdown */}
-      <Card className="text-center bg-gradient-to-br from-[#F8F1F1] to-white border-[#D4B08C]/20 shadow-lg">
+      <Card className="text-center bg-gradient-to-br from-taklif-cream to-white border-taklif-gold/20 shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl font-playfair font-bold text-[#2C3338] flex items-center justify-center gap-2">
-            <Clock className="h-6 w-6 text-[#D4B08C]" />
+          <CardTitle className="text-2xl font-playfair font-bold text-taklif-navy flex items-center justify-center gap-2">
+            <Clock className="h-6 w-6 text-taklif-gold" />
             Countdown to Your Special Day
           </CardTitle>
-          <CardDescription className="text-[#2C3338]/70 text-lg">
+          <CardDescription className="text-taklif-navy/70 text-lg">
             {daysLeft > 0 ? `${daysLeft} days until your wedding!` : 'Your wedding day is here! 💕'}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-lg mx-auto">
-            <div className="bg-white rounded-lg shadow-md p-6 border border-[#D4B08C]/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
-              <div className="text-4xl font-bold text-[#D4B08C] animate-pulse">{timeLeft.days}</div>
-              <div className="text-sm text-[#2C3338] uppercase tracking-wide font-medium">Days</div>
+            <div className="bg-white rounded-lg shadow-md p-6 border border-taklif-gold/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
+              <div className="text-4xl font-bold text-taklif-gold animate-pulse">{timeLeft.days}</div>
+              <div className="text-sm text-taklif-navy uppercase tracking-wide font-medium">Days</div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-md p-6 border border-[#D4B08C]/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
-              <div className="text-4xl font-bold text-[#D4B08C]">{timeLeft.hours}</div>
-              <div className="text-sm text-[#2C3338] uppercase tracking-wide font-medium">Hours</div>
+            <div className="bg-white rounded-lg shadow-md p-6 border border-taklif-gold/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
+              <div className="text-4xl font-bold text-taklif-gold">{timeLeft.hours}</div>
+              <div className="text-sm text-taklif-navy uppercase tracking-wide font-medium">Hours</div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-md p-6 border border-[#D4B08C]/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
-              <div className="text-4xl font-bold text-[#D4B08C]">{timeLeft.minutes}</div>
-              <div className="text-sm text-[#2C3338] uppercase tracking-wide font-medium">Minutes</div>
+            <div className="bg-white rounded-lg shadow-md p-6 border border-taklif-gold/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
+              <div className="text-4xl font-bold text-taklif-gold">{timeLeft.minutes}</div>
+              <div className="text-sm text-taklif-navy uppercase tracking-wide font-medium">Minutes</div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-md p-6 border border-[#D4B08C]/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
-              <div className="text-4xl font-bold text-[#D4B08C]">{timeLeft.seconds}</div>
-              <div className="text-sm text-[#2C3338] uppercase tracking-wide font-medium">Seconds</div>
+            <div className="bg-white rounded-lg shadow-md p-6 border border-taklif-gold/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
+              <div className="text-4xl font-bold text-taklif-gold">{timeLeft.seconds}</div>
+              <div className="text-sm text-taklif-navy uppercase tracking-wide font-medium">Seconds</div>
             </div>
           </div>
 
           {/* Wedding Progress */}
           <div className="space-y-3 bg-white p-4 rounded-lg shadow-sm">
-            <div className="flex justify-between text-sm text-[#2C3338] font-medium">
+            <div className="flex justify-between text-sm text-taklif-navy font-medium">
               <span>Wedding Planning Progress</span>
               <span>{progress.toFixed(1)}%</span>
             </div>
             <Progress value={progress} className="h-4" />
-            <p className="text-xs text-[#2C3338]/60 text-center">
+            <p className="text-xs text-taklif-navy/60 text-center">
               Time is flying! Keep up the great progress! ✨
             </p>
           </div>
@@ -193,17 +193,17 @@ export function MilestoneCountdown({
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <div>
-            <h3 className="text-xl font-semibold text-[#2C3338] flex items-center gap-2">
-              <Trophy className="h-6 w-6 text-[#D4B08C]" />
+            <h3 className="text-xl font-semibold text-taklif-navy flex items-center gap-2">
+              <Trophy className="h-6 w-6 text-taklif-gold" />
               Wedding Milestones
             </h3>
-            <p className="text-sm text-[#2C3338]/70">
+            <p className="text-sm text-taklif-navy/70">
               {completedMilestones} of {totalMilestonesCount} milestones completed
             </p>
           </div>
           <Dialog open={newMilestoneOpen} onOpenChange={setNewMilestoneOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-[#D4B08C] hover:bg-[#C09E7A] shadow-md">
+              <Button className="bg-taklif-gold hover:bg-taklif-gold/90 shadow-md">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Milestone
               </Button>
@@ -252,7 +252,7 @@ export function MilestoneCountdown({
                 </div>
                 <Button 
                   type="submit" 
-                  className="w-full bg-[#D4B08C] hover:bg-[#C09E7A]"
+                  className="w-full bg-taklif-gold hover:bg-taklif-gold/90"
                 >
                   Create Milestone
                 </Button>
@@ -284,7 +284,7 @@ export function MilestoneCountdown({
           <Card className="shadow-md">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-[#D4B08C]" />
+                <Calendar className="h-5 w-5 text-taklif-gold" />
                 Upcoming Milestones
               </CardTitle>
             </CardHeader>

@@ -1420,6 +1420,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Background music upload endpoint for users (wedding creation)
+  app.post('/api/upload/wedding-music', authenticateToken, audioUpload.single('music'), async (req, res) => {
+    try {
+      console.log('Wedding music upload request received');
+      console.log('User:', req.user);
+      console.log('Request file:', req.file);
+
+      if (!req.file) {
+        console.log('No file uploaded');
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+
+      console.log('File details:', {
+        originalname: req.file.originalname,
+        filename: req.file.filename,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+      });
+
+      // Get the URL - either from Cloudinary or local storage
+      let musicUrl: string;
+      
+      if (process.env.CLOUDINARY_CLOUD_NAME && (req.file as any).path) {
+        // Using Cloudinary
+        musicUrl = (req.file as any).path;
+        console.log('Cloudinary URL:', musicUrl);
+      } else {
+        // Using local storage
+        musicUrl = `/uploads/${req.file.filename}`;
+        console.log('Local storage URL:', musicUrl);
+      }
+
+      res.json({
+        url: musicUrl,
+        message: 'Background music uploaded successfully',
+        filename: req.file.filename,
+        originalname: req.file.originalname,
+      });
+    } catch (error) {
+      console.error('Wedding music upload error:', error);
+      res.status(500).json({ 
+        message: 'Failed to upload background music', 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
+  });
+
   // Background music upload endpoint for admin
   app.post('/api/upload/background-music', authenticateToken, requireAdmin, audioUpload.single('music'), async (req, res) => {
     try {
@@ -1917,6 +1964,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (!wedding) {
         return res.status(404).json({ message: "Wedding not found" });
+      }
+
+      // Check if wedding is approved or if user is the owner or admin
+      const token = req.headers.authorization?.split(' ')[1];
+      let isOwnerOrAdmin = false;
+
+      if (token) {
+        try {
+          const decoded = jwt.verify(token, JWT_SECRET) as any;
+          isOwnerOrAdmin = decoded.isAdmin || decoded.userId === wedding.userId;
+        } catch (err) {
+          // Invalid token, treat as guest
+        }
+      }
+
+      // If wedding is not approved and user is not owner/admin, return 403
+      if (!wedding.isApproved && !isOwnerOrAdmin) {
+        return res.status(403).json({ 
+          message: "This wedding website is pending admin approval. Please contact the administrator.",
+          pendingApproval: true
+        });
       }
 
       res.json(wedding);

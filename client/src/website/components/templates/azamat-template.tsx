@@ -31,17 +31,19 @@ interface AzamatTemplateProps {
 export function AzamatTemplate({ wedding }: AzamatTemplateProps) {
   const { t, i18n } = useTranslation();
 
-  // Set language immediately (synchronous) to avoid flash
-  if (wedding?.defaultLanguage && i18n.language !== wedding.defaultLanguage) {
-    i18n.changeLanguage(wedding.defaultLanguage);
-  }
-
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [activeNav, setActiveNav] = useState('home');
   const [showEnvelopeIntro, setShowEnvelopeIntro] = useState(false);
   const [envelopeOpening, setEnvelopeOpening] = useState(false);
   const [envelopeFullyOpened, setEnvelopeFullyOpened] = useState(false);
   const musicRef = useRef<AzamatScrollMusicHandle | null>(null);
+
+  // Set language based on wedding's default language
+  useEffect(() => {
+    if (wedding?.defaultLanguage && i18n.language !== wedding.defaultLanguage) {
+      i18n.changeLanguage(wedding.defaultLanguage);
+    }
+  }, [wedding?.defaultLanguage, i18n]);
 
   useEffect(() => {
     setShowEnvelopeIntro(true);

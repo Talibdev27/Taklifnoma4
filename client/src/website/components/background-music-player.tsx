@@ -403,7 +403,7 @@ export function BackgroundMusicPlayer({
               onChange={handleVolumeChange}
               className="w-16 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               style={{
-                background: `linear-gradient(to right, #D4B08C 0%, #D4B08C ${(isMuted ? 0 : volume) * 100}%, #e5e7eb ${(isMuted ? 0 : volume) * 100}%, #e5e7eb 100%)`
+                background: `linear-gradient(to right, #D4AF76 0%, #D4AF76 ${(isMuted ? 0 : volume) * 100}%, #e5e7eb ${(isMuted ? 0 : volume) * 100}%, #e5e7eb 100%)`
               }}
             />
           </div>
@@ -448,7 +448,7 @@ style.textContent = `
     height: 12px;
     width: 12px;
     border-radius: 50%;
-    background: #D4B08C;
+    background: #D4AF76;
     cursor: pointer;
     border: 2px solid white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -458,7 +458,7 @@ style.textContent = `
     height: 12px;
     width: 12px;
     border-radius: 50%;
-    background: #D4B08C;
+    background: #D4AF76;
     cursor: pointer;
     border: 2px solid white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);

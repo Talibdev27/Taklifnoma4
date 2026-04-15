@@ -9,7 +9,6 @@ import {
   Heart, Palette, Calendar, Camera, Globe, MapPin, Music, 
   Check, Menu, X, Star, Users, MessageSquare 
 } from 'lucide-react';
-import { PricingSection } from '@/website/components/pricing-section';
 import { isFreeTemplate } from '@/lib/template-tiers';
 
 export default function Landing() {
@@ -87,34 +86,6 @@ export default function Landing() {
     },
   ];
 
-  const pricingPlans = [
-    {
-      nameKey: 'pricing.basic',
-      priceKey: 'pricing.free',
-      featuresKey: 'pricing.basicFeatures',
-      buttonKey: 'pricing.chooseBasic',
-      popular: false,
-    },
-    {
-      nameKey: 'pricing.premium',
-      price: '100,000',
-      currency: 'som',
-      periodKey: 'pricing.perYear',
-      featuresKey: 'pricing.premiumFeatures',
-      buttonKey: 'pricing.choosePremium',
-      popular: true,
-    },
-    {
-      nameKey: 'pricing.deluxe',
-      price: '300,000',
-      currency: 'som',
-      periodKey: 'pricing.perYear',
-      featuresKey: 'pricing.deluxeFeatures',
-      buttonKey: 'pricing.chooseDeluxe',
-      popular: false,
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -122,32 +93,35 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Link href="/" className="flex items-center">
-                <Heart className="h-8 w-8 text-romantic-gold mr-2" />
-                <h1 className="text-2xl font-playfair font-semibold text-romantic-gold">
-                  LoveStory
+              <Link href="/" className="flex items-center gap-3 group">
+                <div className="relative">
+                  <img 
+                    src="/takliflinklogo.jpg" 
+                    alt="Taklif Link" 
+                    className="h-14 w-14 sm:h-16 sm:w-16 object-contain rounded-full shadow-md ring-2 ring-taklif-gold/20 group-hover:ring-taklif-gold transition-all"
+                  />
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-playfair font-bold text-taklif-burgundy group-hover:text-taklif-gold transition-colors">
+                  Taklif Link
                 </h1>
               </Link>
             </div>
 
             <div className="hidden md:flex items-center space-x-4">
-              <a href="#features" className="text-charcoal hover:text-romantic-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
+              <a href="#features" className="text-taklif-navy hover:text-taklif-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 {t('nav.features')}
               </a>
-              <a href="#templates" className="text-charcoal hover:text-romantic-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
+              <a href="#templates" className="text-taklif-navy hover:text-taklif-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 {t('nav.templates')}
-              </a>
-              <a href="#pricing" className="text-charcoal hover:text-romantic-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                {t('nav.pricing')}
               </a>
               <LanguageToggle />
               <Link href="/login">
-                <Button variant="ghost" className="text-charcoal hover:text-romantic-gold">
+                <Button variant="ghost" className="text-taklif-navy hover:text-taklif-burgundy">
                   {t('nav.signIn')}
                 </Button>
               </Link>
               <Link href="/create-wedding">
-                <Button className="wedding-button">
+                <Button className="bg-taklif-burgundy hover:bg-taklif-burgundy/90 text-white">
                   {t('nav.getStarted')}
                 </Button>
               </Link>
@@ -159,6 +133,7 @@ export default function Landing() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="text-taklif-navy"
               >
                 {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </Button>
@@ -169,22 +144,19 @@ export default function Landing() {
           {mobileMenuOpen && (
             <div className="md:hidden border-t border-soft-white">
               <div className="px-2 pt-2 pb-3 space-y-1">
-                <a href="#features" className="block px-3 py-2 text-charcoal hover:text-romantic-gold">
+                <a href="#features" className="block px-3 py-2 text-taklif-navy hover:text-taklif-gold">
                   {t('nav.features')}
                 </a>
-                <a href="#templates" className="block px-3 py-2 text-charcoal hover:text-romantic-gold">
+                <a href="#templates" className="block px-3 py-2 text-taklif-navy hover:text-taklif-gold">
                   {t('nav.templates')}
                 </a>
-                <a href="#pricing" className="block px-3 py-2 text-charcoal hover:text-romantic-gold">
-                  {t('nav.pricing')}
-                </a>
                 <Link href="/login" className="block">
-                  <Button variant="ghost" className="w-full justify-start text-charcoal hover:text-romantic-gold">
+                  <Button variant="ghost" className="w-full justify-start text-taklif-navy hover:text-taklif-burgundy">
                     {t('nav.signIn')}
                   </Button>
                 </Link>
                 <Link href="/get-started" className="block">
-                  <Button className="w-full wedding-button">
+                  <Button className="w-full bg-taklif-burgundy hover:bg-taklif-burgundy/90 text-white">
                     {t('nav.getStarted')}
                   </Button>
                 </Link>
@@ -199,23 +171,23 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-playfair font-bold text-charcoal leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-playfair font-bold text-taklif-navy leading-tight">
                 {t('hero.title')}
-                <span className="text-romantic-gold block">
+                <span className="text-taklif-burgundy block">
                   {t('hero.titleHighlight')}
                 </span>
               </h1>
-              <p className="mt-6 text-lg text-charcoal opacity-80 font-lato leading-relaxed max-w-xl">
+              <p className="mt-6 text-lg text-taklif-navy opacity-80 font-lato leading-relaxed max-w-xl">
                 {t('hero.subtitle')}
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link href="/get-started">
-                  <Button className="wedding-button text-lg px-8 py-4">
+                  <Button className="bg-taklif-burgundy hover:bg-taklif-burgundy/90 text-white text-lg px-8 py-4 shadow-lg">
                     {t('hero.startCreating')}
                   </Button>
                 </Link>
                 <Link href="/demo">
-                  <Button variant="outline" className="wedding-button-outline text-lg px-8 py-4">
+                  <Button variant="outline" className="border-2 border-taklif-gold text-taklif-navy hover:bg-taklif-gold hover:text-white text-lg px-8 py-4">
                     {t('hero.viewDemo')}
                   </Button>
                 </Link>
@@ -237,11 +209,11 @@ export default function Landing() {
                 alt="Beautiful couple in elegant wedding attire" 
                 className="rounded-2xl shadow-2xl w-full h-auto" 
               />
-              <Card className="absolute -bottom-6 -left-6 wedding-card">
+              <Card className="absolute -bottom-6 -left-6 wedding-card border-2 border-taklif-gold">
                 <CardContent className="p-6 text-center">
-                  <p className="text-sm text-charcoal opacity-70 font-lato">{t('hero.joinOver')}</p>
-                  <p className="text-2xl font-playfair font-bold text-romantic-gold">50,000+</p>
-                  <p className="text-sm text-charcoal opacity-70 font-lato">{t('hero.happyCouples')}</p>
+                  <p className="text-sm text-taklif-navy opacity-70 font-lato">{t('hero.joinOver')}</p>
+                  <p className="text-2xl font-playfair font-bold text-taklif-burgundy">50,000+</p>
+                  <p className="text-sm text-taklif-navy opacity-70 font-lato">{t('hero.happyCouples')}</p>
                 </CardContent>
               </Card>
             </div>
@@ -253,16 +225,16 @@ export default function Landing() {
       <section className="py-20 bg-soft-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-taklif-navy">
               {t('demo.title')}
             </h2>
-            <p className="mt-4 text-lg text-charcoal opacity-70 max-w-2xl mx-auto">
+            <p className="mt-4 text-lg text-taklif-navy opacity-70 max-w-2xl mx-auto">
               {t('demo.subtitle')}
             </p>
           </div>
 
           <Card className="wedding-card elegant-shadow overflow-hidden">
-            <div className="bg-gradient-to-r from-romantic-gold to-sage-green p-1">
+            <div className="bg-gradient-to-r from-taklif-gold to-taklif-burgundy p-1">
               <div className="bg-white rounded-xl">
                 {/* Demo Hero Section */}
                 <div className="relative h-96 overflow-hidden rounded-t-xl">
@@ -305,8 +277,8 @@ export default function Landing() {
                   <div className="relative">
                     {/* Main Title */}
                     <div className="text-center mb-16">
-                      <h4 className="text-4xl md:text-5xl font-playfair font-bold text-charcoal mb-4">{t('demo.ourStory')}</h4>
-                      <div className="w-24 h-0.5 bg-romantic-gold mx-auto"></div>
+                      <h4 className="text-4xl md:text-5xl font-playfair font-bold text-taklif-navy mb-4">{t('demo.ourStory')}</h4>
+                      <div className="w-24 h-0.5 bg-taklif-gold mx-auto"></div>
                     </div>
                     
                     {/* Two Column Layout - Story Left, Image Right */}
@@ -314,26 +286,26 @@ export default function Landing() {
                       {/* Left Column - Story Content */}
                       <div className="text-left space-y-8">
                         <div className="relative">
-                          <div className="absolute -left-6 top-0 text-8xl text-romantic-gold/20 font-playfair leading-none">"</div>
-                          <p className="text-charcoal/80 leading-relaxed text-xl font-light italic pl-12 pr-6">
+                          <div className="absolute -left-6 top-0 text-8xl text-taklif-gold/20 font-playfair leading-none">"</div>
+                          <p className="text-taklif-navy/80 leading-relaxed text-xl font-light italic pl-12 pr-6">
                             {t('demo.storyText')}
                           </p>
-                          <div className="absolute -right-4 bottom-0 text-8xl text-romantic-gold/20 font-playfair leading-none transform rotate-180">"</div>
+                          <div className="absolute -right-4 bottom-0 text-8xl text-taklif-gold/20 font-playfair leading-none transform rotate-180">"</div>
                         </div>
                         
                         {/* Date badge */}
-                        <div className="inline-flex items-center gap-3 bg-romantic-gold/10 px-6 py-3 rounded-full ml-12">
-                          <svg className="w-5 h-5 text-romantic-gold" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="inline-flex items-center gap-3 bg-taklif-gold/10 px-6 py-3 rounded-full ml-12">
+                          <svg className="w-5 h-5 text-taklif-gold" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                           </svg>
-                          <span className="text-base text-charcoal/70 font-medium">Since 2019</span>
+                          <span className="text-base text-taklif-navy/70 font-medium">Since 2019</span>
                         </div>
                       </div>
                       
                       {/* Right Column - Large Couple Image */}
                       <div className="flex justify-center">
                         <div className="relative group w-full max-w-lg">
-                          <div className="absolute inset-0 bg-gradient-to-br from-romantic-gold/30 to-romantic-gold/10 rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500"></div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-taklif-gold/30 to-taklif-burgundy/10 rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500"></div>
                           <div className="relative">
                             <img 
                               src="/beach-ceremony.png" 
@@ -341,11 +313,11 @@ export default function Landing() {
                               className="w-full h-[500px] object-cover rounded-3xl shadow-2xl group-hover:shadow-3xl transition-all duration-500"
                             />
                             {/* Decorative frame */}
-                            <div className="absolute -inset-3 border-2 border-romantic-gold/30 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="absolute -inset-3 border-2 border-taklif-gold/30 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                             
                             {/* Floating heart decoration */}
                             <div className="absolute top-6 right-6 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg opacity-90 group-hover:opacity-100 transition-opacity duration-300">
-                              <svg className="w-6 h-6 text-romantic-gold" fill="currentColor" viewBox="0 0 20 20">
+                              <svg className="w-6 h-6 text-taklif-gold" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                               </svg>
                             </div>
@@ -359,9 +331,9 @@ export default function Landing() {
                   <div className="relative">
                     {/* Section Title */}
                     <div className="text-center mb-16">
-                      <h4 className="text-4xl md:text-5xl font-playfair font-bold text-charcoal mb-4">{t('demo.ourMemories')}</h4>
-                      <div className="w-24 h-0.5 bg-romantic-gold mx-auto mb-6"></div>
-                      <p className="text-charcoal/60 text-lg font-light max-w-2xl mx-auto">
+                      <h4 className="text-4xl md:text-5xl font-playfair font-bold text-taklif-navy mb-4">{t('demo.ourMemories')}</h4>
+                      <div className="w-24 h-0.5 bg-taklif-gold mx-auto mb-6"></div>
+                      <p className="text-taklif-navy/60 text-lg font-light max-w-2xl mx-auto">
                         {t('demo.memoriesSubtitle')}
                       </p>
                     </div>
@@ -421,7 +393,7 @@ export default function Landing() {
                     
                     {/* View More Button */}
                     <div className="text-center mt-12">
-                      <button className="inline-flex items-center gap-3 bg-gradient-to-r from-romantic-gold to-romantic-gold/80 text-white px-8 py-4 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105 font-medium">
+                      <button className="inline-flex items-center gap-3 bg-gradient-to-r from-taklif-gold to-taklif-burgundy text-white px-8 py-4 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105 font-medium">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -440,10 +412,10 @@ export default function Landing() {
       <section id="features" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-taklif-navy">
               {t('features.title')}
             </h2>
-            <p className="mt-4 text-lg text-charcoal opacity-70 max-w-2xl mx-auto">
+            <p className="mt-4 text-lg text-taklif-navy opacity-70 max-w-2xl mx-auto">
               {t('features.subtitle')}
             </p>
           </div>
@@ -452,13 +424,13 @@ export default function Landing() {
             {features.map((feature, index) => (
               <Card key={index} className="wedding-card text-center">
                 <CardContent className="p-8">
-                  <div className="w-16 h-16 bg-romantic-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 bg-taklif-burgundy rounded-full flex items-center justify-center mx-auto mb-6">
                     <feature.icon className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-playfair font-semibold text-charcoal mb-4">
+                  <h3 className="text-xl font-playfair font-semibold text-taklif-navy mb-4">
                     {t(feature.titleKey)}
                   </h3>
-                  <p className="text-charcoal opacity-70 leading-relaxed">
+                  <p className="text-taklif-navy opacity-70 leading-relaxed">
                     {t(feature.descriptionKey)}
                   </p>
                 </CardContent>
@@ -468,17 +440,14 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <PricingSection />
-
       {/* Template Gallery */}
       <section id="templates" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-taklif-navy">
               {t('templates.title')}
             </h2>
-            <p className="mt-4 text-lg text-charcoal opacity-70 max-w-2xl mx-auto">
+            <p className="mt-4 text-lg text-taklif-navy opacity-70 max-w-2xl mx-auto">
               {t('templates.subtitle')}
             </p>
           </div>
@@ -508,14 +477,14 @@ export default function Landing() {
                     </div>
                   </div>
                   <CardContent className="p-6">
-                    <h3 className="text-lg font-playfair font-semibold text-charcoal mb-2">
+                    <h3 className="text-lg font-playfair font-semibold text-taklif-navy mb-2">
                       {t(template.nameKey)}
                     </h3>
-                    <p className="text-sm text-charcoal opacity-70 mb-4">
+                    <p className="text-sm text-taklif-navy opacity-70 mb-4">
                       {t(template.descriptionKey)}
                     </p>
                     <Link href={`/demo?template=${templateId}`}>
-                      <Button className="w-full wedding-button">
+                      <Button className="w-full bg-taklif-gold hover:bg-taklif-gold/90 text-white">
                         {t('templates.previewTemplate')}
                       </Button>
                     </Link>
@@ -528,7 +497,7 @@ export default function Landing() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-20 bg-romantic-gold">
+      <section className="py-20 bg-gradient-to-r from-taklif-burgundy to-taklif-navy">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-white mb-6">
             {t('cta.title')}
@@ -538,12 +507,12 @@ export default function Landing() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/get-started">
-              <Button className="bg-white text-romantic-gold px-8 py-4 rounded-xl text-lg font-medium hover:bg-gray-50 transition-all shadow-lg">
+              <Button className="bg-taklif-gold text-white px-8 py-4 rounded-xl text-lg font-medium hover:bg-taklif-gold/90 transition-all shadow-lg">
                 {t('cta.startFreeTrial')}
               </Button>
             </Link>
             <Link href="/demo">
-              <Button className="bg-white/20 backdrop-blur-sm border-2 border-white text-white px-8 py-4 rounded-xl text-lg font-medium hover:bg-white hover:text-romantic-gold transition-all shadow-lg font-semibold">
+              <Button className="bg-white/20 backdrop-blur-sm border-2 border-white text-white px-8 py-4 rounded-xl text-lg font-medium hover:bg-white hover:text-taklif-burgundy transition-all shadow-lg font-semibold">
                 {t('hero.viewDemo')}
               </Button>
             </Link>
@@ -555,14 +524,18 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-charcoal text-white py-16">
+      <footer className="bg-taklif-navy text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
-              <div className="flex items-center mb-4">
-                <Heart className="h-8 w-8 text-romantic-gold mr-2" />
-                <h3 className="text-2xl font-playfair font-semibold text-romantic-gold">
-                  LoveStory
+              <div className="flex items-center gap-3 mb-4">
+                <img 
+                  src="/takliflinklogo.jpg" 
+                  alt="Taklif Link" 
+                  className="h-12 w-12 object-contain rounded-full shadow-lg ring-2 ring-taklif-gold/30"
+                />
+                <h3 className="text-2xl sm:text-3xl font-playfair font-bold text-taklif-gold">
+                  Taklif Link
                 </h3>
               </div>
               <p className="text-gray-300 leading-relaxed mb-6 max-w-md">
@@ -573,27 +546,27 @@ export default function Landing() {
             <div>
               <h4 className="font-semibold text-white mb-4">{t('footer.features')}</h4>
               <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.weddingWebsites')}</a></li>
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.rsvpManagement')}</a></li>
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.photoGalleries')}</a></li>
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.guestBook')}</a></li>
+                <li><a href="#" className="hover:text-taklif-gold transition-colors">{t('footer.weddingWebsites')}</a></li>
+                <li><a href="#" className="hover:text-taklif-gold transition-colors">{t('footer.rsvpManagement')}</a></li>
+                <li><a href="#" className="hover:text-taklif-gold transition-colors">{t('footer.photoGalleries')}</a></li>
+                <li><a href="#" className="hover:text-taklif-gold transition-colors">{t('footer.guestBook')}</a></li>
               </ul>
             </div>
 
             <div>
               <h4 className="font-semibold text-white mb-4">{t('footer.support')}</h4>
               <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.helpCenter')}</a></li>
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.contactUs')}</a></li>
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.privacyPolicy')}</a></li>
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.termsOfService')}</a></li>
+                <li><a href="#" className="hover:text-taklif-gold transition-colors">{t('footer.helpCenter')}</a></li>
+                <li><a href="#" className="hover:text-taklif-gold transition-colors">{t('footer.contactUs')}</a></li>
+                <li><a href="#" className="hover:text-taklif-gold transition-colors">{t('footer.privacyPolicy')}</a></li>
+                <li><a href="#" className="hover:text-taklif-gold transition-colors">{t('footer.termsOfService')}</a></li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-gray-700 mt-12 pt-8 text-center">
             <p className="text-gray-400">
-              © 2024 LoveStory. All rights reserved. Made with <Heart className="inline h-4 w-4 text-romantic-gold mx-1" /> for couples everywhere.
+              © 2024 Taklif Link. All rights reserved. Made with <Heart className="inline h-4 w-4 text-taklif-gold mx-1" /> for couples everywhere.
             </p>
           </div>
         </div>
