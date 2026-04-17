@@ -26,10 +26,14 @@ const PARTICLES = Array.from({ length: 24 }, (_, i) => ({
 
 interface AzamatTemplateProps {
   wedding: Wedding;
+  photos?: any[];
 }
 
-export function AzamatTemplate({ wedding }: AzamatTemplateProps) {
+export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
   const { t, i18n } = useTranslation();
+  
+  // Filter couple photos
+  const couplePhotos = photos.filter((photo: any) => photo.photoType === 'couple');
 
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [activeNav, setActiveNav] = useState('home');
@@ -276,7 +280,7 @@ export function AzamatTemplate({ wedding }: AzamatTemplateProps) {
               handleOpenEnvelope();
             }}
             className="relative w-[min(92vw,430px)] h-[280px] cursor-pointer focus:outline-none"
-            aria-label="Taklifnomani ochish"
+            aria-label={t('welcome.openInvitation')}
           >
             <div className="absolute inset-x-5 bottom-[-18px] h-9 rounded-full bg-black/40 blur-xl" />
             <div className="absolute inset-0 rounded-xl overflow-hidden border border-[#e8d8bf]/40 shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
@@ -325,7 +329,7 @@ export function AzamatTemplate({ wedding }: AzamatTemplateProps) {
               </div>
             </div>
             <p className="absolute -bottom-14 left-1/2 -translate-x-1/2 text-center text-[11px] tracking-[0.24em] uppercase text-[#d4b08c]/75 whitespace-nowrap">
-              {envelopeOpening ? 'Ochilmoqda...' : 'Taklifnomani ochish uchun bosing'}
+              {envelopeOpening ? t('welcome.opening') : t('welcome.clickToOpen')}
             </p>
           </button>
         </div>
@@ -653,13 +657,13 @@ export function AzamatTemplate({ wedding }: AzamatTemplateProps) {
               {couplePhotos[0] ? (
                 <img
                   src={couplePhotos[0].url}
-                  alt="Juftlik"
+                  alt={t('welcome.couplePhoto')}
                   className="relative w-full rounded-3xl object-cover aspect-[4/5] shadow-2xl"
                 />
               ) : (
                 <img
                   src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80"
-                  alt="Juftlik"
+                  alt={t('welcome.couplePhoto')}
                   className="relative w-full rounded-3xl object-cover aspect-[4/5] shadow-2xl"
                 />
               )}

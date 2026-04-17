@@ -18,6 +18,7 @@ interface Wedding {
   venue: string;
   uniqueUrl: string;
   isPublic: boolean;
+  isApproved: boolean;
   template: string;
 }
 
@@ -121,9 +122,17 @@ export default function UserDashboard() {
                     <CardTitle className="text-base sm:text-lg font-playfair text-taklif-navy line-clamp-2">
                       {wedding.bride} & {wedding.groom}
                     </CardTitle>
-                    <Badge variant={wedding.isPublic ? "default" : "secondary"} className="shrink-0">
-                      {wedding.isPublic ? t('dashboard.public') : t('dashboard.private')}
-                    </Badge>
+                    <div className="flex flex-col gap-1">
+                      <Badge variant={wedding.isPublic ? "default" : "secondary"} className="shrink-0">
+                        {wedding.isPublic ? t('dashboard.public') : t('dashboard.private')}
+                      </Badge>
+                      <Badge 
+                        variant={wedding.isApproved ? "default" : "destructive"} 
+                        className={`shrink-0 text-xs ${wedding.isApproved ? 'bg-green-500 hover:bg-green-600' : 'bg-amber-500 hover:bg-amber-600'}`}
+                      >
+                        {wedding.isApproved ? '✓ Active' : '⏳ Pending'}
+                      </Badge>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-3 sm:space-y-4">
@@ -146,7 +155,12 @@ export default function UserDashboard() {
                   {/* Action Buttons */}
                   <div className="flex flex-col sm:flex-row gap-2 pt-3 sm:pt-4">
                     <Link href={`/wedding/${wedding.uniqueUrl}`} className="flex-1">
-                      <Button variant="outline" size="sm" className="w-full border-taklif-gold/30 hover:bg-taklif-gold hover:text-white">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full border-taklif-gold/30 hover:bg-taklif-gold hover:text-white"
+                        disabled={!wedding.isApproved}
+                      >
                         <Eye className="h-4 w-4 mr-1" />
                         {t('dashboard.view')}
                       </Button>
@@ -161,6 +175,7 @@ export default function UserDashboard() {
                       variant="outline" 
                       size="sm"
                       className="sm:w-auto border-taklif-navy/30 hover:bg-taklif-navy hover:text-white"
+                      disabled={!wedding.isApproved}
                       onClick={() => {
                         const url = `${window.location.origin}/wedding/${wedding.uniqueUrl}`;
                         navigator.clipboard.writeText(url);
@@ -171,6 +186,15 @@ export default function UserDashboard() {
                       <span className="sm:hidden">Share</span>
                     </Button>
                   </div>
+
+                  {/* Pending Approval Message */}
+                  {!wedding.isApproved && (
+                    <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                      <p className="text-xs text-amber-900 text-center">
+                        ⏳ {t('dashboard.pendingApprovalMessage')}
+                      </p>
+                    </div>
+                  )}
 
                   {/* Wedding URL */}
                   <div className="pt-2 border-t border-taklif-gold/10">

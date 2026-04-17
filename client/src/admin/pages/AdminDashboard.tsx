@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, Calendar, Camera, MessageSquare, Settings,
   TrendingUp, Heart, MapPin, Mail, Shield, Search,
-  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images, UserPlus
+  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images, UserPlus, Clock
 } from "lucide-react";
 import type { Wedding, User, Guest, Photo } from "@shared/schema";
 import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
@@ -390,6 +390,49 @@ export default function AdminDashboard() {
     }
   };
 
+  // Approve/unapprove wedding mutation
+  const approveWeddingMutation = useMutation({
+    mutationFn: async ({ weddingId, isApproved }: { weddingId: number, isApproved: boolean }) => {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/weddings/${weddingId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ isApproved }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update wedding approval status');
+      }
+      return response.json();
+    },
+    onSuccess: (_, variables) => {
+      toast({
+        title: variables.isApproved ? "Tadbir tasdiqlandi" : "Tasdiqlash bekor qilindi",
+        description: variables.isApproved 
+          ? "Tadbir veb-sayti endi barcha uchun ko'rinadi." 
+          : "Tadbir veb-sayti endi ko'rinmaydi.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/weddings'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
+    },
+    onError: () => {
+      toast({
+        title: "Tasdiqlash xatosi",
+        description: "Tasdiqlash holatini o'zgartirib bo'lmadi.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleToggleApproval = (weddingId: number, currentStatus: boolean) => {
+    const action = currentStatus ? "tasdiqlanganligini bekor qilish" : "tasdiqlash";
+    if (confirm(`Ushbu tadbirni ${action}ni xohlaysizmi?`)) {
+      approveWeddingMutation.mutate({ weddingId, isApproved: !currentStatus });
+    }
+  };
+
 
 
   // User management mutations
@@ -658,12 +701,22 @@ export default function AdminDashboard() {
 
       <main className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
         {/* Mobile-Optimized System Stats Overview */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6 mb-6 sm:mb-8">
           <Card className="wedding-card">
             <CardContent className="p-3 sm:p-6 text-center">
               <Globe className="h-6 w-6 sm:h-8 sm:w-8 text-[#D4B08C] mx-auto mb-1 sm:mb-2" />
               <p className="text-lg sm:text-2xl font-bold text-[#2C3338]">{stats.totalWeddings || 0}</p>
               <p className="text-[#2C3338]/70 text-xs sm:text-sm">Jami tadbirlar</p>
+            </CardContent>
+          </Card>
+
+          <Card className="wedding-card border-amber-200 bg-amber-50">
+            <CardContent className="p-3 sm:p-6 text-center">
+              <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-amber-600 mx-auto mb-1 sm:mb-2" />
+              <p className="text-lg sm:text-2xl font-bold text-amber-900">
+                {weddings?.filter((w: Wedding) => !w.isApproved).length || 0}
+              </p>
+              <p className="text-amber-900/70 text-xs sm:text-sm">Kutilmoqda</p>
             </CardContent>
           </Card>
 
@@ -781,6 +834,12 @@ export default function AdminDashboard() {
                                 <Badge variant={wedding.isPublic ? "default" : "secondary"} className="text-xs">
                                   {wedding.isPublic ? 'Ochiq' : 'Yopiq'}
                                 </Badge>
+                                <Badge 
+                                  variant={wedding.isApproved ? "default" : "destructive"} 
+                                  className={`text-xs ${wedding.isApproved ? 'bg-green-500 hover:bg-green-600' : 'bg-amber-500 hover:bg-amber-600'}`}
+                                >
+                                  {wedding.isApproved ? '✓ Tasdiqlangan' : '⏳ Kutilmoqda'}
+                                </Badge>
                                 <span className="text-xs text-[#2C3338]/50 truncate max-w-[100px] sm:max-w-none">
                                   /{wedding.uniqueUrl}
                                 </span>
@@ -793,6 +852,30 @@ export default function AdminDashboard() {
                             </div>
                           </div>
                           <div className="flex items-center gap-2 flex-shrink-0 justify-end sm:justify-start">
+                            <Button
+                              variant={wedding.isApproved ? "outline" : "default"}
+                              size="sm"
+                              onClick={() => handleToggleApproval(wedding.id, wedding.isApproved)}
+                              disabled={approveWeddingMutation.isPending}
+                              className={`min-h-[44px] sm:min-h-[36px] p-2 ${
+                                wedding.isApproved 
+                                  ? '' 
+                                  : 'bg-taklif-gold hover:bg-taklif-gold/90 text-gray-900'
+                              }`}
+                              title={wedding.isApproved ? "Tasdiqni bekor qilish" : "Tasdiqlash"}
+                            >
+                              {wedding.isApproved ? (
+                                <>
+                                  <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
+                                  <span className="ml-1 text-xs sm:hidden">Tasdiqlangan</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
+                                  <span className="ml-1 text-xs sm:hidden">Tasdiqlash</span>
+                                </>
+                              )}
+                            </Button>
                             <Button
                               variant="outline"
                               size="sm"

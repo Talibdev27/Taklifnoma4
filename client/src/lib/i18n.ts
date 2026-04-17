@@ -14,11 +14,14 @@ const resources = {
   kaa: { translation: kaa },
 };
 
+// Get saved language from localStorage or default to Uzbek
+const savedLanguage = localStorage.getItem('language') || 'uz';
+
 i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'uz',
+    lng: savedLanguage,
     fallbackLng: 'uz',
     interpolation: {
       escapeValue: false,

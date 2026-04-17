@@ -744,11 +744,11 @@ export default function CreateWedding() {
                               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                               <div className="absolute top-2 right-2">
                                 {isFreeTemplate(template.id) ? (
-                                  <Badge className="bg-green-500 hover:bg-green-600">
+                                  <Badge className="bg-taklif-gold hover:bg-taklif-gold/90 text-gray-900">
                                     {t('templates.freeTemplate')}
                                   </Badge>
                                 ) : isPremiumTemplate(template.id) ? (
-                                  <Badge className="bg-blue-500 hover:bg-blue-600">
+                                  <Badge className="bg-taklif-navy hover:bg-taklif-navy/90 text-white">
                                     {t('templates.premiumTemplate')}
                                   </Badge>
                                 ) : null}

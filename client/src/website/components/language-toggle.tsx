@@ -17,7 +17,7 @@ const languages = [
   { code: 'kaa', name: 'Қарақалпақша', flag: '🇺🇿' },
 ];
 
-export function LanguageToggle() {
+export function LanguageToggle({ isScrolled = false }: { isScrolled?: boolean }) {
   const { i18n } = useTranslation();
   
   const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
@@ -32,18 +32,28 @@ export function LanguageToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2">
-          <Globe className="h-4 w-4" />
-          <span className="hidden sm:inline">{currentLanguage.flag} {currentLanguage.name}</span>
-          <span className="sm:hidden">{currentLanguage.flag}</span>
+        <Button variant="ghost" size="sm" className="gap-2 hover:bg-transparent">
+          <span className="text-xl">{currentLanguage.flag}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className={`backdrop-blur-xl ${
+        isScrolled 
+          ? 'bg-white/95 border-gray-200' 
+          : 'bg-[#2d4a6f]/95 border-white/10'
+      }`}>
         {languages.map((language) => (
           <DropdownMenuItem
             key={language.code}
             onClick={() => changeLanguage(language.code)}
-            className={i18n.language === language.code ? 'bg-soft-white' : ''}
+            className={`${
+              i18n.language === language.code 
+                ? isScrolled ? 'bg-gray-100' : 'bg-white/10' 
+                : ''
+            } ${
+              isScrolled 
+                ? 'text-[#002147] hover:bg-gray-100' 
+                : 'text-white hover:bg-white/10'
+            } hover:text-[#d4a574] cursor-pointer`}
           >
             <span className="mr-2">{language.flag}</span>
             {language.name}

@@ -56,6 +56,26 @@
   }
 }
 
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* Mobile-First Guest Manager Styles */
 @layer utilities {
   .scrollbar-hide {
@@ -79,6 +99,16 @@
   .backdrop-blur-sm {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
+  }
+  
+  .backdrop-blur-xl {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+  
+  .backdrop-blur-2xl {
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
   }
 }
 
