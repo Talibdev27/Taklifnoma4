@@ -420,23 +420,11 @@ export default function Landing() {
                 <div key={index} className="relative group flex-shrink-0 w-[280px] snap-start rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
                   {/* Background Image/Video */}
                   <div className="relative h-[420px]">
-                    {template.video ? (
-                      <video 
-                        src={template.video}
-                        poster={template.thumbnail}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                    ) : (
-                      <img 
-                        src={template.image} 
-                        alt={t(template.nameKey)}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                      />
-                    )}
+                    <img 
+                      src={template.image} 
+                      alt={t(template.nameKey)}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                    />
                     {/* Dark Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>
                     
@@ -543,23 +531,11 @@ export default function Landing() {
                 <div key={index} className="relative group rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
                   {/* Background Image/Video */}
                   <div className="relative h-[420px]">
-                    {template.video ? (
-                      <video 
-                        src={template.video}
-                        poster={template.thumbnail}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                    ) : (
-                      <img 
-                        src={template.image} 
-                        alt={t(template.nameKey)}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                      />
-                    )}
+                    <img 
+                      src={template.image} 
+                      alt={t(template.nameKey)}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                    />
                     {/* Dark Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>
                     
