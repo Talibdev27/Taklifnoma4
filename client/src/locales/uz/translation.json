@@ -93,9 +93,10 @@
   "collection.title": "Sizning",
   "collection.titleHighlight": "sevgi hikoyangiz",
   "collection.titleEnd": "kabi noyob shablonlar",
-  "comparison.title": "To'yingiz loyiq",
-  "comparison.titleHighlight": "alohida taassurotga.",
-  "comparison.subtitle": "Mehmonlaringiz oldin ko'rmagan narsani olganida yuzidagi hayratni tasavvur qiling. Bu oddiy taklifnoma emas, to'yingizning ilk sehrli lahzasi.",
+  "comparison.title": "To'yingiz",
+  "comparison.titleAccent": "alohida taassurotga",
+  "comparison.titleHighlight": "loyiq.",
+  "comparison.subtitle": "Mehmonlaringiz ilgari ko'rmagan taklifnomani olganida yuzidagi hayratni tasavvur qiling. Bu oddiy taklifnoma emas — to'yingizning ilk sehrli lahzasi.",
   "comparison.traditional.header": "An'anaviy taklifnoma",
   "comparison.modern.header": "Taklif Link bilan",
   "comparison.traditional.item1": "Javonda unutib qo'yiladi",
@@ -650,5 +651,11 @@
   "rsvp.submitError": "RSVP yuborib bo'lmadi",
   "modern.tagline": "Allah ularning qalblarini sevgi ila birlashtirdi",
   "templates.modern": "Zamonaviy",
-  "templates.modernDesc": "Mobil qurilmalar uchun optimallashtirilgan zamonaviy va nafis dizayn."
+  "templates.modernDesc": "Mobil qurilmalar uchun optimallashtirilgan zamonaviy va nafis dizayn.",
+  "templates.velvet": "Velvet",
+  "templates.velvetDesc": "Boy ranglar va hashamatli bezaklar bilan to'y taklifnomasining mukammal uslubi.",
+  "templates.pearl": "Pearl",
+  "templates.pearlDesc": "Nozik va oqimtir dizayn — eng muhim kunning sofligini aks ettiradi.",
+  "templates.aurora": "Aurora",
+  "templates.auroraDesc": "Sirli va romantik muhit yaratuvchi noyob gradient dizayn."
 } 

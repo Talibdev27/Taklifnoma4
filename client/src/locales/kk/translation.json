@@ -92,8 +92,9 @@
   "collection.titleHighlight": "махаббат әңгімеңіздей",
   "collection.titleEnd": "бірегей үлгілер",
   "comparison.title": "Сіздің тойыңыз лайық",
-  "comparison.titleHighlight": "ерекше әсерге.",
-  "comparison.subtitle": "Қонақтарыңыз бұрын-соңды көрмеген шақыру алғанда қандай әсерде болатынын елестетіңіз. Бұл жай шақыру емес, тойыңыздың алғашқы сиқырлы сәті.",
+  "comparison.titleAccent": "ерекше әсерге.",
+  "comparison.titleHighlight": "",
+  "comparison.subtitle": "Қонақтарыңыз бұрын-соңды көрмеген шақыру алғанда қандай әсерде болатынын елестетіңіз. Бұл жай шақыру емес — тойыңыздың алғашқы сиқырлы сәті.",
   "comparison.traditional.header": "Дәстүрлі шақыру",
   "comparison.modern.header": "Бізбен бірге шақыру",
   "comparison.traditional.item1": "Жәшікте ұмытылып қалады",
@@ -609,5 +610,11 @@
   "auth.invalidCredentials": "Дұрыс емес электрондық пошта немесе құпия сөз. Қайталап көріңіз.",
   "modern.tagline": "Алла олардың жүректерін сүйіспеншілікпен біріктірді",
   "templates.modern": "Заманауи",
-  "templates.modernDesc": "Мобильді құрылғыларға арналған заманауи және сәнді дизайн."
-} 
+  "templates.modernDesc": "Мобилді құрылғыларға арналған заманауи және сәнді дизайн.",
+  "templates.velvet": "Velvet",
+  "templates.velvetDesc": "Той шақыруы үшін жарқын реңдер мен асыл бөлшектер.",
+  "templates.pearl": "Pearl",
+  "templates.pearlDesc": "Ерекше күнің тазалығын бейнелейтін нэзік және жарқын дизайн.",
+  "templates.aurora": "Aurora",
+  "templates.auroraDesc": "Романтикалы және сиқырлы атмосфера жасайтын градиентті дизайн."
+}

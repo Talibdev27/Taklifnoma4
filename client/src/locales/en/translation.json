@@ -92,8 +92,9 @@
   "collection.titleHighlight": "love story",
   "collection.titleEnd": "",
   "comparison.title": "Your wedding deserves",
-  "comparison.titleHighlight": "something extraordinary.",
-  "comparison.subtitle": "Imagine your guests' faces when they receive something they have never seen before. Not just another invitation, but the first magical moment of your wedding.",
+  "comparison.titleAccent": "something extraordinary.",
+  "comparison.titleHighlight": "",
+  "comparison.subtitle": "Imagine your guests' faces when they receive something they have never seen before. Not just another invitation — the first magical moment of your wedding.",
   "comparison.traditional.header": "Traditional Invitation",
   "comparison.modern.header": "Your Invitation With Us",
   "comparison.traditional.item1": "Forgotten in a drawer",
@@ -668,5 +669,11 @@
   "rsvp.submitError": "Failed to submit RSVP",
   "modern.tagline": "Allah united their hearts with love",
   "templates.modern": "Modern",
-  "templates.modernDesc": "A sleek, mobile-first design with elegant typography and a dark countdown."
+  "templates.modernDesc": "A sleek, mobile-first design with elegant typography and a dark countdown.",
+  "templates.velvet": "Velvet",
+  "templates.velvetDesc": "Lush colors and luxurious details for a perfectly refined wedding invitation.",
+  "templates.pearl": "Pearl",
+  "templates.pearlDesc": "A delicate, luminous design that captures the purity of your special day.",
+  "templates.aurora": "Aurora",
+  "templates.auroraDesc": "A dreamy gradient palette that creates a romantic and enchanting atmosphere."
 } 

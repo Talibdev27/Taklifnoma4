@@ -20,7 +20,10 @@ export const PREMIUM_TEMPLATES = [
   'anime_1',
   'flower',
   'gul',
-  'birthday'
+  'birthday',
+  'velvet',
+  'pearl',
+  'aurora',
 ] as const;
 
 export type FreeTemplate = typeof FREE_TEMPLATES[number];

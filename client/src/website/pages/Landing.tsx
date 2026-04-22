@@ -101,9 +101,23 @@ export default function Landing() {
     },
     {
       nameKey: 'templates.modern',
-      video: '/template-videos/modern.mp4',
-      thumbnail: 'https://images.unsplash.com/photo-1519741347686-c1e0aadf4611?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250',
+      image: '/modern_wedding_im.jpg',
       descriptionKey: 'templates.modernDesc',
+    },
+    {
+      nameKey: 'templates.velvet',
+      image: '/new2.jpg',
+      descriptionKey: 'templates.velvetDesc',
+    },
+    {
+      nameKey: 'templates.pearl',
+      image: '/new3.jpg',
+      descriptionKey: 'templates.pearlDesc',
+    },
+    {
+      nameKey: 'templates.aurora',
+      image: '/new4.jpg',
+      descriptionKey: 'templates.auroraDesc',
     },
   ];
 
@@ -655,7 +669,7 @@ export default function Landing() {
           <div className="text-center max-w-4xl mx-auto">
             <p className="text-[11px] sm:text-sm font-semibold tracking-[0.14em] sm:tracking-[0.18em] uppercase text-taklif-navy/70 mb-3 sm:mb-4">Why Taklif Link</p>
             <h2 className="text-3xl sm:text-4xl lg:text-6xl font-playfair text-taklif-navy leading-tight">
-              {t('comparison.title')} <span className="italic text-taklif-burgundy">{t('comparison.titleHighlight')}</span>
+              {t('comparison.title')} <span className="italic text-taklif-burgundy">{t('comparison.titleAccent')}</span> {t('comparison.titleHighlight')}
             </h2>
             <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-2xl text-taklif-burgundy/80 leading-relaxed px-1 sm:px-0">
               {t('comparison.subtitle')}

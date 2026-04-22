@@ -92,8 +92,9 @@
   "collection.titleHighlight": "история любви",
   "collection.titleEnd": "",
   "comparison.title": "Ваша свадьба заслуживает",
-  "comparison.titleHighlight": "чего-то необыкновенного.",
-  "comparison.subtitle": "Представьте лица ваших гостей, когда они получат то, чего никогда раньше не видели. Не просто приглашение, а первый волшебный момент вашей свадьбы.",
+  "comparison.titleAccent": "чего-то необыкновенного.",
+  "comparison.titleHighlight": "",
+  "comparison.subtitle": "Представьте лица ваших гостей, когда они получат то, чего никогда раньше не видели. Это не просто приглашение — первый волшебный момент вашей свадьбы.",
   "comparison.traditional.header": "Традиционное приглашение",
   "comparison.modern.header": "Ваше приглашение с нами",
   "comparison.traditional.item1": "Забывается в ящике",
@@ -644,5 +645,11 @@
   "rsvp.submitError": "Не удалось отправить RSVP",
   "modern.tagline": "Аллах соединил их сердца любовью",
   "templates.modern": "Современный",
-  "templates.modernDesc": "Лаконичный дизайн с элегантной типографикой, оптимизированный для мобильных устройств."
+  "templates.modernDesc": "Лаконичный дизайн с элегантной типографикой, оптимизированный для мобильных устройств.",
+  "templates.velvet": "Velvet",
+  "templates.velvetDesc": "Роскошные цвета и роскошные детали для безупречного свадебного приглашения.",
+  "templates.pearl": "Pearl",
+  "templates.pearlDesc": "Нежный светящийся дизайн, отражающий чистоту вашего особенного дня.",
+  "templates.aurora": "Aurora",
+  "templates.auroraDesc": "Мечтательный градиентный дизайн, создающий романтичную атмосферу."
 } 

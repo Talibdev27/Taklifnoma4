@@ -1421,7 +1421,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Background music upload endpoint for users (wedding creation)
-  app.post('/api/upload/wedding-music', authenticateToken, audioUpload.single('music'), async (req, res) => {
+  app.post('/api/upload/wedding-music', authenticateToken, audioUpload.single('music'), async (req: any, res) => {
     try {
       console.log('Wedding music upload request received');
       console.log('User:', req.user);
@@ -2538,7 +2538,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
 
   // WebSocket server for real-time updates
-  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  // Use noServer:true so the ws library does NOT consume all HTTP upgrade events.
+  // With { server, path }, ws destroys any upgrade request not matching the path
+  // (including Vite HMR's /?token=... connections). Instead we manually route upgrades.
+  const wss = new WebSocketServer({ noServer: true });
+
+  httpServer.on('upgrade', (request, socket, head) => {
+    const url = new URL(request.url!, `http://${request.headers.host}`);
+    if (url.pathname === '/ws') {
+      wss.handleUpgrade(request, socket as any, head, (ws) => {
+        wss.emit('connection', ws, request);
+      });
+    }
+    // All other paths (e.g. Vite HMR /?token=...) are left for Vite's own upgrade listener
+  });
 
   // Store active connections by wedding ID
   const weddingConnections = new Map<number, Set<WebSocket>>();

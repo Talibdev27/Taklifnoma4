@@ -92,8 +92,9 @@
   "collection.titleHighlight": "махаббат тарихыңыздай",
   "collection.titleEnd": "нойоб үлгилер",
   "comparison.title": "Тойыңыз лайық",
-  "comparison.titleHighlight": "айрықша әсерге.",
-  "comparison.subtitle": "Қонақларыңыз алдын көрмеген шақырыўды алғанда қандай әсерде болатуғынын елестетиң. Бул жай ғана шақырыў емес, тойыңыздың дәслепки сиқырлы сәті.",
+  "comparison.titleAccent": "айрықша әсерге.",
+  "comparison.titleHighlight": "",
+  "comparison.subtitle": "Қонақларыңыз алдын көрмеген шақырыўды алғанда қандай әсерде болатуғынын елестетиң. Бул жай ғана шақырыў емес — тойыңыздың дәслепки сиқырлы сәті.",
   "comparison.traditional.header": "Дәстүрли шақырыў",
   "comparison.modern.header": "Биз бенен шақырыў",
   "comparison.traditional.item1": "Жәшикте умытылып қалады",
@@ -542,5 +543,11 @@
   "auth.invalidCredentials": "Дұрыс емес электрондық пошта немесе құпия сөз. Қайталап көріңіз.",
   "modern.tagline": "Alla olardıń júrekterín mahabbatpén biriktirdi",
   "templates.modern": "Zamanawi",
-  "templates.modernDesc": "Mobil qurilmalar ushın optimallastırılgan zamanawi hám näzik dizayn."
+  "templates.modernDesc": "Mobil qurilmalar ushın optimallastırılgan zamanawi hám näzik dizayn.",
+  "templates.velvet": "Velvet",
+  "templates.velvetDesc": "Toy shaqırıwı ushın bay renkler hám haśametli bezekler.",
+  "templates.pearl": "Pearl",
+  "templates.pearlDesc": "Sıyaqlı kününin̄ tazalıǵın sáwlelendiretuğın näzik dizayn.",
+  "templates.aurora": "Aurora",
+  "templates.auroraDesc": "Romantikalıq hám sıyırshılıqlı muhit jaratıwshı gradient dizayn."
 } 
