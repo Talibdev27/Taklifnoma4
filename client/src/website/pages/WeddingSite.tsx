@@ -22,6 +22,7 @@ import { FlowerTemplate } from '@/website/components/templates/flower-template';
 import { GulTemplate } from '@/website/components/templates/gul-template';
 import { Customer1Template } from '@/website/components/templates/ccostumer-1-template';
 import { AzamatTemplate } from '@/website/components/templates/azamat-template';
+import { VelvetTemplate } from '@/website/components/templates/velvet-template';
 import { BackgroundMusicPlayer } from '@/website/components/background-music-player';
 import { WeddingWelcomeOverlay } from '@/website/components/wedding-welcome-overlay';
 import { formatDate } from '@/lib/utils';
@@ -269,6 +270,12 @@ export default function WeddingSite() {
   // Check for Modern template
   if (wedding?.template === 'modern') {
     return <AzamatTemplate wedding={wedding} photos={photos} />;
+  }
+
+  // Check for Velvet template
+  if (wedding?.template === 'velvet') {
+    console.log('Rendering Velvet template for wedding:', wedding);
+    return <VelvetTemplate wedding={wedding} photos={photos} />;
   }
 
   // Template-specific configurations

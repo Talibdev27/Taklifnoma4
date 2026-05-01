@@ -128,6 +128,13 @@ const templateOptions = [
     nameRu: "Современный",
     image: "https://images.unsplash.com/photo-1519741347686-c1e0aadf4611?w=400&h=300&fit=crop"
   },
+  {
+    id: "velvet",
+    name: "Velvet",
+    nameUz: "Baxmali",
+    nameRu: "Бархат",
+    image: "/new2.jpg"
+  },
 ];
 
 export default function CreateWedding() {
