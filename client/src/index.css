@@ -1,0 +1,472 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;500;700&family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&family=My+Soul&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Namdhinggo:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Birthday Animation Keyframes */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-20px) rotate(2deg);
+  }
+  50% {
+    transform: translateY(-40px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-20px) rotate(-2deg);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0,0,0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -8px, 0);
+  }
+  70% {
+    transform: translate3d(0, -4px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Mobile-First Guest Manager Styles */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .active\:scale-98:active {
+    transform: scale(0.98);
+  }
+  
+  .active\:scale-95:active {
+    transform: scale(0.95);
+  }
+  
+  /* Glassmorphism backdrop blur support */
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  
+  .backdrop-blur-xl {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+  
+  .backdrop-blur-2xl {
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+  }
+}
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14% 20%;
+  --muted: 42 25% 96%;
+  --muted-foreground: 25 5% 45%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14% 20%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14% 20%;
+  --border: 20 6% 90%;
+  --input: 20 6% 90%;
+  --primary: 35 32% 70%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 42 25% 96%;
+  --secondary-foreground: 20 14% 20%;
+  --accent: 72 17% 57%;
+  --accent-foreground: 211 100% 99%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 60 9% 98%;
+  --ring: 20 14% 20%;
+  --radius: 0.75rem;
+
+  /* Custom wedding colors - Taklif Link Brand */
+  --taklif-gold: 38 52% 66%;        /* #D4AF76 - Logo gold */
+  --taklif-burgundy: 343 59% 30%;   /* #7A1E3E - Logo burgundy */
+  --taklif-navy: 210 100% 14%;      /* #002147 - Logo navy */
+  --taklif-cream: 42 25% 96%;       /* Soft cream background */
+  --romantic-gold: 38 52% 66%;      /* Keep for compatibility */
+  --soft-white: 42 25% 96%;
+  --sage-green: 72 17% 57%;
+  --charcoal: 210 100% 14%;         /* Updated to navy */
+  
+  /* Brand color aliases */
+  --brand-primary: var(--taklif-gold);
+  --brand-secondary: var(--taklif-burgundy);
+  --brand-accent: var(--taklif-navy);
+
+  /* Mobile-specific variables */
+  --mobile-padding: 12px;
+  --mobile-gap: 8px;
+  --touch-target: 44px;
+}
+
+.dark {
+  --background: 240 10% 4%;
+  --foreground: 0 0% 98%;
+  --muted: 240 4% 16%;
+  --muted-foreground: 240 5% 65%;
+  --popover: 240 10% 4%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 4%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 4% 16%;
+  --input: 240 4% 16%;
+  --primary: 35 32% 70%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 240 4% 16%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 72 17% 57%;
+  --accent-foreground: 211 100% 99%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 5% 84%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Lato', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+/* Wedding-specific utility classes */
+.text-romantic-gold {
+  color: hsl(var(--romantic-gold));
+}
+
+.bg-romantic-gold {
+  background-color: hsl(var(--romantic-gold));
+}
+
+.text-taklif-gold {
+  color: hsl(var(--taklif-gold));
+}
+
+.bg-taklif-gold {
+  background-color: hsl(var(--taklif-gold));
+}
+
+.text-taklif-burgundy {
+  color: hsl(var(--taklif-burgundy));
+}
+
+.bg-taklif-burgundy {
+  background-color: hsl(var(--taklif-burgundy));
+}
+
+.text-taklif-navy {
+  color: hsl(var(--taklif-navy));
+}
+
+.bg-taklif-navy {
+  background-color: hsl(var(--taklif-navy));
+}
+
+.text-sage-green {
+  color: hsl(var(--sage-green));
+}
+
+.bg-sage-green {
+  background-color: hsl(var(--sage-green));
+}
+
+.text-charcoal {
+  color: hsl(var(--charcoal));
+}
+
+.bg-charcoal {
+  background-color: hsl(var(--charcoal));
+}
+
+.bg-soft-white {
+  background-color: hsl(var(--soft-white));
+}
+
+.bg-taklif-cream {
+  background-color: hsl(var(--taklif-cream));
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-lato {
+  font-family: 'Lato', sans-serif;
+}
+
+.font-cormorant {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* Wedding component styles */
+.wedding-card {
+  @apply bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300;
+}
+
+.wedding-button {
+  background-color: hsl(var(--taklif-burgundy));
+  @apply text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+.wedding-button-outline {
+  border: 2px solid hsl(var(--taklif-gold));
+  color: hsl(var(--taklif-navy));
+  @apply px-6 py-3 rounded-xl font-medium hover:bg-taklif-gold hover:text-white transition-all duration-200;
+}
+
+.wedding-button-outline:hover {
+  background-color: hsl(var(--taklif-gold));
+}
+
+.hero-section {
+  @apply bg-gradient-to-br from-gray-50 to-white;
+}
+
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.photo-hover {
+  @apply hover:scale-105 transition-transform duration-300 cursor-pointer;
+}
+
+/* Wedding-themed loading animations */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 2s linear infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.animate-heartbeat {
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+.animate-wave {
+  animation: wave 2s ease-in-out infinite;
+}
+
+/* Mobile-First Responsive Utilities */
+@layer utilities {
+  /* Touch-friendly targets */
+  .touch-target {
+    min-height: var(--touch-target);
+    min-width: var(--touch-target);
+  }
+
+  /* Mobile text sizes */
+  @media (max-width: 575.98px) {
+    .mobile-text-xs { font-size: 0.75rem; }
+    .mobile-text-sm { font-size: 0.875rem; }
+    .mobile-text-base { font-size: 1rem; }
+    .mobile-text-lg { font-size: 1.125rem; }
+  }
+
+  /* Mobile spacing */
+  @media (max-width: 575.98px) {
+    .mobile-p-2 { padding: 0.5rem; }
+    .mobile-p-3 { padding: 0.75rem; }
+    .mobile-p-4 { padding: 1rem; }
+    .mobile-gap-2 { gap: 0.5rem; }
+    .mobile-gap-3 { gap: 0.75rem; }
+  }
+
+  /* Responsive truncation */
+  .mobile-truncate {
+    @media (max-width: 575.98px) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 150px;
+    }
+  }
+
+  /* Responsive grid adjustments */
+  .mobile-grid-cols-1 {
+    @media (max-width: 575.98px) {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+  }
+
+  .mobile-grid-cols-2 {
+    @media (max-width: 575.98px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Mobile-specific layouts */
+  .mobile-stack {
+    @media (max-width: 575.98px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  .mobile-center {
+    @media (max-width: 575.98px) {
+      text-align: center;
+      justify-content: center;
+    }
+  }
+
+  /* Enhanced button sizing for mobile */
+  .mobile-btn {
+    @media (max-width: 575.98px) {
+      min-height: 44px;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  /* Responsive card padding */
+  .mobile-card-padding {
+    @media (max-width: 575.98px) {
+      padding: 0.75rem;
+    }
+    @media (min-width: 576px) {
+      padding: 1.5rem;
+    }
+  }
+
+  /* Mobile-optimized form inputs */
+  .mobile-input {
+    @media (max-width: 575.98px) {
+      font-size: 16px; /* Prevents zoom on iOS */
+      padding: 0.75rem;
+    }
+  }
+}

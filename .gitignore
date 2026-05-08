@@ -1,0 +1,26 @@
+node_modules
+dist
+.env
+.DS_Store
+server/public
+vite.config.ts.*
+*.tar.gz
+
+# Database
+wedding.db
+*.db
+
+# Temporary files
+.tmp/
+*.log
+
+# Uploads (user generated content)
+uploads/*
+!uploads/.gitkeep
+
+# Backups
+backup-*.json
+
+# OS Files
+.DS_Store
+Thumbs.db
