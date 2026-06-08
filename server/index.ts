@@ -4,6 +4,7 @@ import helmet from "helmet";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { setupCustomVite } from "./custom-vite";
+import { ensureWeddingsSchema } from "./db";
 
 const app = express();
 
@@ -100,6 +101,10 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Self-heal the production DB schema before serving so missing columns can't
+  // cause "create wedding" 500s. Idempotent; safe on every boot.
+  await ensureWeddingsSchema();
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
