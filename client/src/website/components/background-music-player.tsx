@@ -46,6 +46,18 @@ export function BackgroundMusicPlayer({
   const hasInteractedRef = useRef(false);
   const previousTriggerRef = useRef(false);
 
+  // Ensure the browser receives a playable audio file. Cloudinary stores audio
+  // under /video/upload/; legacy records and the /uploads redirect target may
+  // lack an audio extension, so append .mp3 when none is present.
+  const resolvedUrl = React.useMemo(() => {
+    if (!musicUrl) return musicUrl;
+    const hasAudioExt = /\.(mp3|wav|ogg|m4a|aac|mp4)(\?.*)?$/i.test(musicUrl);
+    if (!hasAudioExt && /\/video\/upload\/|\/uploads\/wedding-music\//.test(musicUrl)) {
+      return musicUrl.replace(/\/+$/, '') + '.mp3';
+    }
+    return musicUrl;
+  }, [musicUrl]);
+
   // Initialize from session storage
   useEffect(() => {
     const savedVolume = sessionStorage.getItem('wedding-music-volume');
@@ -284,31 +296,24 @@ export function BackgroundMusicPlayer({
     togglePlay();
   };
 
-  // Test network connectivity and audio format support
+  // Diagnostic probe only. This MUST NOT disable the player: a server-side HEAD
+  // request can fail (Cloudinary/CDN quirks, HEAD not honoured) even when the
+  // <audio> element plays the URL perfectly. Genuine playback failures are
+  // surfaced by the audio element's own 'error' event handler above.
   useEffect(() => {
-    if (musicUrl) {
-      console.log('🎵 Testing audio URL accessibility:', musicUrl);
-
-      // Test if URL is accessible via server endpoint (avoids CORS issues)
-      const encodedUrl = encodeURIComponent(musicUrl);
-      fetch(`/api/test-audio/${encodedUrl}`)
-        .then(response => response.json())
-        .then(data => {
-          console.log('🎵 Audio URL test result:', data);
-          if (!data.accessible) {
-            console.error('🎵 Audio URL not accessible:', data);
-            setHasError(true);
-            setErrorMessage(`Audio file not accessible: ${data.status} ${data.error || ''}`);
-          }
-        })
-        .catch(error => {
-          console.error('🎵 Audio URL test failed:', {
-            url: musicUrl,
-            error: error.message
-          });
-        });
-    }
-  }, [musicUrl]);
+    if (!resolvedUrl) return;
+    const encodedUrl = encodeURIComponent(resolvedUrl);
+    fetch(`/api/test-audio/${encodedUrl}`)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.accessible) {
+          console.warn('🎵 Audio URL HEAD probe not OK (non-blocking):', data);
+        }
+      })
+      .catch(error => {
+        console.warn('🎵 Audio URL probe failed (non-blocking):', error?.message);
+      });
+  }, [resolvedUrl]);
 
   if (!musicUrl) {
     return null;
@@ -322,7 +327,7 @@ export function BackgroundMusicPlayer({
       {/* Hidden audio element */}
       <audio
         ref={audioRef}
-        src={musicUrl}
+        src={resolvedUrl}
         onEnded={handleAudioEnded}
         onPlay={handleAudioPlay}
         onPause={handleAudioPause}
