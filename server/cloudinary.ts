@@ -28,7 +28,9 @@ export const audioStorage = new CloudinaryStorage({
   params: {
     folder: 'wedding-music',
     resource_type: 'video', // Cloudinary treats audio as video
-    allowed_formats: ['mp3', 'wav', 'ogg', 'm4a', 'aac', 'mp4'],
+    // No allowed_formats here: the multer fileFilter already restricts types,
+    // and allowed_formats combined with resource_type 'video' can cause opaque
+    // upload rejections for valid audio files.
   } as any,
 });
 
@@ -61,7 +63,7 @@ export const uploadImage = multer({
 export const uploadAudio = multer({
   storage: audioStorage,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB
+    fileSize: 25 * 1024 * 1024, // 25MB
   },
   fileFilter: (req, file, cb) => {
     if (isAudio(file)) {

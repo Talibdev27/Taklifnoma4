@@ -90,7 +90,7 @@ const localAudioUpload = multer({
     }
   },
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB limit for audio files
+    fileSize: 25 * 1024 * 1024 // 25MB limit for audio files
   }
 });
 
@@ -106,6 +106,25 @@ if (process.env.CLOUDINARY_CLOUD_NAME) {
 // Use Cloudinary if configured, otherwise fallback to local
 const upload = process.env.CLOUDINARY_CLOUD_NAME ? uploadImage : localUpload;
 const audioUpload = process.env.CLOUDINARY_CLOUD_NAME ? uploadAudio : localAudioUpload;
+
+// Wrap the audio multer middleware so multer/Cloudinary errors surface as a
+// clear 4xx with the actual message, instead of an opaque 500 from the global
+// error handler (which made the music-upload failure impossible to diagnose).
+function audioUploadSingle(field: string) {
+  return (req: any, res: any, next: any) => {
+    audioUpload.single(field)(req, res, (err: any) => {
+      if (err) {
+        console.error('[audio-upload] failed:', err);
+        const tooBig = err.code === 'LIMIT_FILE_SIZE';
+        return res.status(tooBig ? 413 : 400).json({
+          message: tooBig ? 'Audio file is too large (max 25MB)' : 'Audio upload failed',
+          error: err.message || String(err),
+        });
+      }
+      next();
+    });
+  };
+}
 
 // JWT secret key - in production, use environment variable
 const JWT_SECRET = process.env.JWT_SECRET || 'wedding-platform-secret-key';
@@ -272,6 +291,20 @@ const authenticateAdmin = async (req: any, res: any, next: any) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Backward-compat: older records saved Cloudinary uploads as
+  // "/uploads/wedding-photos/<id>" or "/uploads/wedding-music/<id>" (a
+  // Cloudinary public_id under a /uploads prefix). Those files are NOT on local
+  // disk, so redirect them to the real Cloudinary delivery URL. New uploads
+  // already store the full Cloudinary URL.
+  app.get(/^\/uploads\/(wedding-photos|wedding-music)\/(.+)$/, (req, res, next) => {
+    const cloud = process.env.CLOUDINARY_CLOUD_NAME;
+    if (!cloud) return next();
+    const folder = (req.params as any)[0] as string;
+    const publicId = (req.params as any)[1] as string;
+    const resourceType = folder === 'wedding-music' ? 'video' : 'image';
+    return res.redirect(302, `https://res.cloudinary.com/${cloud}/${resourceType}/upload/${folder}/${publicId}`);
+  });
+
   // Serve uploaded files statically
   app.use('/uploads', express.static(uploadDir));
 
@@ -1471,7 +1504,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Background music upload endpoint for users (wedding creation)
-  app.post('/api/upload/wedding-music', authenticateToken, audioUpload.single('music'), async (req: any, res) => {
+  app.post('/api/upload/wedding-music', authenticateToken, audioUploadSingle('music'), async (req: any, res) => {
     try {
       console.log('Wedding music upload request received');
       console.log('User:', req.user);
@@ -1518,7 +1551,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Background music upload endpoint for admin
-  app.post('/api/upload/background-music', authenticateToken, requireAdmin, audioUpload.single('music'), async (req, res) => {
+  app.post('/api/upload/background-music', authenticateToken, requireAdmin, audioUploadSingle('music'), async (req, res) => {
     try {
       console.log('Background music upload request received');
       console.log('Request headers:', req.headers);
