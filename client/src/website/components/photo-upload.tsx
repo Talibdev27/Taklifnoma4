@@ -109,7 +109,7 @@ export function PhotoUpload({ weddingId, onSuccess, isOwner = false }: PhotoUplo
         });
 
         if (!response.ok) {
-          throw new Error(`Failed to upload ${file.name}`);
+          throw new Error(t('photos.uploadFailedFile', { name: file.name }));
         }
 
         return response.json();

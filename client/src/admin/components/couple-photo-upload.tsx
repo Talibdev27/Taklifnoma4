@@ -41,11 +41,11 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
     const maxSize = 5 * 1024 * 1024; // 5MB
 
     if (!validTypes.includes(file.type)) {
-      return 'Invalid file type. Only JPEG, PNG, and WebP images are allowed.';
+      return t('photos.invalidFileType');
     }
 
     if (file.size > maxSize) {
-      return 'File too large. Maximum size is 5MB.';
+      return t('photos.fileTooLarge');
     }
 
     return null;
@@ -58,7 +58,7 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
     const error = validateFile(file);
     if (error) {
       toast({
-        title: 'Validation Error',
+        title: t('photos.validationError'),
         description: error,
         variant: "destructive",
       });
@@ -95,15 +95,15 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to upload couple photo');
+        throw new Error(errorData.message || t('photos.uploadFailedError'));
       }
 
       return response.json();
     },
     onSuccess: () => {
       toast({
-        title: 'Success!',
-        description: 'Couple photo uploaded successfully!',
+        title: t('message.success'),
+        description: t('photos.uploadSuccessDesc'),
       });
       
       // Reset form
@@ -118,7 +118,7 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
     },
     onError: (error) => {
       toast({
-        title: 'Upload Failed',
+        title: t('photos.uploadFailed'),
         description: error.message,
         variant: "destructive",
       });
@@ -128,8 +128,8 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
   const handleUpload = () => {
     if (!selectedFile) {
       toast({
-        title: 'No File Selected',
-        description: 'Please select a photo to upload.',
+        title: t('photos.noFileSelected'),
+        description: t('photos.noFileSelectedDesc'),
         variant: "destructive",
       });
       return;
@@ -153,7 +153,7 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
     const error = validateFile(file);
     if (error) {
       toast({
-        title: 'Validation Error',
+        title: t('photos.validationError'),
         description: error,
         variant: "destructive",
       });
@@ -171,12 +171,12 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
         <div className="bg-gray-50 rounded-lg p-4">
           <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
             <Heart className="h-4 w-4 text-red-500" />
-            Current Couple Photo
+            {t('photos.currentCouplePhoto')}
           </h4>
           <div className="aspect-video bg-white rounded-lg overflow-hidden border">
-            <img 
-              src={currentPhotoUrl} 
-              alt="Current couple photo"
+            <img
+              src={currentPhotoUrl}
+              alt={t('photos.currentCouplePhotoAlt')}
               className="w-full h-full object-cover"
             />
           </div>
@@ -188,7 +188,7 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
         <DialogTrigger asChild>
           <Button className="w-full flex items-center gap-2 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600">
             <Heart className="h-4 w-4" />
-            {currentPhotoUrl ? 'Update Couple Photo' : 'Upload Couple Photo'}
+            {currentPhotoUrl ? t('photos.updateCouplePhoto') : t('photos.uploadCouplePhoto')}
           </Button>
         </DialogTrigger>
         
@@ -196,7 +196,7 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Heart className="h-5 w-5 text-red-500" />
-              Upload Couple Photo
+              {t('photos.uploadCouplePhoto')}
             </DialogTitle>
           </DialogHeader>
           
@@ -220,9 +220,9 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
               {previewUrl ? (
                 <div className="space-y-3">
                   <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                    <img 
-                      src={previewUrl} 
-                      alt="Preview"
+                    <img
+                      src={previewUrl}
+                      alt={t('photos.previewAlt')}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -235,7 +235,7 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
                     }}
                   >
                     <X className="h-4 w-4 mr-2" />
-                    Remove
+                    {t('photos.remove')}
                   </Button>
                 </div>
               ) : (
@@ -244,12 +244,12 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
                     <Camera className="h-8 w-8 text-pink-500" />
                   </div>
                   <div>
-                    <p className="text-lg font-medium text-gray-700">Upload Your Couple Photo</p>
+                    <p className="text-lg font-medium text-gray-700">{t('photos.uploadYourCouplePhoto')}</p>
                     <p className="text-sm text-gray-500 mt-1">
-                      Drag & drop or click to select
+                      {t('photos.dragDropHint')}
                     </p>
                     <p className="text-xs text-gray-400 mt-2">
-                      JPEG, PNG, WebP • Max 5MB
+                      {t('photos.fileTypeHint')}
                     </p>
                   </div>
                 </div>
@@ -267,12 +267,12 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
                   {uploadMutation.isPending ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                      Uploading...
+                      {t('imageEdit.uploading')}
                     </>
                   ) : (
                     <>
                       <Upload className="h-4 w-4 mr-2" />
-                      Upload Photo
+                      {t('imageEdit.uploadPhoto')}
                     </>
                   )}
                 </Button>
@@ -281,7 +281,7 @@ export function CouplePhotoUpload({ weddingId, currentPhotoUrl, onSuccess }: Cou
                   onClick={() => setIsOpen(false)}
                   disabled={uploadMutation.isPending}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
               </div>
             )}

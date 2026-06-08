@@ -18,7 +18,7 @@ export default function Payment() {
     mutationFn: async (paymentMethod: 'click' | 'payme') => {
       const currentUserId = localStorage.getItem('currentUserId');
       if (!currentUserId) {
-        throw new Error('Please login first');
+        throw new Error(t('payment.loginRequired'));
       }
 
       const response = await apiRequest("POST", "/api/create-payment", {

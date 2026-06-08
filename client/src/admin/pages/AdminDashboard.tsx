@@ -20,8 +20,10 @@ import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
 import { GuestManagerAssignment } from '@/admin/components/guest-manager-assignment';
 import { AdminGuestBookManager } from '@/admin/components/admin-guest-book-manager';
 import { TEMPLATE_REGISTRY, EVENT_TYPES } from '@/lib/templates';
+import { useTranslation } from 'react-i18next';
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
@@ -77,16 +79,16 @@ export default function AdminDashboard() {
         const result = await response.json();
         setNewWedding(prev => ({...prev, couplePhotoUrl: result.url}));
         toast({
-          title: "Rasm muvaffaqiyatli yuklandi",
-          description: "Juftlik rasmi yuklandi va asosiy sifatida ishlatiladi."
+          title: t('adminDashboard.photoUploadedTitle'),
+          description: t('adminDashboard.photoUploadedDesc')
         });
       } else {
-        throw new Error('Upload failed');
+        throw new Error(t('adminDashboard.uploadFailedError'));
       }
     } catch (error) {
       toast({
-        title: "Yuklash xatosi",
-        description: "Rasmni yuklab bo'lmadi. Qaytadan urinib ko'ring.",
+        title: t('adminDashboard.uploadErrorTitle'),
+        description: t('adminDashboard.photoUploadErrorDesc'),
         variant: "destructive"
       });
     }
@@ -99,8 +101,8 @@ export default function AdminDashboard() {
     // Validate file type
     if (!file.type.startsWith('audio/')) {
       toast({
-        title: "Fayl turi noto'g'ri",
-        description: "Iltimos, audio faylini yuklang (MP3, WAV va h.k.).",
+        title: t('adminDashboard.invalidFileTypeTitle'),
+        description: t('adminDashboard.invalidAudioFileDesc'),
         variant: "destructive"
       });
       return;
@@ -109,8 +111,8 @@ export default function AdminDashboard() {
     // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
       toast({
-        title: "Fayl juda katta",
-        description: "Iltimos, 10MB dan kichik fayl yuklang.",
+        title: t('adminDashboard.fileTooLargeTitle'),
+        description: t('adminDashboard.fileTooLargeDesc'),
         variant: "destructive"
       });
       return;
@@ -132,16 +134,16 @@ export default function AdminDashboard() {
         const result = await response.json();
         setNewWedding(prev => ({...prev, backgroundMusicUrl: result.url}));
         toast({
-          title: "Musiqa muvaffaqiyatli yuklandi",
-          description: "Fon musiqasi yuklandi va to'y saytida ijro etiladi."
+          title: t('adminDashboard.musicUploadedTitle'),
+          description: t('adminDashboard.musicUploadedDesc')
         });
       } else {
-        throw new Error('Upload failed');
+        throw new Error(t('adminDashboard.uploadFailedError'));
       }
     } catch (error) {
       toast({
-        title: "Yuklash xatosi",
-        description: "Fon musiqasini yuklab bo'lmadi. Qaytadan urinib ko'ring.",
+        title: t('adminDashboard.uploadErrorTitle'),
+        description: t('adminDashboard.musicUploadErrorDesc'),
         variant: "destructive"
       });
     }
@@ -287,7 +289,7 @@ export default function AdminDashboard() {
       
       // Validate required fields
       if (!weddingData.userId || !weddingData.bride || !weddingData.weddingDate) {
-        throw new Error('Please fill in all required fields');
+        throw new Error(t('adminDashboard.fillRequiredFieldsError'));
       }
       
       const token = localStorage.getItem('adminToken');
@@ -303,14 +305,14 @@ export default function AdminDashboard() {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         console.error("Wedding creation error:", errorData);
-        throw new Error(errorData.message || 'Failed to create wedding');
+        throw new Error(errorData.message || t('adminDashboard.createWeddingFailedError'));
       }
       return response.json();
     },
     onSuccess: () => {
       toast({
-        title: "Tadbir yaratildi",
-        description: "Tadbir muvaffaqiyatli yaratildi.",
+        title: t('adminDashboard.eventCreatedTitle'),
+        description: t('adminDashboard.eventCreatedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/weddings'] });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
@@ -346,8 +348,8 @@ export default function AdminDashboard() {
     onError: (error: any) => {
       console.error("Wedding creation error:", error);
       toast({
-        title: "Yaratish xatosi",
-        description: error.message || "Tadbir yaratib bo'lmadi.",
+        title: t('adminDashboard.createErrorTitle'),
+        description: error.message || t('adminDashboard.createWeddingFailedDesc'),
         variant: "destructive",
       });
     },
@@ -368,8 +370,8 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       toast({
-        title: "Tadbir o'chirildi",
-        description: "Tadbir muvaffaqiyatli o'chirildi.",
+        title: t('adminDashboard.eventDeletedTitle'),
+        description: t('adminDashboard.eventDeletedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/weddings'] });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
@@ -377,15 +379,15 @@ export default function AdminDashboard() {
     },
     onError: () => {
       toast({
-        title: "O'chirish xatosi",
-        description: "Tadbirni o'chirib bo'lmadi.",
+        title: t('adminDashboard.deleteErrorTitle'),
+        description: t('adminDashboard.deleteWeddingFailedDesc'),
         variant: "destructive",
       });
     },
   });
 
   const handleDeleteWedding = (weddingId: number) => {
-    if (confirm("Ushbu tadbirni o'chirishni xohlaysizmi? Bu amalni qaytarib bo'lmaydi.")) {
+    if (confirm(t('adminDashboard.confirmDeleteWedding'))) {
       deleteWeddingMutation.mutate(weddingId);
     }
   };
@@ -409,26 +411,26 @@ export default function AdminDashboard() {
     },
     onSuccess: (_, variables) => {
       toast({
-        title: variables.isApproved ? "Tadbir tasdiqlandi" : "Tasdiqlash bekor qilindi",
-        description: variables.isApproved 
-          ? "Tadbir veb-sayti endi barcha uchun ko'rinadi." 
-          : "Tadbir veb-sayti endi ko'rinmaydi.",
+        title: variables.isApproved ? t('adminDashboard.eventApprovedTitle') : t('adminDashboard.approvalRevokedTitle'),
+        description: variables.isApproved
+          ? t('adminDashboard.eventApprovedDesc')
+          : t('adminDashboard.approvalRevokedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/weddings'] });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
     },
     onError: () => {
       toast({
-        title: "Tasdiqlash xatosi",
-        description: "Tasdiqlash holatini o'zgartirib bo'lmadi.",
+        title: t('adminDashboard.approvalErrorTitle'),
+        description: t('adminDashboard.approvalFailedDesc'),
         variant: "destructive",
       });
     },
   });
 
   const handleToggleApproval = (weddingId: number, currentStatus: boolean) => {
-    const action = currentStatus ? "tasdiqlanganligini bekor qilish" : "tasdiqlash";
-    if (confirm(`Ushbu tadbirni ${action}ni xohlaysizmi?`)) {
+    const action = currentStatus ? t('adminDashboard.actionRevokeApproval') : t('adminDashboard.actionApprove');
+    if (confirm(t('adminDashboard.confirmToggleApproval', { action }))) {
       approveWeddingMutation.mutate({ weddingId, isApproved: !currentStatus });
     }
   };
@@ -454,15 +456,15 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       toast({
-        title: "Foydalanuvchi yangilandi",
-        description: "Foydalanuvchi huquqlari muvaffaqiyatli yangilandi.",
+        title: t('adminDashboard.userUpdatedTitle'),
+        description: t('adminDashboard.userUpdatedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
     },
     onError: () => {
       toast({
-        title: "Yangilash xatosi",
-        description: "Foydalanuvchi huquqlarini yangilab bo'lmadi.",
+        title: t('adminDashboard.updateErrorTitle'),
+        description: t('adminDashboard.userUpdateFailedDesc'),
         variant: "destructive",
       });
     },
@@ -479,16 +481,16 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       toast({
-        title: "Foydalanuvchi o'chirildi",
-        description: "Foydalanuvchi muvaffaqiyatli o'chirildi.",
+        title: t('adminDashboard.userDeletedTitle'),
+        description: t('adminDashboard.userDeletedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
     },
     onError: () => {
       toast({
-        title: "O'chirish xatosi",
-        description: "Foydalanuvchini o'chirib bo'lmadi.",
+        title: t('adminDashboard.deleteErrorTitle'),
+        description: t('adminDashboard.userDeleteFailedDesc'),
         variant: "destructive",
       });
     },
@@ -506,15 +508,15 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       toast({
-        title: "Photo Deleted",
-        description: "Photo has been successfully deleted.",
+        title: t('adminDashboard.photoDeletedTitle'),
+        description: t('adminDashboard.photoDeletedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/photos'] });
     },
     onError: () => {
       toast({
-        title: "Delete Failed",
-        description: "Failed to delete photo.",
+        title: t('adminDashboard.photoDeleteFailedTitle'),
+        description: t('adminDashboard.photoDeleteFailedDesc'),
         variant: "destructive",
       });
     },
@@ -531,15 +533,15 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       toast({
-        title: "Photo Added",
-        description: "Photo has been successfully added.",
+        title: t('adminDashboard.photoAddedTitle'),
+        description: t('adminDashboard.photoAddedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/photos'] });
     },
     onError: () => {
       toast({
-        title: "Upload Failed",
-        description: "Failed to add photo.",
+        title: t('adminDashboard.uploadFailedTitle'),
+        description: t('adminDashboard.addPhotoFailedDesc'),
         variant: "destructive",
       });
     },
@@ -554,18 +556,18 @@ export default function AdminDashboard() {
 
     // Validate required fields
     const errors = [];
-    if (!newWedding.userId) errors.push("Foydalanuvchi ID");
+    if (!newWedding.userId) errors.push(t('adminDashboard.fieldUserId'));
     if (!newWedding.bride?.trim()) {
-      errors.push(newWedding.template === 'birthday' ? "Tug'ilgan kun egasining ismi" : "Kelinning ismi");
+      errors.push(newWedding.template === 'birthday' ? t('adminDashboard.fieldBirthdayPersonName') : t('adminDashboard.fieldBrideName'));
     }
     if (!newWedding.weddingDate) {
-      errors.push(newWedding.template === 'birthday' ? "Tug'ilgan kun sanasi" : "To'y sanasi");
+      errors.push(newWedding.template === 'birthday' ? t('adminDashboard.fieldBirthdayDate') : t('adminDashboard.fieldWeddingDate'));
     }
 
     if (errors.length > 0) {
       toast({
-        title: "Maydonlar to'ldirilmagan",
-        description: `Quyidagi majburiy maydonlarni to'ldiring: ${errors.join(", ")}`,
+        title: t('adminDashboard.missingFieldsTitle'),
+        description: t('adminDashboard.missingFieldsDesc', { fields: errors.join(", ") }),
         variant: "destructive",
       });
       return;
@@ -575,8 +577,8 @@ export default function AdminDashboard() {
     const dateObj = new Date(newWedding.weddingDate);
     if (isNaN(dateObj.getTime())) {
       toast({
-        title: "Sana noto'g'ri",
-        description: newWedding.template === 'birthday' ? "Iltimos, to'g'ri tug'ilgan kun sanasini kiriting." : "Iltimos, to'g'ri to'y sanasini kiriting.",
+        title: t('adminDashboard.invalidDateTitle'),
+        description: newWedding.template === 'birthday' ? t('adminDashboard.invalidBirthdayDateDesc') : t('adminDashboard.invalidWeddingDateDesc'),
         variant: "destructive",
       });
       return;
@@ -617,14 +619,15 @@ export default function AdminDashboard() {
   };
 
   const handleToggleAdmin = (userId: number, isAdmin: boolean) => {
-    if (confirm(`Are you sure you want to ${isAdmin ? 'grant admin privileges to' : 'remove admin privileges from'} this user?`)) {
+    const action = isAdmin ? t('adminDashboard.actionGrantAdmin') : t('adminDashboard.actionRemoveAdmin');
+    if (confirm(t('adminDashboard.confirmUserAction', { action }))) {
       updateUserMutation.mutate({ userId, updates: { isAdmin } });
     }
   };
 
   const handleRestrictUser = (userId: number, restricted: boolean) => {
-    const action = restricted ? 'restrict to guest management only' : 'remove restrictions from';
-    if (confirm(`Are you sure you want to ${action} this user?`)) {
+    const action = restricted ? t('adminDashboard.actionRestrictGuest') : t('adminDashboard.actionRemoveRestrictions');
+    if (confirm(t('adminDashboard.confirmUserAction', { action }))) {
       updateUserMutation.mutate({ 
         userId, 
         updates: { 
@@ -636,7 +639,7 @@ export default function AdminDashboard() {
   };
 
   const handleDeleteUser = (userId: number) => {
-    if (confirm("Ushbu foydalanuvchini o'chirishni xohlaysizmi? Uning barcha tadbirlari ham o'chiriladi va bu amalni qaytarib bo'lmaydi.")) {
+    if (confirm(t('adminDashboard.confirmDeleteUser'))) {
       deleteUserMutation.mutate(userId);
     }
   };
@@ -681,9 +684,9 @@ export default function AdminDashboard() {
               </div>
               <div className="min-w-0">
                 <h1 className="text-lg sm:text-2xl font-playfair font-bold text-[#2C3338] truncate">
-                  Admin Panel
+                  {t('adminDashboard.adminPanel')}
                 </h1>
-                <p className="text-xs sm:text-sm text-[#2C3338]/70 hidden sm:block">Taklifnoma platformasi boshqaruvi</p>
+                <p className="text-xs sm:text-sm text-[#2C3338]/70 hidden sm:block">{t('adminDashboard.platformManagement')}</p>
               </div>
             </div>
             <Button 
@@ -692,8 +695,8 @@ export default function AdminDashboard() {
               className="text-[#2C3338] border-[#2C3338] hover:bg-[#2C3338] hover:text-white text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2 min-h-[44px] sm:min-h-[36px]"
             >
               <LogOut className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Chiqish</span>
-              <span className="sm:hidden">Chiqish</span>
+              <span className="hidden sm:inline">{t('adminDashboard.logout')}</span>
+              <span className="sm:hidden">{t('adminDashboard.logout')}</span>
             </Button>
           </div>
         </div>
@@ -706,7 +709,7 @@ export default function AdminDashboard() {
             <CardContent className="p-3 sm:p-6 text-center">
               <Globe className="h-6 w-6 sm:h-8 sm:w-8 text-[#D4B08C] mx-auto mb-1 sm:mb-2" />
               <p className="text-lg sm:text-2xl font-bold text-[#2C3338]">{stats.totalWeddings || 0}</p>
-              <p className="text-[#2C3338]/70 text-xs sm:text-sm">Jami tadbirlar</p>
+              <p className="text-[#2C3338]/70 text-xs sm:text-sm">{t('adminDashboard.totalEvents')}</p>
             </CardContent>
           </Card>
 
@@ -716,7 +719,7 @@ export default function AdminDashboard() {
               <p className="text-lg sm:text-2xl font-bold text-amber-900">
                 {weddings?.filter((w: Wedding) => !w.isApproved).length || 0}
               </p>
-              <p className="text-amber-900/70 text-xs sm:text-sm">Kutilmoqda</p>
+              <p className="text-amber-900/70 text-xs sm:text-sm">{t('adminDashboard.pending')}</p>
             </CardContent>
           </Card>
 
@@ -724,8 +727,8 @@ export default function AdminDashboard() {
             <CardContent className="p-3 sm:p-6 text-center">
               <Users className="h-6 w-6 sm:h-8 sm:w-8 text-[#89916B] mx-auto mb-1 sm:mb-2" />
               <p className="text-lg sm:text-2xl font-bold text-[#2C3338]">{stats?.totalUsers || 0}</p>
-              <p className="text-[#2C3338]/70 text-xs sm:text-sm">Foydalanuvchilar</p>
-              <p className="text-xs text-[#2C3338]/50 hidden sm:block">({stats?.guestUsers || 0} mehmon akkaunt)</p>
+              <p className="text-[#2C3338]/70 text-xs sm:text-sm">{t('adminDashboard.users')}</p>
+              <p className="text-xs text-[#2C3338]/50 hidden sm:block">{t('adminDashboard.guestAccounts', { count: stats?.guestUsers || 0 })}</p>
             </CardContent>
           </Card>
 
@@ -733,7 +736,7 @@ export default function AdminDashboard() {
             <CardContent className="p-3 sm:p-6 text-center">
               <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-[#D4B08C] mx-auto mb-1 sm:mb-2" />
               <p className="text-lg sm:text-2xl font-bold text-[#2C3338]">{stats?.publicWeddings || 0}</p>
-              <p className="text-[#2C3338]/70 text-xs sm:text-sm">Ochiq tadbirlar</p>
+              <p className="text-[#2C3338]/70 text-xs sm:text-sm">{t('adminDashboard.publicEvents')}</p>
             </CardContent>
           </Card>
 
@@ -745,7 +748,7 @@ export default function AdminDashboard() {
                   new Date(w.weddingDate) > new Date()
                 ).length || 0}
               </p>
-              <p className="text-[#2C3338]/70 text-xs sm:text-sm">Kelgusi tadbirlar</p>
+              <p className="text-[#2C3338]/70 text-xs sm:text-sm">{t('adminDashboard.upcomingEvents')}</p>
             </CardContent>
           </Card>
         </div>
@@ -754,28 +757,28 @@ export default function AdminDashboard() {
         <Tabs defaultValue="weddings" className="space-y-4 sm:space-y-6">
           <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 h-auto p-1">
                           <TabsTrigger value="weddings" className="text-xs sm:text-sm p-2 sm:p-3">
-                <span className="hidden sm:inline">Tadbirlar</span>
-                <span className="sm:hidden">Tadbirlar</span>
+                <span className="hidden sm:inline">{t('adminDashboard.tabEvents')}</span>
+                <span className="sm:hidden">{t('adminDashboard.tabEvents')}</span>
               </TabsTrigger>
             <TabsTrigger value="users" className="text-xs sm:text-sm p-2 sm:p-3">
-              <span className="hidden sm:inline">Foydalanuvchilar</span>
-              <span className="sm:hidden">Foydalanuvchi</span>
+              <span className="hidden sm:inline">{t('adminDashboard.tabUsers')}</span>
+              <span className="sm:hidden">{t('adminDashboard.tabUsersShort')}</span>
             </TabsTrigger>
             <TabsTrigger value="rsvp" className="text-xs sm:text-sm p-2 sm:p-3">
-              <span className="hidden sm:inline">RSVP boshqaruvi</span>
-              <span className="sm:hidden">RSVP</span>
+              <span className="hidden sm:inline">{t('adminDashboard.tabRsvpManagement')}</span>
+              <span className="sm:hidden">{t('adminDashboard.tabRsvpShort')}</span>
             </TabsTrigger>
                           <TabsTrigger value="create" className="text-xs sm:text-sm p-2 sm:p-3">
-                <span className="hidden sm:inline">Tadbir yaratish</span>
-                <span className="sm:hidden">Yaratish</span>
+                <span className="hidden sm:inline">{t('adminDashboard.tabCreateEvent')}</span>
+                <span className="sm:hidden">{t('adminDashboard.tabCreateShort')}</span>
               </TabsTrigger>
             <TabsTrigger value="analytics" className="text-xs sm:text-sm p-2 sm:p-3">
-              <span className="hidden sm:inline">Statistika</span>
-              <span className="sm:hidden">Stat</span>
+              <span className="hidden sm:inline">{t('adminDashboard.tabAnalytics')}</span>
+              <span className="sm:hidden">{t('adminDashboard.tabAnalyticsShort')}</span>
             </TabsTrigger>
             <TabsTrigger value="guestbook" className="text-xs sm:text-sm p-2 sm:p-3">
-              <span className="hidden sm:inline">Mehmon kitobi</span>
-              <span className="sm:hidden">Kitob</span>
+              <span className="hidden sm:inline">{t('adminDashboard.tabGuestBook')}</span>
+              <span className="sm:hidden">{t('adminDashboard.tabGuestBookShort')}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -786,12 +789,12 @@ export default function AdminDashboard() {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <CardTitle className="flex items-center gap-2 text-[#2C3338]">
                     <Globe className="h-4 w-4 sm:h-5 sm:w-5 text-[#D4B08C]" />
-                    Barcha tadbirlar
+                    {t('adminDashboard.allEvents')}
                   </CardTitle>
                   <div className="relative">
                     <Search className="h-3 w-3 sm:h-4 sm:w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <Input
-                      placeholder="Tadbirlarni qidirish..."
+                      placeholder={t('adminDashboard.searchEventsPlaceholder')}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-8 sm:pl-10 w-full sm:w-64 text-sm"
@@ -832,20 +835,20 @@ export default function AdminDashboard() {
                               </p>
                               <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1">
                                 <Badge variant={wedding.isPublic ? "default" : "secondary"} className="text-xs">
-                                  {wedding.isPublic ? 'Ochiq' : 'Yopiq'}
+                                  {wedding.isPublic ? t('adminDashboard.public') : t('adminDashboard.private')}
                                 </Badge>
-                                <Badge 
-                                  variant={wedding.isApproved ? "default" : "destructive"} 
+                                <Badge
+                                  variant={wedding.isApproved ? "default" : "destructive"}
                                   className={`text-xs ${wedding.isApproved ? 'bg-green-500 hover:bg-green-600' : 'bg-amber-500 hover:bg-amber-600'}`}
                                 >
-                                  {wedding.isApproved ? '✓ Tasdiqlangan' : '⏳ Kutilmoqda'}
+                                  {wedding.isApproved ? t('adminDashboard.approvedBadge') : t('adminDashboard.pendingBadge')}
                                 </Badge>
                                 <span className="text-xs text-[#2C3338]/50 truncate max-w-[100px] sm:max-w-none">
                                   /{wedding.uniqueUrl}
                                 </span>
                                 {weddingOwner && (
                                   <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded truncate max-w-[120px] sm:max-w-none">
-                                    Egasi: {weddingOwner.email}
+                                    {t('adminDashboard.owner', { email: weddingOwner.email })}
                                   </span>
                                 )}
                               </div>
@@ -862,17 +865,17 @@ export default function AdminDashboard() {
                                   ? '' 
                                   : 'bg-taklif-gold hover:bg-taklif-gold/90 text-gray-900'
                               }`}
-                              title={wedding.isApproved ? "Tasdiqni bekor qilish" : "Tasdiqlash"}
+                              title={wedding.isApproved ? t('adminDashboard.revokeApprovalTitle') : t('adminDashboard.approveTitle')}
                             >
                               {wedding.isApproved ? (
                                 <>
                                   <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
-                                  <span className="ml-1 text-xs sm:hidden">Tasdiqlangan</span>
+                                  <span className="ml-1 text-xs sm:hidden">{t('adminDashboard.approved')}</span>
                                 </>
                               ) : (
                                 <>
                                   <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-                                  <span className="ml-1 text-xs sm:hidden">Tasdiqlash</span>
+                                  <span className="ml-1 text-xs sm:hidden">{t('adminDashboard.approve')}</span>
                                 </>
                               )}
                             </Button>
@@ -883,7 +886,7 @@ export default function AdminDashboard() {
                               className="min-h-[44px] sm:min-h-[36px] p-2"
                             >
                               <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
-                              <span className="ml-1 text-xs sm:hidden">Ko'rish</span>
+                              <span className="ml-1 text-xs sm:hidden">{t('adminDashboard.view')}</span>
                             </Button>
                             <Button
                               variant="outline"
@@ -892,7 +895,7 @@ export default function AdminDashboard() {
                               className="min-h-[44px] sm:min-h-[36px] p-2"
                             >
                               <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
-                              <span className="ml-1 text-xs sm:hidden">Tahrirlash</span>
+                              <span className="ml-1 text-xs sm:hidden">{t('adminDashboard.edit')}</span>
                             </Button>
                             <Button
                               variant="outline"
@@ -902,13 +905,13 @@ export default function AdminDashboard() {
                               className="text-red-600 hover:text-red-700 hover:bg-red-50 min-h-[44px] sm:min-h-[36px] p-2"
                             >
                               <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                              <span className="ml-1 text-xs sm:hidden">O'chirish</span>
+                              <span className="ml-1 text-xs sm:hidden">{t('adminDashboard.delete')}</span>
                             </Button>
                             <Dialog>
                               <DialogTrigger asChild>
                                 <Button variant="outline" size="sm" className="min-h-[44px] sm:min-h-[36px] p-2">
                                   <UserPlus className="h-3 w-3 sm:h-4 sm:w-4" />
-                                  <span className="ml-1 text-xs sm:hidden">Mehmon menejer belgilash</span>
+                                  <span className="ml-1 text-xs sm:hidden">{t('adminDashboard.assignGuestManager')}</span>
                                 </Button>
                               </DialogTrigger>
                               <DialogContent>
@@ -921,7 +924,7 @@ export default function AdminDashboard() {
                     })}
                     {filteredWeddings.length === 0 && (
                       <div className="text-center py-8 text-[#2C3338]/70">
-                        {searchTerm ? 'Qidiruv bo\'yicha tadbir topilmadi.' : 'Hali hech qanday tadbir yaratilmagan.'}
+                        {searchTerm ? t('adminDashboard.noEventsFound') : t('adminDashboard.noEventsYet')}
                       </div>
                     )}
                   </div>
@@ -937,12 +940,12 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2 text-[#2C3338]">
                     <Users className="h-5 w-5 text-[#89916B]" />
-                    Barcha foydalanuvchilar
+                    {t('adminDashboard.allUsers')}
                   </CardTitle>
                   <div className="relative">
                     <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <Input
-                      placeholder="Foydalanuvchilarni qidirish..."
+                      placeholder={t('adminDashboard.searchUsersPlaceholder')}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-10 w-64"
@@ -974,27 +977,27 @@ export default function AdminDashboard() {
                             </span>
                           </div>
                           <div>
-                            <h3 className="font-semibold text-[#2C3338]">{user.name || 'Noma\'lum foydalanuvchi'}</h3>
-                            <p className="text-sm text-[#2C3338]/70">{user.email || 'Email yo\'q'}</p>
+                            <h3 className="font-semibold text-[#2C3338]">{user.name || t('adminDashboard.unknownUser')}</h3>
+                            <p className="text-sm text-[#2C3338]/70">{user.email || t('adminDashboard.noEmail')}</p>
                             <p className="text-xs text-[#2C3338]/50">
-                              Qo'shilgan: {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Noma\'lum'}
+                              {t('adminDashboard.joinedLabel', { date: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : t('adminDashboard.unknown') })}
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge variant="outline">
-                            {weddings?.filter((w: Wedding) => w.userId === user.id).length || 0} tadbir
+                            {t('adminDashboard.eventCountBadge', { count: weddings?.filter((w: Wedding) => w.userId === user.id).length || 0 })}
                           </Badge>
                           <Badge variant={
-                            user.isAdmin ? "default" : 
+                            user.isAdmin ? "default" :
                             user.role === 'guest_manager' ? "destructive" : "secondary"
                           }>
-                            {user.isAdmin ? "Admin" : 
-                             user.role === 'guest_manager' ? "Mehmon menejer" : "Foydalanuvchi"}
+                            {user.isAdmin ? t('adminDashboard.roleAdmin') :
+                             user.role === 'guest_manager' ? t('adminDashboard.roleGuestManager') : t('adminDashboard.roleUser')}
                           </Badge>
                           {user.role === 'guest_manager' && (
                             <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700">
-                              Cheklangan kirish
+                              {t('adminDashboard.restrictedAccess')}
                             </Badge>
                           )}
                           <Button
@@ -1004,7 +1007,7 @@ export default function AdminDashboard() {
                             disabled={updateUserMutation.isPending || user.role === 'guest_manager'}
                             className="text-xs"
                           >
-                            {user.isAdmin ? "Adminni olib tashlash" : "Admin qilish"}
+                            {user.isAdmin ? t('adminDashboard.removeAdmin') : t('adminDashboard.makeAdmin')}
                           </Button>
                           <Button
                             variant={user.role === 'guest_manager' ? "default" : "outline"}
@@ -1013,7 +1016,7 @@ export default function AdminDashboard() {
                             disabled={updateUserMutation.isPending || user.isAdmin}
                             className="text-xs"
                           >
-                            {user.role === 'guest_manager' ? "Cheklovni olib tashlash" : "Kirishni cheklash"}
+                            {user.role === 'guest_manager' ? t('adminDashboard.removeRestriction') : t('adminDashboard.restrictAccess')}
                           </Button>
                           <Button
                             variant="destructive"
@@ -1028,7 +1031,7 @@ export default function AdminDashboard() {
                     ))}
                     {filteredUsers.length === 0 && (
                       <div className="text-center py-8 text-[#2C3338]/70">
-                        {searchTerm ? 'Qidiruv bo\'yicha foydalanuvchi topilmadi.' : 'Hali hech qanday foydalanuvchi ro\'yxatdan o\'tmagan.'}
+                        {searchTerm ? t('adminDashboard.noUsersFound') : t('adminDashboard.noUsersYet')}
                       </div>
                     )}
                   </div>
@@ -1044,7 +1047,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2 text-[#2C3338]">
                     <Calendar className="h-5 w-5 text-[#89916B]" />
-                    To'y bo'yicha RSVP boshqaruvi
+                    {t('adminDashboard.rsvpManagementByWedding')}
                   </CardTitle>
                 </div>
               </CardHeader>
@@ -1060,28 +1063,28 @@ export default function AdminDashboard() {
                     <div className="bg-green-50 p-4 rounded-lg">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                        <span className="text-sm font-medium text-green-700">Tasdiqlangan</span>
+                        <span className="text-sm font-medium text-green-700">{t('adminDashboard.confirmed')}</span>
                       </div>
                       <p className="text-2xl font-bold text-green-600 mt-1">{rsvpStats?.confirmedRSVPs || 0}</p>
                     </div>
                     <div className="bg-yellow-50 p-4 rounded-lg">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                        <span className="text-sm font-medium text-yellow-700">Kutilmoqda</span>
+                        <span className="text-sm font-medium text-yellow-700">{t('adminDashboard.pending')}</span>
                       </div>
                       <p className="text-2xl font-bold text-yellow-600 mt-1">{rsvpStats?.pendingRSVPs || 0}</p>
                     </div>
                     <div className="bg-red-50 p-4 rounded-lg">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                        <span className="text-sm font-medium text-red-700">Rad etilgan</span>
+                        <span className="text-sm font-medium text-red-700">{t('adminDashboard.declined')}</span>
                       </div>
                       <p className="text-2xl font-bold text-red-600 mt-1">{rsvpStats?.declinedRSVPs || 0}</p>
                     </div>
                     <div className="bg-blue-50 p-4 rounded-lg">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                        <span className="text-sm font-medium text-blue-700">Ehtimol</span>
+                        <span className="text-sm font-medium text-blue-700">{t('adminDashboard.maybe')}</span>
                       </div>
                       <p className="text-2xl font-bold text-blue-600 mt-1">{rsvpStats?.maybeRSVPs || 0}</p>
                     </div>
@@ -1089,7 +1092,7 @@ export default function AdminDashboard() {
                 )}
 
                 <div className="space-y-6">
-                  <h3 className="font-semibold text-[#2C3338] mb-4">To'y bo'yicha RSVP javoblari</h3>
+                  <h3 className="font-semibold text-[#2C3338] mb-4">{t('adminDashboard.rsvpResponsesByWedding')}</h3>
                   {weddingsLoading || rsvpLoading ? (
                     <div className="space-y-4">
                       {[...Array(2)].map((_, i) => (
@@ -1131,15 +1134,15 @@ export default function AdminDashboard() {
                                 </div>
                                 <div className="flex items-center gap-3">
                                   <div className="text-center">
-                                    <div className="text-xs text-green-600 font-medium">Tasdiqlangan</div>
+                                    <div className="text-xs text-green-600 font-medium">{t('adminDashboard.confirmed')}</div>
                                     <div className="text-lg font-bold text-green-600">{confirmedGuests.length}</div>
                                   </div>
                                   <div className="text-center">
-                                    <div className="text-xs text-yellow-600 font-medium">Kutilmoqda</div>
+                                    <div className="text-xs text-yellow-600 font-medium">{t('adminDashboard.pending')}</div>
                                     <div className="text-lg font-bold text-yellow-600">{pendingGuests.length}</div>
                                   </div>
                                   <div className="text-center">
-                                    <div className="text-xs text-red-600 font-medium">Rad etilgan</div>
+                                    <div className="text-xs text-red-600 font-medium">{t('adminDashboard.declined')}</div>
                                     <div className="text-lg font-bold text-red-600">{declinedGuests.length}</div>
                                   </div>
                                   <Button
@@ -1151,7 +1154,7 @@ export default function AdminDashboard() {
                                     }}
                                   >
                                     <Settings className="h-4 w-4 mr-1" />
-                                    Boshqarish
+                                    {t('adminDashboard.manage')}
                                   </Button>
                                 </div>
                               </div>
@@ -1168,7 +1171,7 @@ export default function AdminDashboard() {
                                           </span>
                                         </div>
                                         <div>
-                                          <h5 className="font-medium text-[#2C3338]">{guest.name || 'Mehmon'}</h5>
+                                          <h5 className="font-medium text-[#2C3338]">{guest.name || t('adminDashboard.guestFallback')}</h5>
                                           <p className="text-sm text-[#2C3338]/70">{guest.email}</p>
                                           {guest.message && (
                                             <p className="text-xs text-[#2C3338]/60 mt-1 italic">"{guest.message}"</p>
@@ -1188,7 +1191,7 @@ export default function AdminDashboard() {
                                               : "bg-blue-50 text-blue-700 border-blue-200"
                                           }
                                         >
-                                          {guest.rsvpStatus?.charAt(0).toUpperCase() + guest.rsvpStatus?.slice(1) || 'Unknown'}
+                                          {guest.rsvpStatus?.charAt(0).toUpperCase() + guest.rsvpStatus?.slice(1) || t('adminDashboard.unknownStatus')}
                                         </Badge>
                                         <span className="text-xs text-[#2C3338]/50">
                                           {guest.createdAt ? new Date(guest.createdAt).toLocaleDateString() : ''}
@@ -1199,7 +1202,7 @@ export default function AdminDashboard() {
                                 </div>
                               ) : (
                                 <div className="text-center py-6 text-[#2C3338]/70">
-                                  Bu to'y uchun hali RSVP javoblari yo'q.
+                                  {t('adminDashboard.noRsvpForWedding')}
                                 </div>
                               )}
                             </CardContent>
@@ -1209,7 +1212,7 @@ export default function AdminDashboard() {
                     </div>
                   ) : (
                     <div className="text-center py-8 text-[#2C3338]/70">
-                      Tadbirlar topilmadi.
+                      {t('adminDashboard.noEventsFoundSimple')}
                     </div>
                   )}
                 </div>
@@ -1224,28 +1227,28 @@ export default function AdminDashboard() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-[#2C3338]">
                     <BarChart3 className="h-5 w-5 text-[#D4B08C]" />
-                    To'y statistikasi
+                    {t('adminDashboard.weddingStatistics')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-[#2C3338]/70">Bu oy</span>
+                    <span className="text-[#2C3338]/70">{t('adminDashboard.thisMonth')}</span>
                     <Badge className="bg-blue-100 text-blue-800">
-                      {weddings?.filter((w: Wedding) => {
+                      {t('adminDashboard.newCount', { count: weddings?.filter((w: Wedding) => {
                         const weddingMonth = new Date(w.createdAt).getMonth();
                         const currentMonth = new Date().getMonth();
                         return weddingMonth === currentMonth;
-                      }).length || 0} yangi
+                      }).length || 0 })}
                     </Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[#2C3338]/70">Ochiq tadbirlar</span>
+                    <span className="text-[#2C3338]/70">{t('adminDashboard.publicEvents')}</span>
                     <Badge className="bg-green-100 text-green-800">
                       {Math.round(((weddings?.filter((w: Wedding) => w.isPublic).length || 0) / (weddings?.length || 1)) * 100)}%
                     </Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[#2C3338]/70">Foydalanuvchi boshiga o'rtacha</span>
+                    <span className="text-[#2C3338]/70">{t('adminDashboard.averagePerUser')}</span>
                     <Badge className="bg-purple-100 text-purple-800">
                       {((weddings?.length || 0) / (users?.length || 1)).toFixed(1)}
                     </Badge>
@@ -1257,7 +1260,7 @@ export default function AdminDashboard() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-[#2C3338]">
                     <Calendar className="h-5 w-5 text-[#89916B]" />
-                    Kelgusi tadbirlar
+                    {t('adminDashboard.upcomingEvents')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -1275,12 +1278,12 @@ export default function AdminDashboard() {
                           </p>
                         </div>
                         <Badge variant="outline" className="text-xs">
-                          {Math.ceil((new Date(wedding.weddingDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} kun
+                          {t('adminDashboard.daysCount', { count: Math.ceil((new Date(wedding.weddingDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) })}
                         </Badge>
                       </div>
                     )) || (
                     <div className="text-center py-4 text-[#2C3338]/70 text-sm">
-                      Kelgusi tadbirlar yo'q
+                      {t('adminDashboard.noUpcomingEvents')}
                     </div>
                   )}
                 </CardContent>
@@ -1294,7 +1297,7 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-[#D4B08C]" />
-                  {newWedding.template === 'birthday' ? 'Yangi tug\'ilgan kun tadbirini yaratish' : 'Yangi tadbir yaratish'}
+                  {newWedding.template === 'birthday' ? t('adminDashboard.createNewBirthdayEvent') : t('adminDashboard.createNewEvent')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -1302,14 +1305,14 @@ export default function AdminDashboard() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Foydalanuvchini tanlang
+                        {t('adminDashboard.selectUser')}
                       </label>
-                      <select 
+                      <select
                         className="w-full p-3 border border-gray-200 rounded-lg bg-white"
                         value={newWedding.userId}
                         onChange={(e) => handleFormChange('userId', e.target.value)}
                       >
-                        <option value="">Foydalanuvchini tanlang...</option>
+                        <option value="">{t('adminDashboard.selectUserPlaceholder')}</option>
                         {users?.filter((u: User) => !u.email.includes('guest_')).map((user: User) => (
                           <option key={user.id} value={user.id}>
                             {user.name} ({user.email})
@@ -1320,10 +1323,10 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {newWedding.template === 'birthday' ? "Tug'ilgan kun egasining ismi" : "Kelin ismi"}
+                        {newWedding.template === 'birthday' ? t('adminDashboard.birthdayPersonNameLabel') : t('adminDashboard.brideNameLabel')}
                       </label>
-                      <Input 
-                        placeholder={newWedding.template === 'birthday' ? "Tug'ilgan kun egasining ismini kiriting" : "Kelin ismini kiriting"} 
+                      <Input
+                        placeholder={newWedding.template === 'birthday' ? t('adminDashboard.birthdayPersonNamePlaceholder') : t('adminDashboard.brideNamePlaceholder')}
                         className="wedding-input"
                         value={newWedding.bride}
                         onChange={(e) => handleFormChange('bride', e.target.value)}
@@ -1334,10 +1337,10 @@ export default function AdminDashboard() {
                     {newWedding.template !== 'birthday' && (
                       <div>
                         <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          Kuyovning ismi
+                          {t('adminDashboard.groomNameLabel')}
                         </label>
-                        <Input 
-                          placeholder="Kuyovning ismini kiriting" 
+                        <Input
+                          placeholder={t('adminDashboard.groomNamePlaceholder')}
                           className="wedding-input"
                           value={newWedding.groom}
                           onChange={(e) => handleFormChange('groom', e.target.value)}
@@ -1350,10 +1353,10 @@ export default function AdminDashboard() {
                       <>
                         <div>
                           <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                            Necha yosh to'lishi
+                            {t('adminDashboard.ageLabel')}
                           </label>
-                          <Input 
-                            placeholder="Masalan: 25, 30, 16" 
+                          <Input
+                            placeholder={t('adminDashboard.agePlaceholder')}
                             className="wedding-input"
                             value={newWedding.age}
                             onChange={(e) => handleFormChange('age', e.target.value)}
@@ -1362,10 +1365,10 @@ export default function AdminDashboard() {
 
                         <div>
                           <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                            Bayram mavzusi (Ixtiyoriy)
+                            {t('adminDashboard.partyThemeLabel')}
                           </label>
-                          <Input 
-                            placeholder="Masalan: Tropik, Superpahlavon, Vintage..." 
+                          <Input
+                            placeholder={t('adminDashboard.partyThemePlaceholder')}
                             className="wedding-input"
                             value={newWedding.partyTheme}
                             onChange={(e) => handleFormChange('partyTheme', e.target.value)}
@@ -1376,10 +1379,10 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {newWedding.template === 'birthday' ? "Tug'ilgan kun sanasi" : "Tadbir sanasi"}
+                        {newWedding.template === 'birthday' ? t('adminDashboard.birthdayDateLabel') : t('adminDashboard.eventDateLabel')}
                       </label>
-                      <Input 
-                        type="date" 
+                      <Input
+                        type="date"
                         className="wedding-input"
                         value={newWedding.weddingDate}
                         onChange={(e) => handleFormChange('weddingDate', e.target.value)}
@@ -1388,10 +1391,10 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {newWedding.template === 'birthday' ? "Bayram vaqti" : "Tadbir vaqti"}
+                        {newWedding.template === 'birthday' ? t('adminDashboard.partyTimeLabel') : t('adminDashboard.eventTimeLabel')}
                       </label>
-                      <Input 
-                        placeholder="Mas: 18:00, 6:00 PM" 
+                      <Input
+                        placeholder={t('adminDashboard.eventTimePlaceholder')}
                         className="wedding-input"
                         value={newWedding.weddingTime}
                         onChange={(e) => handleFormChange('weddingTime', e.target.value)}
@@ -1402,10 +1405,10 @@ export default function AdminDashboard() {
                     {newWedding.template === 'birthday' && (
                       <div>
                         <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          RSVP muddati (Ixtiyoriy)
+                          {t('adminDashboard.rsvpDeadlineLabel')}
                         </label>
-                        <Input 
-                          type="date" 
+                        <Input
+                          type="date"
                           className="wedding-input"
                           value={newWedding.rsvpDeadline}
                           onChange={(e) => handleFormChange('rsvpDeadline', e.target.value)}
@@ -1417,10 +1420,10 @@ export default function AdminDashboard() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {newWedding.template === 'birthday' ? "Bayram joyi" : "Tadbir joyi"}
+                        {newWedding.template === 'birthday' ? t('adminDashboard.partyVenueLabel') : t('adminDashboard.eventVenueLabel')}
                       </label>
-                      <Input 
-                        placeholder={newWedding.template === 'birthday' ? "Tug'ilgan kun bayram joyi" : "Tadbir joyi"} 
+                      <Input
+                        placeholder={newWedding.template === 'birthday' ? t('adminDashboard.partyVenuePlaceholder') : t('adminDashboard.eventVenuePlaceholder')}
                         className="wedding-input"
                         value={newWedding.venue}
                         onChange={(e) => handleFormChange('venue', e.target.value)}
@@ -1429,10 +1432,10 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {newWedding.template === 'birthday' ? "Bayram manzili" : "Tadbir manzili"}
+                        {newWedding.template === 'birthday' ? t('adminDashboard.partyAddressLabel') : t('adminDashboard.eventAddressLabel')}
                       </label>
-                      <Input 
-                        placeholder={newWedding.template === 'birthday' ? "To'liq bayram manzili" : "To'liq tadbir manzili"} 
+                      <Input
+                        placeholder={newWedding.template === 'birthday' ? t('adminDashboard.partyAddressPlaceholder') : t('adminDashboard.eventAddressPlaceholder')}
                         className="wedding-input"
                         value={newWedding.venueAddress}
                         onChange={(e) => handleFormChange('venueAddress', e.target.value)}
@@ -1443,10 +1446,10 @@ export default function AdminDashboard() {
                     {newWedding.template === 'birthday' && (
                       <div>
                         <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          Savollar uchun bog'lanish
+                          {t('adminDashboard.contactForQuestionsLabel')}
                         </label>
-                        <Input 
-                          placeholder="Mas: Ali Valiyev - 99-123-45-67" 
+                        <Input
+                          placeholder={t('adminDashboard.contactPersonPlaceholder')}
                           className="wedding-input"
                           value={newWedding.contactPerson}
                           onChange={(e) => handleFormChange('contactPerson', e.target.value)}
@@ -1456,25 +1459,25 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Kiyinish tartibi (Ixtiyoriy)
+                        {t('adminDashboard.dressCodeLabel')}
                       </label>
-                      <textarea 
-                        className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
+                      <textarea
+                        className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none"
                         rows={3}
-                        placeholder={newWedding.template === 'birthday' ? "Mas: Erkin kiyim, Bayram kiyimi, Rang mavzusi..." : "Mas: Rasmiy kiyim, Cocktail, Yengil kiyim..."}
+                        placeholder={newWedding.template === 'birthday' ? t('adminDashboard.dressCodeBirthdayPlaceholder') : t('adminDashboard.dressCodePlaceholder')}
                         value={newWedding.dressCode || ''}
                         onChange={(e) => handleFormChange('dressCode', e.target.value)}
                       ></textarea>
                       <p className="text-xs text-gray-500 mt-1">
-                        {newWedding.template === 'birthday' ? "Mehmonlar uchun kiyinish talablari. Faqat to'ldirilsa ko'rsatiladi." : "Mehmonlar uchun kiyinish talablari. Faqat to'ldirilsa ko'rsatiladi."}
+                        {t('adminDashboard.dressCodeHint')}
                       </p>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Tadbir turi
+                        {t('adminDashboard.eventTypeLabel')}
                       </label>
-                      <select 
+                      <select
                         className="w-full p-3 border border-gray-200 rounded-lg bg-white"
                         value={newWedding.eventType}
                         onChange={(e) => {
@@ -1492,9 +1495,9 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Shablon
+                        {t('adminDashboard.templateLabel')}
                       </label>
-                      <select 
+                      <select
                         className="w-full p-3 border border-gray-200 rounded-lg bg-white"
                         value={newWedding.template}
                         onChange={(e) => handleFormChange('template', e.target.value)}
@@ -1509,29 +1512,29 @@ export default function AdminDashboard() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        RSVP rejimi
+                        {t('adminDashboard.rsvpModeLabel')}
                       </label>
                       <select
                         className="w-full p-3 border border-gray-200 rounded-lg bg-white"
                         value={newWedding.rsvpMode}
                         onChange={(e) => handleFormChange('rsvpMode', e.target.value)}
                       >
-                        <option value="both">Ikkalasi ham (Qo'lda kiritish + Oldindan ro'yxat)</option>
-                        <option value="manual">Faqat qo'lda kiritish (Mehmon kitobi)</option>
-                        <option value="preregistered">Faqat oldindan ro'yxatdan o'tganlar</option>
+                        <option value="both">{t('adminDashboard.rsvpModeBoth')}</option>
+                        <option value="manual">{t('adminDashboard.rsvpModeManual')}</option>
+                        <option value="preregistered">{t('adminDashboard.rsvpModePreregistered')}</option>
                       </select>
                       <p className="text-xs text-gray-500 mt-1">
-                        {newWedding.rsvpMode === 'both' && 'Mehmonlar ismini qo\'lda kiritishi yoki oldindan ro\'yxatdan qidirishi mumkin'}
-                        {newWedding.rsvpMode === 'manual' && 'Mehmonlar ismini qo\'lda kiritadi. Oldindan ro\'yxat kerak emas.'}
-                        {newWedding.rsvpMode === 'preregistered' && 'Mehmonlar faqat oldindan ro\'yxatda bo\'lsa RSVP qila oladi.'}
+                        {newWedding.rsvpMode === 'both' && t('adminDashboard.rsvpModeBothHint')}
+                        {newWedding.rsvpMode === 'manual' && t('adminDashboard.rsvpModeManualHint')}
+                        {newWedding.rsvpMode === 'preregistered' && t('adminDashboard.rsvpModePreregisteredHint')}
                       </p>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Standart til
+                        {t('adminDashboard.defaultLanguageLabel')}
                       </label>
-                      <select 
+                      <select
                         className="w-full p-3 border border-gray-200 rounded-lg bg-white"
                         value={newWedding.defaultLanguage}
                         onChange={(e) => handleFormChange('defaultLanguage', e.target.value)}
@@ -1543,7 +1546,7 @@ export default function AdminDashboard() {
                         <option value="kaa">Қарақалпақша</option>
                       </select>
                       <p className="text-xs text-gray-500 mt-1">
-                        Bu {newWedding.template === 'birthday' ? 'tug\'ilgan kun' : 'tadbir'} sayti uchun standart til bo'ladi
+                        {newWedding.template === 'birthday' ? t('adminDashboard.defaultLanguageHintBirthday') : t('adminDashboard.defaultLanguageHintEvent')}
                       </p>
                     </div>
                   </div>
@@ -1553,17 +1556,17 @@ export default function AdminDashboard() {
                 {newWedding.template === 'birthday' && (
                   <div className="space-y-4 mt-6">
                     <h3 className="text-lg font-semibold text-[#2C3338] border-b border-gray-200 pb-2">
-                      Tug'ilgan kun bayram tafsilotlari
+                      {t('adminDashboard.birthdayPartyDetails')}
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          Sovg'a ro'yxati (Ixtiyoriy)
+                          {t('adminDashboard.giftRegistryLabel')}
                         </label>
-                        <textarea 
-                          className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
+                        <textarea
+                          className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none"
                           rows={3}
-                          placeholder="Mas: Amazon wishlist havolasi, afzal sovg'alar, sovg'a kerak emas..."
+                          placeholder={t('adminDashboard.giftRegistryPlaceholder')}
                           value={newWedding.giftRegistryInfo}
                           onChange={(e) => handleFormChange('giftRegistryInfo', e.target.value)}
                         ></textarea>
@@ -1571,12 +1574,12 @@ export default function AdminDashboard() {
 
                       <div>
                         <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          Maxsus ko'rsatmalar (Ixtiyoriy)
+                          {t('adminDashboard.specialInstructionsLabel')}
                         </label>
-                        <textarea 
-                          className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
+                        <textarea
+                          className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none"
                           rows={3}
-                          placeholder="Mas: Nima olib kelish, to'xtash joyi, allergiyalar..."
+                          placeholder={t('adminDashboard.specialInstructionsPlaceholder')}
                           value={newWedding.specialInstructions}
                           onChange={(e) => handleFormChange('specialInstructions', e.target.value)}
                         ></textarea>
@@ -1590,33 +1593,33 @@ export default function AdminDashboard() {
                   <div className="space-y-4 p-4 border border-pink-200 rounded-lg bg-pink-50/30 mt-6">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
-                      <h4 className="text-sm font-semibold text-pink-700">Tug'ilgan kun shablon xususiyatlari</h4>
+                      <h4 className="text-sm font-semibold text-pink-700">{t('adminDashboard.birthdayTemplateFeatures')}</h4>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 gap-3">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-                        <span className="text-sm text-gray-700">🎂 Tug'ilgan kun dizayni — pushti/binafsha gradientlar</span>
+                        <span className="text-sm text-gray-700">{t('adminDashboard.featureBirthdayDesign')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-                        <span className="text-sm text-gray-700">🎉 Animatsiyali tug'ilgan kun elementlari</span>
+                        <span className="text-sm text-gray-700">{t('adminDashboard.featureAnimatedElements')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-                        <span className="text-sm text-gray-700">📅 Tug'ilgan kungacha sanash taymer</span>
+                        <span className="text-sm text-gray-700">{t('adminDashboard.featureCountdownTimer')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-                        <span className="text-sm text-gray-700">🎵 Fon musiqasi avtomatik ijro bilan</span>
+                        <span className="text-sm text-gray-700">{t('adminDashboard.featureBackgroundMusic')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-                        <span className="text-sm text-gray-700">💌 Tabriklar uchun mehmon kitobi</span>
+                        <span className="text-sm text-gray-700">{t('adminDashboard.featureGuestBook')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-                        <span className="text-sm text-gray-700">🌍 Ko'p tillilik (5 ta til)</span>
+                        <span className="text-sm text-gray-700">{t('adminDashboard.featureMultiLanguage')}</span>
                       </div>
                     </div>
                   </div>
@@ -1626,13 +1629,13 @@ export default function AdminDashboard() {
                   <div className="space-y-4 p-4 border border-blue-200 rounded-lg bg-blue-50/30 mt-6">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <h4 className="text-sm font-semibold text-blue-700">Epic shablon ranglari</h4>
+                      <h4 className="text-sm font-semibold text-blue-700">{t('adminDashboard.epicTemplateColors')}</h4>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          Asosiy rang
+                          {t('adminDashboard.primaryColorLabel')}
                         </label>
                         <div className="flex items-center space-x-3">
                           <input
@@ -1648,12 +1651,12 @@ export default function AdminDashboard() {
                             className="flex-1"
                           />
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">Asosiy elementlar va taymer uchun ishlatiladi</p>
+                        <p className="text-xs text-gray-500 mt-1">{t('adminDashboard.primaryColorHint')}</p>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          Qo'shimcha rang
+                          {t('adminDashboard.accentColorLabel')}
                         </label>
                         <div className="flex items-center space-x-3">
                           <input
@@ -1669,7 +1672,7 @@ export default function AdminDashboard() {
                             className="flex-1"
                           />
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">Tugmalar va ajratishlar uchun ishlatiladi</p>
+                        <p className="text-xs text-gray-500 mt-1">{t('adminDashboard.accentColorHint')}</p>
                       </div>
                     </div>
                   </div>
@@ -1679,12 +1682,12 @@ export default function AdminDashboard() {
                 <div className="space-y-4 mt-6">
                   <div>
                     <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                      {newWedding.template === 'birthday' ? "Tug'ilgan kun egasi haqida" : "Tadbir tarixi (Ixtiyoriy)"}
+                      {newWedding.template === 'birthday' ? t('adminDashboard.aboutBirthdayPersonLabel') : t('adminDashboard.eventStoryLabel')}
                     </label>
-                    <textarea 
-                      className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
+                    <textarea
+                      className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none"
                       rows={4}
-                                              placeholder={newWedding.template === 'birthday' ? "Tug'ilgan kun egasi haqida yozing..." : "Tadbir tarixi haqida yozing..."}
+                                              placeholder={newWedding.template === 'birthday' ? t('adminDashboard.aboutBirthdayPersonPlaceholder') : t('adminDashboard.eventStoryPlaceholder')}
                       value={newWedding.story}
                       onChange={(e) => handleFormChange('story', e.target.value)}
                     ></textarea>
@@ -1692,23 +1695,23 @@ export default function AdminDashboard() {
 
                   <div>
                     <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                      {newWedding.template === 'birthday' ? "Bayram tafsilotlari" : "Tadbir tafsilotlari"}
+                      {newWedding.template === 'birthday' ? t('adminDashboard.partyDetailsLabel') : t('adminDashboard.eventDetailsLabel')}
                     </label>
-                    <textarea 
-                      className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
+                    <textarea
+                      className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none"
                       rows={4}
-                                              placeholder={newWedding.template === 'birthday' ? "Bayram tafsilotlarini yozing..." : "Tadbir tafsilotlari yoki xush kelibsiz xabarini yozing..."}
+                                              placeholder={newWedding.template === 'birthday' ? t('adminDashboard.partyDetailsPlaceholder') : t('adminDashboard.eventDetailsPlaceholder')}
                       value={newWedding.dearGuestMessage}
                       onChange={(e) => handleFormChange('dearGuestMessage', e.target.value)}
                     ></textarea>
                     <p className="text-xs text-gray-500 mt-1">
-                      {newWedding.template === 'birthday' ? "Bu xabar tug'ilgan kun bayram bo'limida ko'rsatiladi" : '"Aziz mehmonlar" bo\'limida ko\'rsatiladigan xabar'}
+                      {newWedding.template === 'birthday' ? t('adminDashboard.partyDetailsHint') : t('adminDashboard.dearGuestsHint')}
                     </p>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                      {newWedding.template === 'birthday' ? "Tug'ilgan kun egasi rasmi (Ixtiyoriy)" : "Tadbir rasmi (Ixtiyoriy)"}
+                      {newWedding.template === 'birthday' ? t('adminDashboard.birthdayPersonPhotoLabel') : t('adminDashboard.eventPhotoLabel')}
                     </label>
                     <Input
                       type="file"
@@ -1717,21 +1720,21 @@ export default function AdminDashboard() {
                       className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      {newWedding.template === 'birthday' ? "Shablon fonini almashtirish uchun tug'ilgan kun egasi rasmini yuklang" : "Shablon fonini almashtirish uchun tadbir rasmini yuklang"}
+                      {newWedding.template === 'birthday' ? t('adminDashboard.birthdayPersonPhotoHint') : t('adminDashboard.eventPhotoHint')}
                     </p>
                     {newWedding.couplePhotoUrl && (
                       <div className="mt-2">
-                        <img 
-                          src={newWedding.couplePhotoUrl} 
-                          alt="Ko'rinish" 
+                        <img
+                          src={newWedding.couplePhotoUrl}
+                          alt={t('adminDashboard.previewAlt')}
                           className="w-32 h-32 object-cover rounded-lg border"
                         />
-                        <button 
+                        <button
                           type="button"
                           onClick={() => setNewWedding({...newWedding, couplePhotoUrl: ''})}
                           className="text-red-500 text-sm mt-1 hover:underline block"
                         >
-                          Rasmni olib tashlash
+                          {t('adminDashboard.removePhoto')}
                         </button>
                       </div>
                     )}
@@ -1739,26 +1742,26 @@ export default function AdminDashboard() {
 
                   <div>
                     <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                      Fon musiqasi (Ixtiyoriy)
+                      {t('adminDashboard.backgroundMusicLabel')}
                     </label>
                     <p className="text-xs text-gray-500 mb-1">
-                      {newWedding.template === 'birthday' ? "Bayram saytida ijro bo'ladigan fon musiqasini yuklang (MP3, WAV). Max 10MB." : "To'y saytida ijro bo'ladigan fon musiqasini yuklang (MP3, WAV). Max 10MB."}
+                      {newWedding.template === 'birthday' ? t('adminDashboard.backgroundMusicHintBirthday') : t('adminDashboard.backgroundMusicHintWedding')}
                     </p>
                     {newWedding.backgroundMusicUrl && (
                       <div className="mb-2">
-                        <audio 
-                          controls 
+                        <audio
+                          controls
                           className="w-full"
                           src={newWedding.backgroundMusicUrl}
                         >
-                          Your browser does not support the audio element.
+                          {t('adminDashboard.audioNotSupported')}
                         </audio>
-                          <button 
+                          <button
                             type="button"
                             onClick={() => setNewWedding({...newWedding, backgroundMusicUrl: ''})}
                             className="text-red-500 text-sm hover:underline block mb-2"
                           >
-                            Musiqani olib tashlash
+                            {t('adminDashboard.removeMusic')}
                         </button>
                       </div>
                     )}
@@ -1778,14 +1781,14 @@ export default function AdminDashboard() {
                     disabled={createWeddingMutation.isPending}
                   >
                     <Calendar className="w-4 h-4 mr-2" />
-                    {createWeddingMutation.isPending ? 'Yaratilmoqda...' : (newWedding.template === 'birthday' ? 'Tug\'ilgan kun tadbirini yaratish' : 'Tadbir yaratish')}
+                    {createWeddingMutation.isPending ? t('adminDashboard.creating') : (newWedding.template === 'birthday' ? t('adminDashboard.createBirthdayEvent') : t('adminDashboard.createEvent'))}
                   </Button>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="border-gray-200"
                     onClick={handleResetForm}
                   >
-                    Formni tozalash
+                    {t('adminDashboard.clearForm')}
                   </Button>
                 </div>
               </CardContent>
@@ -1798,7 +1801,7 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-[#2C3338]">
                   <MessageSquare className="h-5 w-5 text-[#D4B08C]" />
-                  Guest Book boshqaruvi
+                  {t('adminDashboard.guestBookManagement')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -1820,7 +1823,7 @@ export default function AdminDashboard() {
                           onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
                         >
                           <Eye className="h-4 w-4 mr-2" />
-                          Tadbirni ko'rish
+                          {t('adminDashboard.viewEvent')}
                         </Button>
                       </div>
                       <AdminGuestBookManager weddingId={wedding.id} />
@@ -1828,7 +1831,7 @@ export default function AdminDashboard() {
                   ))}
                   {weddings.length === 0 && (
                     <div className="text-center py-8 text-[#2C3338]/70">
-                      Tadbirlar topilmadi. Mehmon kitobi yozuvlarini boshqarish uchun avval tadbir yarating.
+                      {t('adminDashboard.noEventsCreateFirst')}
                     </div>
                   )}
                 </div>

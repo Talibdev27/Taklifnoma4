@@ -63,7 +63,7 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
       });
       
       if (!response.ok) {
-        throw new Error('Failed to submit RSVP');
+        throw new Error(t('rsvp.submitError'));
       }
       
       return response.json();

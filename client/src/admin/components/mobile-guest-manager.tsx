@@ -19,7 +19,7 @@ interface MobileGuestManagerProps {
   className?: string;
 }
 
-export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", className = '' }: MobileGuestManagerProps) {
+export function MobileGuestManager({ weddingId, weddingTitle, className = '' }: MobileGuestManagerProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -184,7 +184,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
     <div className={`space-y-6 ${className}`}>
       {/* Mobile-First Header */}
       <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">{weddingTitle}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">{weddingTitle || t('guestManager.weddingFallback')}</h1>
         <p className="text-base text-gray-600">{t('manage.guestManagement')}</p>
       </div>
 
@@ -211,7 +211,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
                   const translation = t('guestList.withGuest');
                   // Check if translation returned the key itself (no translation found)
                   if (translation === 'guestList.withGuest' || !translation) {
-                    return 'MEHMON BILAN';
+                    return t('guestManager.withGuestFallback').toUpperCase();
                   }
                   return translation.toUpperCase();
                 })()}
@@ -264,7 +264,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
                   const translation = t('guestList.comments');
                   // Check if translation returned the key itself (no translation found)
                   if (translation === 'guestList.comments' || !translation) {
-                    return 'IZOHLAR';
+                    return t('guestManager.commentsFallback').toUpperCase();
                   }
                   return translation.toUpperCase();
                 })()}
@@ -319,7 +319,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
                 label: (() => {
                   const translation = t('guestList.withGuest');
                   if (translation === 'guestList.withGuest' || !translation) {
-                    return 'Mehmon bilan';
+                    return t('guestManager.withGuestFallback');
                   }
                   return translation;
                 })()

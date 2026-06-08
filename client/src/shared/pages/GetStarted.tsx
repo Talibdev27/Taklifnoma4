@@ -139,15 +139,15 @@ export default function GetStarted() {
     },
     onSuccess: ({ wedding }) => {
       toast({
-        title: "Welcome to LoveStory!",
-        description: "Your account and wedding website have been created successfully!",
+        title: t('getStarted.welcomeToast'),
+        description: t('getStarted.welcomeToastDesc'),
       });
       setLocation(`/wedding/${wedding.uniqueUrl}`);
     },
     onError: (error) => {
       toast({
-        title: "Registration Failed",
-        description: error.message || "An error occurred during registration. Please try again.",
+        title: t('getStarted.registrationFailed'),
+        description: error.message || t('getStarted.registrationError'),
         variant: "destructive",
       });
     },
@@ -368,10 +368,10 @@ export default function GetStarted() {
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl font-playfair font-bold text-charcoal flex items-center justify-center gap-2">
                     <Heart className="text-gold" />
-                    About Your Wedding
+                    {t('getStarted.aboutYourWedding')}
                   </CardTitle>
                   <p className="text-charcoal/70">
-                    Tell us about the happy couple
+                    {t('getStarted.aboutYourWeddingDesc')}
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -382,11 +382,11 @@ export default function GetStarted() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-charcoal font-semibold">
-                            Bride's Name
+                            {t('getStarted.brideName')}
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter bride's name"
+                              placeholder={t('getStarted.brideNamePlaceholder')}
                               className="wedding-input"
                               {...field}
                             />
@@ -481,11 +481,11 @@ export default function GetStarted() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-charcoal font-semibold">
-                          Venue Name
+                          {t('getStarted.venueName')}
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="e.g., Grand Ballroom, Garden Manor"
+                            placeholder={t('getStarted.venueNamePlaceholder')}
                             className="wedding-input"
                             {...field}
                           />
@@ -501,11 +501,11 @@ export default function GetStarted() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-charcoal font-semibold">
-                          Venue Address
+                          {t('getStarted.venueAddress')}
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Full address of the venue"
+                            placeholder={t('getStarted.venueAddressPlaceholder')}
                             className="wedding-input"
                             {...field}
                           />
@@ -521,11 +521,11 @@ export default function GetStarted() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-charcoal font-semibold">
-                          Your Love Story (Optional)
+                          {t('getStarted.loveStory')}
                         </FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Share your beautiful love story with your guests..."
+                            placeholder={t('getStarted.loveStoryPlaceholder')}
                             className="wedding-input min-h-[120px]"
                             {...field}
                             value={field.value || ""}
@@ -545,10 +545,10 @@ export default function GetStarted() {
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl font-playfair font-bold text-charcoal flex items-center justify-center gap-2">
                     <Camera className="text-gold" />
-                    Choose Your Style
+                    {t('getStarted.chooseYourStyle')}
                   </CardTitle>
                   <p className="text-charcoal/70">
-                    Select a beautiful template for your wedding website
+                    {t('getStarted.chooseYourStyleDesc')}
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -558,7 +558,7 @@ export default function GetStarted() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-charcoal font-semibold">
-                          Website Template
+                          {t('getStarted.websiteTemplate')}
                         </FormLabel>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                           {templateOptions.map((template) => (
@@ -605,10 +605,10 @@ export default function GetStarted() {
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border border-sage/20 p-4">
                         <div className="space-y-0.5">
                           <FormLabel className="text-base font-semibold text-charcoal">
-                            Make Website Public
+                            {t('getStarted.makePublic')}
                           </FormLabel>
                           <p className="text-sm text-charcoal/70">
-                            Allow your website to be discovered by others
+                            {t('getStarted.makePublicDesc')}
                           </p>
                         </div>
                         <FormControl>
@@ -634,11 +634,11 @@ export default function GetStarted() {
                 className="wedding-button-outline"
               >
                 <ChevronLeft className="w-4 h-4 mr-2" />
-                Previous
+                {t('getStarted.previous')}
               </Button>
 
               <div className="text-sm text-charcoal/60">
-                Step {currentStep} of {totalSteps}
+                {t('getStarted.stepOf', { current: currentStep, total: totalSteps })}
               </div>
 
               {currentStep === totalSteps ? (
@@ -647,7 +647,7 @@ export default function GetStarted() {
                   className="wedding-button"
                   disabled={createUserAndWedding.isPending}
                 >
-                  {createUserAndWedding.isPending ? "Creating..." : "Create My Website"}
+                  {createUserAndWedding.isPending ? t('getStarted.creating') : t('getStarted.createMyWebsite')}
                 </Button>
               ) : (
                 <Button
@@ -655,7 +655,7 @@ export default function GetStarted() {
                   onClick={handleNextStep}
                   className="wedding-button"
                 >
-                  Next
+                  {t('getStarted.next')}
                   <ChevronRight className="w-4 h-4 ml-2" />
                 </Button>
               )}

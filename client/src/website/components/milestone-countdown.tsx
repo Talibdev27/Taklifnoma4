@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { calculateWeddingCountdown } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,10 +25,11 @@ export function MilestoneCountdown({
   targetDate, 
   weddingTime = '16:00',
   timezone = 'Asia/Tashkent',
-  weddingId, 
-  className = '' 
+  weddingId,
+  className = ''
 }: MilestoneCountdownProps) {
-  const [timeLeft, setTimeLeft] = useState(() => 
+  const { t } = useTranslation();
+  const [timeLeft, setTimeLeft] = useState(() =>
     calculateWeddingCountdown(targetDate, weddingTime, timezone)
   );
   const [newMilestoneOpen, setNewMilestoneOpen] = useState(false);
@@ -48,27 +50,27 @@ export function MilestoneCountdown({
   const [milestones, setMilestones] = useState([
     {
       id: 1,
-      title: "Book the Venue",
-      description: "Find and reserve the perfect wedding venue",
+      title: t('milestones.bookVenueTitle'),
+      description: t('milestones.bookVenueDesc'),
       targetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       isCompleted: false,
-      celebrationMessage: "🎉 Venue booked! Your dream location is secured!"
+      celebrationMessage: t('milestones.bookVenueCelebration')
     },
     {
       id: 2,
-      title: "Send Invitations",
-      description: "Design and send wedding invitations to guests",
+      title: t('milestones.sendInvitationsTitle'),
+      description: t('milestones.sendInvitationsDesc'),
       targetDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
       isCompleted: false,
-      celebrationMessage: "📨 Invitations sent! Your guests will be thrilled!"
+      celebrationMessage: t('milestones.sendInvitationsCelebration')
     },
     {
       id: 3,
-      title: "Choose Wedding Dress",
-      description: "Find the perfect wedding dress",
+      title: t('milestones.chooseDressTitle'),
+      description: t('milestones.chooseDressDesc'),
       targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
       isCompleted: true,
-      celebrationMessage: "👗 Perfect dress found! You'll look stunning!"
+      celebrationMessage: t('milestones.chooseDressCelebration')
     }
   ]);
 
@@ -98,12 +100,12 @@ export function MilestoneCountdown({
       description: formData.get('description') as string,
       targetDate: new Date(formData.get('targetDate') as string),
       isCompleted: false,
-      celebrationMessage: formData.get('celebrationMessage') as string || "🎉 Milestone completed!"
+      celebrationMessage: formData.get('celebrationMessage') as string || t('milestones.defaultCelebration')
     };
-    
+
     setMilestones(prev => [...prev, newMilestone]);
     setNewMilestoneOpen(false);
-    toast({ title: "Milestone added!", description: "Your wedding milestone has been created." });
+    toast({ title: t('milestones.milestoneAdded'), description: t('milestones.milestoneAddedDesc') });
   };
 
   const completeMilestone = (milestoneId: number) => {
@@ -117,8 +119,8 @@ export function MilestoneCountdown({
       setCelebrationVisible(true);
       setTimeout(() => setCelebrationVisible(false), 4000);
       
-      toast({ 
-        title: "🎉 Milestone completed!", 
+      toast({
+        title: t('milestones.milestoneCompletedEmoji'),
         description: milestone.celebrationMessage
       });
     }
@@ -135,7 +137,7 @@ export function MilestoneCountdown({
               <Star className="h-8 w-8 animate-pulse" />
               <Sparkles className="h-6 w-6 animate-spin" />
             </div>
-            <div className="text-lg font-bold mb-2">Milestone Completed!</div>
+            <div className="text-lg font-bold mb-2">{t('milestones.milestoneCompleted')}</div>
             <div className="text-sm">{celebrationMessage}</div>
           </div>
         </div>
@@ -146,44 +148,44 @@ export function MilestoneCountdown({
         <CardHeader>
           <CardTitle className="text-2xl font-playfair font-bold text-taklif-navy flex items-center justify-center gap-2">
             <Clock className="h-6 w-6 text-taklif-gold" />
-            Countdown to Your Special Day
+            {t('milestones.countdownTitle')}
           </CardTitle>
           <CardDescription className="text-taklif-navy/70 text-lg">
-            {daysLeft > 0 ? `${daysLeft} days until your wedding!` : 'Your wedding day is here! 💕'}
+            {daysLeft > 0 ? t('milestones.daysUntilWedding', { days: daysLeft }) : t('milestones.weddingDayHere')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-lg mx-auto">
             <div className="bg-white rounded-lg shadow-md p-6 border border-taklif-gold/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
               <div className="text-4xl font-bold text-taklif-gold animate-pulse">{timeLeft.days}</div>
-              <div className="text-sm text-taklif-navy uppercase tracking-wide font-medium">Days</div>
+              <div className="text-sm text-taklif-navy uppercase tracking-wide font-medium">{t('milestones.days')}</div>
             </div>
             
             <div className="bg-white rounded-lg shadow-md p-6 border border-taklif-gold/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
               <div className="text-4xl font-bold text-taklif-gold">{timeLeft.hours}</div>
-              <div className="text-sm text-taklif-navy uppercase tracking-wide font-medium">Hours</div>
+              <div className="text-sm text-taklif-navy uppercase tracking-wide font-medium">{t('milestones.hours')}</div>
             </div>
             
             <div className="bg-white rounded-lg shadow-md p-6 border border-taklif-gold/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
               <div className="text-4xl font-bold text-taklif-gold">{timeLeft.minutes}</div>
-              <div className="text-sm text-taklif-navy uppercase tracking-wide font-medium">Minutes</div>
+              <div className="text-sm text-taklif-navy uppercase tracking-wide font-medium">{t('milestones.minutes')}</div>
             </div>
             
             <div className="bg-white rounded-lg shadow-md p-6 border border-taklif-gold/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
               <div className="text-4xl font-bold text-taklif-gold">{timeLeft.seconds}</div>
-              <div className="text-sm text-taklif-navy uppercase tracking-wide font-medium">Seconds</div>
+              <div className="text-sm text-taklif-navy uppercase tracking-wide font-medium">{t('milestones.seconds')}</div>
             </div>
           </div>
 
           {/* Wedding Progress */}
           <div className="space-y-3 bg-white p-4 rounded-lg shadow-sm">
             <div className="flex justify-between text-sm text-taklif-navy font-medium">
-              <span>Wedding Planning Progress</span>
+              <span>{t('milestones.planningProgress')}</span>
               <span>{progress.toFixed(1)}%</span>
             </div>
             <Progress value={progress} className="h-4" />
             <p className="text-xs text-taklif-navy/60 text-center">
-              Time is flying! Keep up the great progress! ✨
+              {t('milestones.timeFlying')}
             </p>
           </div>
         </CardContent>
@@ -195,47 +197,47 @@ export function MilestoneCountdown({
           <div>
             <h3 className="text-xl font-semibold text-taklif-navy flex items-center gap-2">
               <Trophy className="h-6 w-6 text-taklif-gold" />
-              Wedding Milestones
+              {t('milestones.weddingMilestones')}
             </h3>
             <p className="text-sm text-taklif-navy/70">
-              {completedMilestones} of {totalMilestonesCount} milestones completed
+              {t('milestones.completedCount', { completed: completedMilestones, total: totalMilestonesCount })}
             </p>
           </div>
           <Dialog open={newMilestoneOpen} onOpenChange={setNewMilestoneOpen}>
             <DialogTrigger asChild>
               <Button className="bg-taklif-gold hover:bg-taklif-gold/90 shadow-md">
                 <Plus className="h-4 w-4 mr-2" />
-                Add Milestone
+                {t('milestones.addMilestone')}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Add Wedding Milestone</DialogTitle>
+                <DialogTitle>{t('milestones.addWeddingMilestone')}</DialogTitle>
                 <DialogDescription>
-                  Create a milestone to track your wedding planning progress and celebrate achievements!
+                  {t('milestones.addMilestoneDesc')}
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleMilestoneSubmit} className="space-y-4">
                 <div>
-                  <Label htmlFor="title">Milestone Title</Label>
-                  <Input 
+                  <Label htmlFor="title">{t('milestones.milestoneTitle')}</Label>
+                  <Input
                     id="title"
                     name="title"
-                    placeholder="e.g., Book the venue, Send invitations"
+                    placeholder={t('milestones.milestoneTitlePlaceholder')}
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea 
+                  <Label htmlFor="description">{t('milestones.description')}</Label>
+                  <Textarea
                     id="description"
                     name="description"
-                    placeholder="Details about this milestone..."
+                    placeholder={t('milestones.descriptionPlaceholder')}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="targetDate">Target Date</Label>
-                  <Input 
+                  <Label htmlFor="targetDate">{t('milestones.targetDate')}</Label>
+                  <Input
                     id="targetDate"
                     name="targetDate"
                     type="date"
@@ -243,18 +245,18 @@ export function MilestoneCountdown({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="celebrationMessage">Celebration Message</Label>
-                  <Input 
+                  <Label htmlFor="celebrationMessage">{t('milestones.celebrationMessage')}</Label>
+                  <Input
                     id="celebrationMessage"
                     name="celebrationMessage"
-                    placeholder="Custom message when completed (optional)"
+                    placeholder={t('milestones.celebrationMessagePlaceholder')}
                   />
                 </div>
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="w-full bg-taklif-gold hover:bg-taklif-gold/90"
                 >
-                  Create Milestone
+                  {t('milestones.createMilestone')}
                 </Button>
               </form>
             </DialogContent>
@@ -267,12 +269,12 @@ export function MilestoneCountdown({
             <CardContent className="p-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm font-medium">
-                  <span>Overall Milestone Progress</span>
+                  <span>{t('milestones.overallProgress')}</span>
                   <span>{milestoneProgress.toFixed(0)}%</span>
                 </div>
                 <Progress value={milestoneProgress} className="h-3" />
                 <p className="text-xs text-center text-gray-600">
-                  {completedMilestones > 0 ? "Fantastic progress! 🎉" : "Ready to start achieving milestones? 🚀"}
+                  {completedMilestones > 0 ? t('milestones.fantasticProgress') : t('milestones.readyToStart')}
                 </p>
               </div>
             </CardContent>
@@ -285,7 +287,7 @@ export function MilestoneCountdown({
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-taklif-gold" />
-                Upcoming Milestones
+                {t('milestones.upcomingMilestones')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -300,7 +302,7 @@ export function MilestoneCountdown({
                         <p className="text-sm text-[#2C3338]/70 mt-1">{milestone.description}</p>
                       )}
                       <Badge variant="outline" className="mt-2">
-                        {daysUntilMilestone > 0 ? `${daysUntilMilestone} days remaining` : 'Due today!'}
+                        {daysUntilMilestone > 0 ? t('milestones.daysRemaining', { days: daysUntilMilestone }) : t('milestones.dueToday')}
                       </Badge>
                     </div>
                     <Button
@@ -308,7 +310,7 @@ export function MilestoneCountdown({
                       className="bg-[#89916B] hover:bg-[#7A8760] text-white shadow-md hover:shadow-lg transition-all"
                     >
                       <CheckCircle className="h-4 w-4 mr-2" />
-                      Complete
+                      {t('milestones.complete')}
                     </Button>
                   </div>
                 );
@@ -323,7 +325,7 @@ export function MilestoneCountdown({
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-green-600" />
-                Completed Milestones ({completedMilestones})
+                {t('milestones.completedMilestones', { count: completedMilestones })}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -334,7 +336,7 @@ export function MilestoneCountdown({
                     <div key={milestone.id} className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
                       <CheckCircle className="h-5 w-5 text-green-600" />
                       <span className="text-[#2C3338] font-medium">{milestone.title}</span>
-                      <Badge className="bg-green-100 text-green-800 ml-auto">✓ Completed</Badge>
+                      <Badge className="bg-green-100 text-green-800 ml-auto">{t('milestones.completedBadge')}</Badge>
                     </div>
                   ))}
               </div>
@@ -352,17 +354,16 @@ export function MilestoneCountdown({
                   <Sparkles className="h-6 w-6 text-[#89916B] absolute -top-1 -right-1 animate-pulse" />
                 </div>
               </div>
-              <h3 className="text-xl font-semibold mb-3 text-[#2C3338]">Ready to Set Some Goals?</h3>
+              <h3 className="text-xl font-semibold mb-3 text-[#2C3338]">{t('milestones.readyToSetGoals')}</h3>
               <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                Create milestones to track your wedding planning progress and celebrate each achievement along the way! 
-                Make your journey memorable with small victories! 🎉
+                {t('milestones.emptyStateDesc')}
               </p>
-              <Button 
+              <Button
                 onClick={() => setNewMilestoneOpen(true)}
                 className="bg-[#D4B08C] hover:bg-[#C09E7A] shadow-md px-8 py-2"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Create Your First Milestone
+                {t('milestones.createFirstMilestone')}
               </Button>
             </CardContent>
           </Card>

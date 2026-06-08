@@ -137,7 +137,7 @@ export function ProgressiveOnboarding() {
     mutationFn: async (data: ProgressiveFormData) => {
       // Validate required fields
       if (!data.email || !data.password || !data.name) {
-        throw new Error('Please fill in all required account information');
+        throw new Error(t('onboarding.errors.missingAccountInfo'));
       }
 
       const response = await fetch('/api/get-started', {
@@ -152,7 +152,7 @@ export function ProgressiveOnboarding() {
       
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create account');
+        throw new Error(errorData.message || t('onboarding.errors.createFailed'));
       }
       
       return response.json();
@@ -198,8 +198,8 @@ export function ProgressiveOnboarding() {
       setCurrentStep(currentStep + 1);
     } else if (!isValid) {
       toast({
-        title: 'Please complete this step',
-        description: 'Fill in all required fields before continuing',
+        title: t('onboarding.errors.completeStepTitle'),
+        description: t('onboarding.errors.completeStepDesc'),
         variant: 'destructive',
       });
     }
@@ -232,18 +232,18 @@ export function ProgressiveOnboarding() {
       setIsSubmitting(false);
       toast({
         title: t('onboarding.error.title'),
-        description: 'Please fill in all required fields',
+        description: t('onboarding.errors.fillAllFields'),
         variant: 'destructive',
       });
       return;
     }
-    
+
     // Check specifically for required fields
     if (!data.bride || !data.groom || !data.venue || !data.venueAddress) {
       setIsSubmitting(false);
       toast({
         title: t('onboarding.error.title'),
-        description: 'Please complete all required wedding information',
+        description: t('onboarding.errors.completeWeddingInfo'),
         variant: 'destructive',
       });
       return;

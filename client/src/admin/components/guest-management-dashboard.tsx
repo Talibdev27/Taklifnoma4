@@ -138,23 +138,23 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
     
     switch (status) {
       case 'confirmed':
-        displayText = '✅ Ha, albatta boraman!';
+        displayText = t('guestManager.statusConfirmedLong');
         badgeColor = 'text-green-600 bg-green-50 border-green-200';
         break;
       case 'confirmed_with_guest':
-        displayText = '👥 Ha, mehmon bilan boraman';
+        displayText = t('guestManager.statusWithGuestLong');
         badgeColor = 'text-blue-600 bg-blue-50 border-blue-200';
         break;
       case 'declined':
-        displayText = '❌ Afsus, kela olmayman';
+        displayText = t('guestManager.statusDeclinedLong');
         badgeColor = 'text-red-600 bg-red-50 border-red-200';
         break;
       case 'maybe':
-        displayText = '😐 Hali aniq emas';
+        displayText = t('guestManager.statusMaybeLong');
         badgeColor = 'text-yellow-600 bg-yellow-50 border-yellow-200';
         break;
       case 'pending':
-        displayText = 'Kutilmoqda';
+        displayText = t('guestManager.statusPendingLong');
         badgeColor = 'text-gray-600 bg-gray-50 border-gray-200';
         break;
       default:
@@ -416,7 +416,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                   
                   <Select value={commentFilter} onValueChange={setCommentFilter}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Filter comments" />
+                      <SelectValue placeholder={t('guestManager.filterComments')} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">{t('guestList.all')}</SelectItem>
@@ -491,7 +491,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                             <MessageSquare className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
                             <div className="min-w-0 flex-1">
                               <p className="text-sm text-gray-700 dark:text-gray-300">
-                                <span className="font-medium">Comment:</span>{' '}
+                                <span className="font-medium">{t('guestManager.commentLabel')}</span>{' '}
                                 {formatCommentPreview(guest.message)}
                               </p>
                               {guest.message.length > 20 && (
@@ -501,7 +501,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                                   className="p-0 h-auto text-blue-600 hover:text-blue-800"
                                   onClick={() => setSelectedGuest(guest)}
                                 >
-                                  Read full comment
+                                  {t('guestManager.readFullComment')}
                                 </Button>
                               )}
                             </div>
@@ -541,13 +541,13 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                     {/* Guest Information */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="text-sm font-medium text-gray-700">RSVP Status</label>
+                        <label className="text-sm font-medium text-gray-700">{t('guestManager.rsvpStatusLabel')}</label>
                         <div className="mt-1">{getStatusBadge(selectedGuest.rsvpStatus, selectedGuest.responseText, selectedGuest.plusOne)}</div>
                       </div>
                       
                       {selectedGuest.email && (
                         <div>
-                          <label className="text-sm font-medium text-gray-700">Email</label>
+                          <label className="text-sm font-medium text-gray-700">{t('guestManager.emailLabel')}</label>
                           <div className="mt-1 flex items-center gap-2">
                             <Mail className="h-4 w-4 text-gray-400" />
                             <span className="text-sm">{selectedGuest.email}</span>
@@ -557,7 +557,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                       
                       {selectedGuest.phone && (
                         <div>
-                          <label className="text-sm font-medium text-gray-700">Phone</label>
+                          <label className="text-sm font-medium text-gray-700">{t('guestManager.phoneLabel')}</label>
                           <div className="mt-1 flex items-center gap-2">
                             <Phone className="h-4 w-4 text-gray-400" />
                             <span className="text-sm">{selectedGuest.phone}</span>
@@ -567,7 +567,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                       
                       {selectedGuest.respondedAt && (
                         <div>
-                          <label className="text-sm font-medium text-gray-700">Response Date</label>
+                          <label className="text-sm font-medium text-gray-700">{t('guestManager.responseDate')}</label>
                           <div className="mt-1 flex items-center gap-2">
                             <Calendar className="h-4 w-4 text-gray-400" />
                             <span className="text-sm">{formatDate(selectedGuest.respondedAt)}</span>
@@ -577,10 +577,10 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                       
                       {selectedGuest.plusOne && (
                         <div>
-                          <label className="text-sm font-medium text-gray-700">Plus One</label>
+                          <label className="text-sm font-medium text-gray-700">{t('guestManager.plusOne')}</label>
                           <div className="mt-1">
                             <Badge variant="outline">
-                              {selectedGuest.plusOneName || 'Plus One Invited'}
+                              {selectedGuest.plusOneName || t('guestManager.plusOneInvited')}
                             </Badge>
                           </div>
                         </div>
@@ -592,7 +592,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                       <div>
                         <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                           <MessageSquare className="h-4 w-4" />
-                          Guest Comment
+                          {t('guestManager.guestComment')}
                         </label>
                         <div className="mt-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4 border-l-4 border-blue-200">
                           <p className="text-sm leading-relaxed whitespace-pre-wrap">
@@ -605,19 +605,19 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                     {/* Additional Details */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
                       <div>
-                        <label className="text-sm font-medium text-gray-700">Category</label>
+                        <label className="text-sm font-medium text-gray-700">{t('guestManager.category')}</label>
                         <div className="mt-1">
-                          <Badge variant="outline">{selectedGuest.category || 'Not specified'}</Badge>
+                          <Badge variant="outline">{selectedGuest.category || t('guestManager.notSpecified')}</Badge>
                         </div>
                       </div>
                       
                       {selectedGuest.side && (
                         <div>
-                          <label className="text-sm font-medium text-gray-700">Wedding Side</label>
+                          <label className="text-sm font-medium text-gray-700">{t('guestManager.weddingSide')}</label>
                           <div className="mt-1">
                             <Badge variant="outline">
-                              {selectedGuest.side === 'bride' ? "Bride's Side" : 
-                               selectedGuest.side === 'groom' ? "Groom's Side" : 'Both Sides'}
+                              {selectedGuest.side === 'bride' ? t('guestManager.bridesSide') :
+                               selectedGuest.side === 'groom' ? t('guestManager.groomsSide') : t('guestManager.bothSides')}
                             </Badge>
                           </div>
                         </div>
@@ -626,7 +626,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
 
                     {selectedGuest.dietaryRestrictions && (
                       <div>
-                        <label className="text-sm font-medium text-gray-700">Dietary Restrictions</label>
+                        <label className="text-sm font-medium text-gray-700">{t('guestManager.dietaryRestrictions')}</label>
                         <div className="mt-1 text-sm text-gray-600">
                           {selectedGuest.dietaryRestrictions}
                         </div>
@@ -635,7 +635,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
 
                     {selectedGuest.notes && (
                       <div>
-                        <label className="text-sm font-medium text-gray-700">Internal Notes</label>
+                        <label className="text-sm font-medium text-gray-700">{t('guestManager.internalNotes')}</label>
                         <div className="mt-1 text-sm text-gray-600">
                           {selectedGuest.notes}
                         </div>
@@ -707,10 +707,10 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                       <div className="text-2xl font-bold">{responseRate.toFixed(1)}%</div>
                       <Progress value={responseRate} className="h-3" />
                       <p className="text-sm text-gray-600">
-                        {allConfirmedGuests + declinedGuests + maybeGuests} dan {totalGuests} mehmon javob berdi
+                        {t('guestManager.guestsResponded', { responded: allConfirmedGuests + declinedGuests + maybeGuests, total: totalGuests })}
                       </p>
                       <p className="text-xs text-gray-500">
-                        Jami keluvchilar: {totalAttendees} kishi
+                        {t('guestManager.totalAttendeesCount', { count: totalAttendees })}
                       </p>
                     </div>
                   </CardContent>
@@ -720,17 +720,17 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <MessageSquare className="h-5 w-5" />
-                      Guest Comments
+                      {t('guestManager.guestComments')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
                       <div className="text-2xl font-bold">{guestsWithComments}</div>
                       <div className="text-sm text-gray-600">
-                        out of {totalGuests} guests
+                        {t('guestManager.outOfGuests', { total: totalGuests })}
                       </div>
                       <div className="text-xs text-gray-500">
-                        {totalGuests > 0 ? ((guestsWithComments / totalGuests) * 100).toFixed(1) : 0}% left comments
+                        {t('guestManager.leftCommentsPercent', { percent: totalGuests > 0 ? ((guestsWithComments / totalGuests) * 100).toFixed(1) : 0 })}
                       </div>
                     </div>
                   </CardContent>
@@ -743,7 +743,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <MessageSquare className="h-5 w-5" />
-                      Recent Comments
+                      {t('guestManager.recentComments')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -779,7 +779,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                           onClick={() => setCommentFilter('with-comments')}
                           className="w-full"
                         >
-                          View all {guestsWithComments} comments
+                          {t('guestManager.viewAllComments', { count: guestsWithComments })}
                         </Button>
                       )}
                     </div>

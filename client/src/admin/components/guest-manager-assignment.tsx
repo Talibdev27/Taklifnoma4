@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useTranslation } from 'react-i18next';
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +18,7 @@ interface GuestManagerAssignmentProps {
 }
 
 export function GuestManagerAssignment({ wedding, className = '' }: GuestManagerAssignmentProps) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [newManagerEmail, setNewManagerEmail] = useState("");
   const [newManagerName, setNewManagerName] = useState("");
@@ -38,8 +40,8 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
     },
     onSuccess: () => {
       toast({
-        title: "Guest Manager Created",
-        description: "New guest manager account has been created with restricted access.",
+        title: t('guestManager.guestManagerCreated'),
+        description: t('guestManager.guestManagerCreatedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
       queryClient.invalidateQueries({ queryKey: [`/api/admin/wedding-access/${wedding.id}`] });
@@ -48,8 +50,8 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to create guest manager account",
+        title: t('common.error'),
+        description: error.message || t('guestManager.failedToCreate'),
         variant: "destructive",
       });
     },
@@ -62,15 +64,15 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
     },
     onSuccess: () => {
       toast({
-        title: "Guest Manager Assigned",
-        description: "User has been assigned as guest manager for this wedding.",
+        title: t('guestManager.guestManagerAssigned'),
+        description: t('guestManager.guestManagerAssignedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: [`/api/admin/wedding-access/${wedding.id}`] });
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to assign guest manager",
+        title: t('common.error'),
+        description: error.message || t('guestManager.failedToAssign'),
         variant: "destructive",
       });
     },
@@ -83,15 +85,15 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
     },
     onSuccess: () => {
       toast({
-        title: "Access Removed",
-        description: "Guest manager access has been removed.",
+        title: t('guestManager.accessRemoved'),
+        description: t('guestManager.accessRemovedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: [`/api/admin/wedding-access/${wedding.id}`] });
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to remove access",
+        title: t('common.error'),
+        description: error.message || t('guestManager.failedToRemove'),
         variant: "destructive",
       });
     },
@@ -100,8 +102,8 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
   const handleCreateGuestManager = () => {
     if (!newManagerEmail || !newManagerName) {
       toast({
-        title: "Missing Information",
-        description: "Please provide both email and name for the guest manager.",
+        title: t('guestManager.missingInformation'),
+        description: t('guestManager.missingInformationDesc'),
         variant: "destructive",
       });
       return;
@@ -123,10 +125,10 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Settings className="h-5 w-5" />
-            Guest Manager Access Control
+            {t('guestManager.accessControl')}
           </CardTitle>
           <p className="text-sm text-gray-600">
-            Manage restricted access for wedding guest management. Guest managers can only view and manage guests.
+            {t('guestManager.accessControlDesc')}
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -134,20 +136,20 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
           <div className="border rounded-lg p-4 space-y-4">
             <h3 className="font-semibold flex items-center gap-2">
               <UserPlus className="h-4 w-4" />
-              Create New Guest Manager
+              {t('guestManager.createNew')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="manager-name">Full Name</Label>
+                <Label htmlFor="manager-name">{t('guestManager.fullName')}</Label>
                 <Input
                   id="manager-name"
                   value={newManagerName}
                   onChange={(e) => setNewManagerName(e.target.value)}
-                  placeholder="Guest manager's full name"
+                  placeholder={t('guestManager.fullNamePlaceholder')}
                 />
               </div>
               <div>
-                <Label htmlFor="manager-email">Email Address</Label>
+                <Label htmlFor="manager-email">{t('guestManager.emailAddress')}</Label>
                 <Input
                   id="manager-email"
                   type="email"
@@ -162,7 +164,7 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
               disabled={createGuestManagerMutation.isPending}
               className="w-full md:w-auto"
             >
-              {createGuestManagerMutation.isPending ? "Creating..." : "Create Guest Manager Account"}
+              {createGuestManagerMutation.isPending ? t('guestManager.creating') : t('guestManager.createAccount')}
             </Button>
           </div>
 
@@ -171,7 +173,7 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
             <div className="border rounded-lg p-4 space-y-4">
               <h3 className="font-semibold flex items-center gap-2">
                 <User className="h-4 w-4" />
-                Assign Existing Guest Manager
+                {t('guestManager.assignExisting')}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {guestManagerUsers.map((user) => {
@@ -183,7 +185,7 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
                         <p className="text-sm text-gray-600">{user.email}</p>
                       </div>
                       {isAssigned ? (
-                        <Badge variant="secondary">Assigned</Badge>
+                        <Badge variant="secondary">{t('guestManager.assigned')}</Badge>
                       ) : (
                         <Button
                           size="sm"
@@ -193,7 +195,7 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
                           })}
                           disabled={assignGuestManagerMutation.isPending}
                         >
-                          Assign
+                          {t('guestManager.assign')}
                         </Button>
                       )}
                     </div>
@@ -206,7 +208,7 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
           {/* Current Guest Managers */}
           {assignedManagers.length > 0 && (
             <div className="border rounded-lg p-4 space-y-4">
-              <h3 className="font-semibold">Current Guest Managers</h3>
+              <h3 className="font-semibold">{t('guestManager.currentManagers')}</h3>
               <div className="space-y-2">
                 {assignedManagers.map((access) => {
                   const user = users.find(u => u.id === access.userId);
@@ -218,8 +220,8 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
                         <p className="font-medium">{user.name}</p>
                         <p className="text-sm text-gray-600">{user.email}</p>
                         <div className="flex gap-2 mt-1">
-                          <Badge variant="outline" className="text-xs">Guest Management Only</Badge>
-                          <Badge variant="outline" className="text-xs">Read-Only Wedding Details</Badge>
+                          <Badge variant="outline" className="text-xs">{t('guestManager.guestManagementOnly')}</Badge>
+                          <Badge variant="outline" className="text-xs">{t('guestManager.readOnlyDetails')}</Badge>
                         </div>
                       </div>
                       <Button
@@ -240,8 +242,8 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
           {assignedManagers.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>No guest managers assigned to this wedding.</p>
-              <p className="text-sm">Create or assign a guest manager to provide restricted access.</p>
+              <p>{t('guestManager.noneAssigned')}</p>
+              <p className="text-sm">{t('guestManager.noneAssignedDesc')}</p>
             </div>
           )}
         </CardContent>

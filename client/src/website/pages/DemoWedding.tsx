@@ -151,6 +151,7 @@ const PARTICLES = Array.from({ length: 24 }, (_, i) => ({
 }));
 
 function ModernDemoPreview() {
+  const { t } = useTranslation();
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [activeSection, setActiveSection] = useState('home');
   const [showEnvelopeIntro, setShowEnvelopeIntro] = useState(false);
@@ -207,10 +208,10 @@ function ModernDemoPreview() {
   };
 
   const navItems = [
-    { id: 'home',    label: 'Home',    Icon: Heart },
-    { id: 'details', label: 'Details', Icon: Calendar },
-    { id: 'story',   label: 'Story',   Icon: Sparkles },
-    { id: 'rsvp',    label: 'RSVP',    Icon: Users },
+    { id: 'home',    label: t('demo.navHome'),    Icon: Heart },
+    { id: 'details', label: t('demo.navDetails'), Icon: Calendar },
+    { id: 'story',   label: t('demo.navStory'),   Icon: Sparkles },
+    { id: 'rsvp',    label: t('demo.navRsvp'),    Icon: Users },
   ];
 
   const fadeUp = {
@@ -377,7 +378,7 @@ function ModernDemoPreview() {
               handleOpenEnvelope();
             }}
             className="relative w-[min(92vw,430px)] h-[280px] cursor-pointer focus:outline-none"
-            aria-label="Open invitation envelope"
+            aria-label={t('demo.openEnvelopeAria')}
           >
             <div className="absolute inset-x-5 bottom-[-18px] h-9 rounded-full bg-black/40 blur-xl" />
 
@@ -394,7 +395,7 @@ function ModernDemoPreview() {
                 }}
               >
                 <p className="text-[11px] uppercase tracking-[0.32em] text-[#8b6045]/70 mb-3">
-                  Wedding Invitation
+                  {t('demo.weddingInvitation')}
                 </p>
                 <p
                   className="text-2xl sm:text-3xl leading-tight"
@@ -432,7 +433,7 @@ function ModernDemoPreview() {
             </div>
 
             <p className="absolute -bottom-14 left-1/2 -translate-x-1/2 text-center text-[11px] tracking-[0.24em] uppercase text-[#d4b08c]/75 whitespace-nowrap">
-              {envelopeOpening ? 'Opening...' : 'Click to open invitation'}
+              {envelopeOpening ? t('welcome.opening') : t('welcome.clickToOpen')}
             </p>
           </button>
         </div>
@@ -477,7 +478,7 @@ function ModernDemoPreview() {
             ))}
           </div>
           <Link href="/">
-            <button className="text-xs text-white/30 hover:text-white/60 transition-colors tracking-wider">← Back</button>
+            <button className="text-xs text-white/30 hover:text-white/60 transition-colors tracking-wider">← {t('demo.back')}</button>
           </Link>
         </div>
       </nav>
@@ -505,7 +506,7 @@ function ModernDemoPreview() {
             transition={{ duration: 1.1, ease: 'easeOut' }}
             className="text-[10px] uppercase tracking-[0.5em] text-[#c9a96e]/80 mb-8"
           >
-            You are invited to celebrate the union of
+            {t('demo.invitedToCelebrate')}
           </motion.p>
 
           {/* @ts-ignore - Framer Motion typing issue */}
@@ -547,14 +548,14 @@ function ModernDemoPreview() {
           >
             <Link href="/get-started">
               <button className="shimmer-cta font-semibold px-10 py-3.5 rounded-full text-xs tracking-[0.2em] uppercase shadow-lg shadow-[#c9a96e]/20">
-                Create Your Own
+                {t('demo.createYourOwn')}
               </button>
             </Link>
             <button
               onClick={() => scrollTo('details')}
               className="border border-white/15 text-white/50 hover:text-white hover:border-white/30 px-10 py-3.5 rounded-full text-xs tracking-[0.2em] uppercase transition-all"
             >
-              Explore
+              {t('demo.explore')}
             </button>
           </motion.div>
         </div>
@@ -579,7 +580,7 @@ function ModernDemoPreview() {
             variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="text-[10px] uppercase tracking-[0.5em] text-[#c9a96e]/70 mb-4"
           >
-            Counting down to forever
+            {t('demo.countingDown')}
           </motion.p>
           {/* @ts-ignore - Framer Motion typing issue */}
           <motion.div
@@ -587,10 +588,10 @@ function ModernDemoPreview() {
             className="grid grid-cols-4 gap-3 md:gap-5"
           >
             {[
-              { label: 'Days',   value: countdown.days },
-              { label: 'Hours',  value: countdown.hours },
-              { label: 'Mins',   value: countdown.minutes },
-              { label: 'Secs',   value: countdown.seconds },
+              { label: t('demo.days'),   value: countdown.days },
+              { label: t('demo.hours'),  value: countdown.hours },
+              { label: t('demo.mins'),   value: countdown.minutes },
+              { label: t('demo.secs'),   value: countdown.seconds },
             ].map(({ label, value }, i) => (
               // @ts-ignore - Framer Motion typing issue
               <motion.div
@@ -624,16 +625,16 @@ function ModernDemoPreview() {
             variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="text-center mb-14"
           >
-            <p className="text-[10px] uppercase tracking-[0.5em] text-[#c9a96e]/70 mb-3">Ceremony Details</p>
+            <p className="text-[10px] uppercase tracking-[0.5em] text-[#c9a96e]/70 mb-3">{t('demo.ceremonyDetails')}</p>
             <h2 className="text-3xl font-extralight gold-gradient-text" style={{ fontFamily: '"Playfair Display", Georgia, serif' }}>
-              Join us on our special day
+              {t('demo.joinUsSpecialDay')}
             </h2>
           </motion.div>
           <div className="grid md:grid-cols-3 gap-4">
             {[
-              { Icon: Calendar, label: 'Date',      title: 'Sept 27, 2025',       sub: 'Saturday evening' },
-              { Icon: MapPin,   label: 'Venue',     title: 'Skyline Rooftop',     sub: 'Tashkent, Uzbekistan' },
-              { Icon: Heart,    label: 'Reception', title: '6:00 PM onwards',     sub: 'Dinner & Dancing' },
+              { Icon: Calendar, label: t('demo.dateLabel'),      title: 'Sept 27, 2025',       sub: t('demo.saturdayEvening') },
+              { Icon: MapPin,   label: t('demo.venueLabel'),     title: 'Skyline Rooftop',     sub: 'Tashkent, Uzbekistan' },
+              { Icon: Heart,    label: t('demo.receptionLabel'), title: '6:00 PM onwards',     sub: t('demo.dinnerAndDancing') },
             ].map(({ Icon, label, title, sub }, i) => (
               // @ts-ignore - Framer Motion typing issue
               <motion.div
@@ -668,7 +669,7 @@ function ModernDemoPreview() {
             <div className="absolute -inset-3 rounded-3xl bg-gradient-to-br from-[#c9a96e]/15 to-transparent blur-2xl" />
             <img
               src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80"
-              alt="Couple"
+              alt={t('demo.coupleAlt')}
               className="relative w-full rounded-3xl object-cover aspect-[4/5] shadow-2xl"
             />
             <div className="absolute inset-0 rounded-3xl ring-1 ring-[#c9a96e]/20" />
@@ -680,23 +681,20 @@ function ModernDemoPreview() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="text-[10px] uppercase tracking-[0.5em] text-[#c9a96e]/70 mb-4">Our Story</p>
+            <p className="text-[10px] uppercase tracking-[0.5em] text-[#c9a96e]/70 mb-4">{t('demo.ourStoryLabel')}</p>
             <h3
               className="text-4xl font-extralight leading-tight mb-6"
               style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
             >
-              How it all{' '}
-              <em className="gold-gradient-text not-italic">began</em>
+              {t('demo.howItAll')}{' '}
+              <em className="gold-gradient-text not-italic">{t('demo.began')}</em>
             </h3>
             <div className="space-y-4 text-white/50 leading-relaxed text-sm">
               <p>
-                Aisha and Kamol met through a mutual friend's dinner party on a warm Tashkent evening.
-                One conversation led to another — about art, music, late-night walks through the old city.
+                {t('demo.storyParagraph1')}
               </p>
               <p>
-                Soon they were inseparable. Their love grew quietly and surely, like the first light of dawn,
-                until one perfect evening under a sky full of stars, Kamol asked the question they both
-                always knew was coming.
+                {t('demo.storyParagraph2')}
               </p>
             </div>
             <div className="flex items-center gap-4 mt-8">
@@ -748,34 +746,34 @@ function ModernDemoPreview() {
             variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="glass-card rounded-3xl p-8 md:p-12"
           >
-            <p className="text-[10px] uppercase tracking-[0.5em] text-[#c9a96e]/70 mb-3 text-center">RSVP</p>
+            <p className="text-[10px] uppercase tracking-[0.5em] text-[#c9a96e]/70 mb-3 text-center">{t('demo.rsvp')}</p>
             <h3
               className="text-3xl font-extralight text-center mb-8 gold-gradient-text"
               style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
             >
-              Will you join us?
+              {t('demo.willYouJoinUs')}
             </h3>
             <div className="space-y-3">
               <input
                 type="text"
-                placeholder="Your full name"
+                placeholder={t('demo.yourFullName')}
                 className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e]/40 transition-colors text-sm"
               />
               <input
                 type="email"
-                placeholder="Email address"
+                placeholder={t('demo.emailAddress')}
                 className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e]/40 transition-colors text-sm"
               />
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <button className="py-3 rounded-xl border border-[#c9a96e]/35 text-[#c9a96e] text-xs tracking-widest uppercase hover:bg-[#c9a96e]/8 transition-colors">
-                  ✓ &nbsp;Attending
+                  ✓ &nbsp;{t('demo.attending')}
                 </button>
                 <button className="py-3 rounded-xl border border-white/8 text-white/30 text-xs tracking-widest uppercase hover:border-white/20 hover:text-white/50 transition-colors">
-                  ✗ &nbsp;Decline
+                  ✗ &nbsp;{t('demo.decline')}
                 </button>
               </div>
               <button className="shimmer-cta w-full font-semibold py-4 rounded-xl text-xs tracking-[0.25em] uppercase mt-1 shadow-lg shadow-[#c9a96e]/10">
-                Send RSVP
+                {t('demo.sendRsvp')}
               </button>
             </div>
           </motion.div>
@@ -798,12 +796,12 @@ function ModernDemoPreview() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/get-started">
             <button className="shimmer-cta font-semibold px-10 py-3.5 rounded-full text-xs tracking-[0.2em] uppercase shadow-lg shadow-[#c9a96e]/15">
-              Create Your Own Invitation
+              {t('demo.createYourOwnInvitation')}
             </button>
           </Link>
           <Link href="/">
             <button className="border border-white/15 text-white/40 hover:text-white/70 hover:border-white/30 px-10 py-3.5 rounded-full text-xs tracking-[0.2em] uppercase transition-all">
-              Back to Home
+              {t('demo.backToHome')}
             </button>
           </Link>
         </div>

@@ -408,12 +408,12 @@ export default function Landing() {
                       {isFree ? (
                         <Badge className="bg-taklif-gold hover:bg-taklif-gold/90 text-gray-900 font-semibold px-3 py-1 shadow-lg">
                           <Sparkles className="h-3 w-3 mr-1" />
-                          Oddiy
+                          {t('templates.freeTemplate')}
                         </Badge>
                       ) : (
                         <Badge className="bg-taklif-navy hover:bg-taklif-navy/90 text-white font-semibold px-3 py-1 shadow-lg">
                           <Star className="h-3 w-3 mr-1" />
-                          Premium
+                          {t('templates.premiumTemplate')}
                         </Badge>
                       )}
                     </div>
@@ -519,12 +519,12 @@ export default function Landing() {
                       {isFree ? (
                         <Badge className="bg-taklif-gold hover:bg-taklif-gold/90 text-gray-900 font-semibold px-3 py-1 shadow-lg">
                           <Sparkles className="h-3 w-3 mr-1" />
-                          Oddiy
+                          {t('templates.freeTemplate')}
                         </Badge>
                       ) : (
                         <Badge className="bg-taklif-navy hover:bg-taklif-navy/90 text-white font-semibold px-3 py-1 shadow-lg">
                           <Star className="h-3 w-3 mr-1" />
-                          Premium
+                          {t('templates.premiumTemplate')}
                         </Badge>
                       )}
                     </div>
@@ -618,7 +618,7 @@ export default function Landing() {
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <p className="text-[11px] sm:text-sm font-semibold tracking-[0.14em] sm:tracking-[0.18em] uppercase text-taklif-navy/70 mb-3 sm:mb-4">Why Taklif Link</p>
+            <p className="text-[11px] sm:text-sm font-semibold tracking-[0.14em] sm:tracking-[0.18em] uppercase text-taklif-navy/70 mb-3 sm:mb-4">{t('landing.whyTaklifLink')}</p>
             <h2 className="text-3xl sm:text-4xl lg:text-6xl font-playfair text-taklif-navy leading-tight">
               {t('comparison.title')} <span className="italic text-taklif-burgundy">{t('comparison.titleAccent')}</span> {t('comparison.titleHighlight')}
             </h2>

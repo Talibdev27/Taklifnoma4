@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,6 +24,7 @@ interface GuestBookManagerProps {
 }
 
 export function GuestBookManager({ weddingId, readOnly = false }: GuestBookManagerProps) {
+  const { t } = useTranslation();
   const [guestName, setGuestName] = useState('');
   const [guestMessage, setGuestMessage] = useState('');
   const { toast } = useToast();
@@ -41,14 +43,14 @@ export function GuestBookManager({ weddingId, readOnly = false }: GuestBookManag
       setGuestName('');
       setGuestMessage('');
       toast({
-        title: "Message added",
-        description: "Guest book entry has been added successfully.",
+        title: t('guestBook.entryAdded'),
+        description: t('guestBook.entryAddedDesc'),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to add guest book entry.",
+        title: t('common.error'),
+        description: t('guestBook.entryAddError'),
         variant: "destructive",
       });
     },
@@ -60,14 +62,14 @@ export function GuestBookManager({ weddingId, readOnly = false }: GuestBookManag
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/guestbook', weddingId] });
       toast({
-        title: "Message deleted",
-        description: "Guest book entry has been removed.",
+        title: t('guestBook.entryDeleted'),
+        description: t('guestBook.entryDeletedDesc'),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to delete guest book entry.",
+        title: t('common.error'),
+        description: t('guestBook.entryDeleteError'),
         variant: "destructive",
       });
     },
@@ -76,8 +78,8 @@ export function GuestBookManager({ weddingId, readOnly = false }: GuestBookManag
   const handleAddEntry = () => {
     if (!guestName.trim() || !guestMessage.trim()) {
       toast({
-        title: "Missing information",
-        description: "Please provide both name and message.",
+        title: t('guestBook.missingInformation'),
+        description: t('guestBook.provideNameAndMessage'),
         variant: "destructive",
       });
       return;
@@ -93,7 +95,7 @@ export function GuestBookManager({ weddingId, readOnly = false }: GuestBookManag
     return (
       <div className="text-center py-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D4B08C] mx-auto"></div>
-        <p className="mt-2 text-gray-500">Loading guest book messages...</p>
+        <p className="mt-2 text-gray-500">{t('guestBook.loadingMessages')}</p>
       </div>
     );
   }
@@ -104,30 +106,30 @@ export function GuestBookManager({ weddingId, readOnly = false }: GuestBookManag
       {!readOnly && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Add Guest Book Entry</CardTitle>
+            <CardTitle className="text-lg">{t('guestBook.addEntry')}</CardTitle>
             <CardDescription>
-              Add a new message to the guest book
+              {t('guestBook.addEntryDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="guest-name">Guest Name</Label>
+                <Label htmlFor="guest-name">{t('guestBook.guestNameLabel')}</Label>
                 <Input
                   id="guest-name"
                   value={guestName}
                   onChange={(e) => setGuestName(e.target.value)}
-                  placeholder="Enter guest name"
+                  placeholder={t('guestBook.guestNamePlaceholder')}
                 />
               </div>
             </div>
             <div>
-              <Label htmlFor="guest-message">Message</Label>
+              <Label htmlFor="guest-message">{t('form.message')}</Label>
               <Textarea
                 id="guest-message"
                 value={guestMessage}
                 onChange={(e) => setGuestMessage(e.target.value)}
-                placeholder="Enter the guest's message..."
+                placeholder={t('guestBook.messagePlaceholder')}
                 rows={3}
               />
             </div>
@@ -136,7 +138,7 @@ export function GuestBookManager({ weddingId, readOnly = false }: GuestBookManag
               disabled={addEntryMutation.isPending}
               className="w-full bg-[#D4B08C] hover:bg-[#C19A75]"
             >
-              {addEntryMutation.isPending ? 'Adding...' : 'Add Entry'}
+              {addEntryMutation.isPending ? t('guestBook.adding') : t('guestBook.addEntryButton')}
             </Button>
           </CardContent>
         </Card>
@@ -146,21 +148,21 @@ export function GuestBookManager({ weddingId, readOnly = false }: GuestBookManag
       {readOnly && (
         <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <Eye className="h-4 w-4 text-blue-600" />
-          <span className="text-sm text-blue-800">You have view-only access to guest book messages</span>
+          <span className="text-sm text-blue-800">{t('guestBook.viewOnlyAccess')}</span>
         </div>
       )}
 
       {/* Guest book entries */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Guest Book Messages ({guestBookEntries.length})</CardTitle>
+          <CardTitle className="text-lg">{t('guestBook.messagesCount', { count: guestBookEntries.length })}</CardTitle>
         </CardHeader>
         <CardContent>
           {guestBookEntries.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <MessageSquare className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No guest book messages yet</p>
-              {!readOnly && <p className="text-sm">Add the first message above</p>}
+              <p>{t('guestBook.noMessagesYet')}</p>
+              {!readOnly && <p className="text-sm">{t('guestBook.addFirstMessage')}</p>}
             </div>
           ) : (
             <div className="space-y-4 max-h-96 overflow-y-auto">

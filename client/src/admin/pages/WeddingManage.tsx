@@ -731,7 +731,7 @@ export default function WeddingManage() {
                     </Label>
                     <Input
                       id="weddingTime"
-                      placeholder="3:00 PM"
+                      placeholder={t('manage.weddingTimePlaceholder', '3:00 PM')}
                       value={value('weddingTime')}
                       onChange={(e) => setField('weddingTime', e.target.value)}
                     />
@@ -897,38 +897,38 @@ export default function WeddingManage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="modern">Azamat (Zamonaviy) ⭐</SelectItem>
-                      <SelectItem value="velvet">Velvet</SelectItem>
-                      <SelectItem value="pearl">Pearl</SelectItem>
-                      <SelectItem value="aurora">Aurora</SelectItem>
+                      <SelectItem value="modern">{t('manage.templateModernLabel', 'Azamat (Modern) ⭐')}</SelectItem>
+                      <SelectItem value="velvet">{t('templates.velvet', 'Velvet')}</SelectItem>
+                      <SelectItem value="pearl">{t('templates.pearl', 'Pearl')}</SelectItem>
+                      <SelectItem value="aurora">{t('templates.aurora', 'Aurora')}</SelectItem>
                       {/* Legacy templates — kept selectable only when the wedding
                          is currently using one, so the Select trigger doesn't
                          render an empty value. New users can't switch *into*
                          these from this dropdown; we want them to migrate to
                          one of the four supported templates above. */}
                       {value('template') === 'epic' && (
-                        <SelectItem value="epic">Epic (legacy)</SelectItem>
+                        <SelectItem value="epic">{t('manage.templateEpicLegacy', 'Epic (legacy)')}</SelectItem>
                       )}
                       {value('template') === 'flower' && (
-                        <SelectItem value="flower">Gul (legacy)</SelectItem>
+                        <SelectItem value="flower">{t('manage.templateFlowerLegacy', 'Gul (legacy)')}</SelectItem>
                       )}
                       {value('template') === 'gardenRomance' && (
-                        <SelectItem value="gardenRomance">Garden Romance (legacy)</SelectItem>
+                        <SelectItem value="gardenRomance">{t('manage.templateGardenRomanceLegacy', 'Garden Romance (legacy)')}</SelectItem>
                       )}
                       {value('template') === 'modernElegance' && (
-                        <SelectItem value="modernElegance">Modern Elegance (legacy)</SelectItem>
+                        <SelectItem value="modernElegance">{t('manage.templateModernEleganceLegacy', 'Modern Elegance (legacy)')}</SelectItem>
                       )}
                       {value('template') === 'rusticCharm' && (
-                        <SelectItem value="rusticCharm">Rustic Charm (legacy)</SelectItem>
+                        <SelectItem value="rusticCharm">{t('manage.templateRusticCharmLegacy', 'Rustic Charm (legacy)')}</SelectItem>
                       )}
                       {value('template') === 'beachBliss' && (
-                        <SelectItem value="beachBliss">Beach Bliss (legacy)</SelectItem>
+                        <SelectItem value="beachBliss">{t('manage.templateBeachBlissLegacy', 'Beach Bliss (legacy)')}</SelectItem>
                       )}
                       {value('template') === 'classicTradition' && (
-                        <SelectItem value="classicTradition">Classic Tradition (legacy)</SelectItem>
+                        <SelectItem value="classicTradition">{t('manage.templateClassicTraditionLegacy', 'Classic Tradition (legacy)')}</SelectItem>
                       )}
                       {value('template') === 'bohoChic' && (
-                        <SelectItem value="bohoChic">Boho Chic (legacy)</SelectItem>
+                        <SelectItem value="bohoChic">{t('manage.templateBohoChicLegacy', 'Boho Chic (legacy)')}</SelectItem>
                       )}
                     </SelectContent>
                   </Select>

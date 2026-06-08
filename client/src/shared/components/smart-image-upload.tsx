@@ -98,7 +98,7 @@ export function SmartImageUpload({ weddingId, onSuccess, isOwner = false }: Smar
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to upload image`);
+        throw new Error(t('imageUpload.uploadFailedError'));
       }
 
       return response.json();
@@ -317,7 +317,7 @@ export function SmartImageUpload({ weddingId, onSuccess, isOwner = false }: Smar
                   <div className="relative bg-gray-100 rounded-lg overflow-hidden aspect-square">
                     <img
                       src={previewUrl}
-                      alt="Preview"
+                      alt={t('imageUpload.previewAlt')}
                       style={getFilterStyle()}
                       className="w-full h-full object-cover"
                     />
@@ -468,7 +468,7 @@ export function SmartImageUpload({ weddingId, onSuccess, isOwner = false }: Smar
                 <div className="relative bg-gray-100 rounded-lg overflow-hidden max-w-2xl mx-auto">
                   <img
                     src={previewUrl}
-                    alt="Final preview"
+                    alt={t('imageUpload.finalPreviewAlt')}
                     style={getFilterStyle()}
                     className="w-full h-auto object-cover"
                   />

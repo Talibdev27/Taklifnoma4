@@ -24,21 +24,23 @@ async function runMigrations() {
 
     console.log('🔗 Connecting to production database...');
     console.log('📦 Applying schema changes with drizzle-kit push...');
-    
-    // Run drizzle-kit push to apply schema changes
-    execSync('npx drizzle-kit push', { 
+
+    // Run drizzle-kit push to apply schema changes.
+    // --force is REQUIRED in CI: without a TTY, drizzle-kit's interactive
+    // confirmation prompt fails, leaving the production schema stale while the
+    // build "succeeds" — exactly what causes inserts to 500 after deploy.
+    execSync('npx drizzle-kit push --force', {
       stdio: 'inherit',
       env: { ...process.env }
     });
-    
+
     console.log('✅ Database schema updated successfully!');
-    
+
   } catch (error) {
     console.error('❌ Migration failed:', error);
-    console.error('⚠️  Application will continue but may have database issues');
-    
-    // Don't exit with error code to prevent build failure
-    process.exit(0);
+    // Fail the build loudly. Shipping new code against a stale schema silently
+    // breaks the app (e.g. "column does not exist" 500s). Better to surface it.
+    process.exit(1);
   }
 }
 

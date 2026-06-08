@@ -92,7 +92,7 @@ export function EpicRSVPForm({ wedding, primaryColor = '#1976d2', accentColor = 
       });
       
       if (!response.ok) {
-        throw new Error('Failed to submit RSVP');
+        throw new Error(t('rsvp.submitError'));
       }
       
       return response.json();
@@ -131,7 +131,7 @@ export function EpicRSVPForm({ wedding, primaryColor = '#1976d2', accentColor = 
       });
       
       if (!response.ok) {
-        throw new Error('Failed to update RSVP');
+        throw new Error(t('rsvp.updateError'));
       }
       
       return response.json();

@@ -52,7 +52,7 @@ export default function UserLogin() {
 
       toast({
         title: t('auth.loginSuccess'),
-        description: t('auth.welcomeBack') + "! Redirecting...",
+        description: t('userLogin.redirecting'),
       });
       // Redirect based on user role
       const storedUser = localStorage.getItem('currentUser');

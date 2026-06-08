@@ -77,8 +77,8 @@ export function PersonalizedGuestDashboard({
       setGuestMessage('');
       setGuestName('');
       toast({
-        title: "Message Added!",
-        description: "Your message has been added to the guest book.",
+        title: t('guestBook.messageAdded'),
+        description: t('guestBook.messageAddedDesc'),
       });
     }
   });

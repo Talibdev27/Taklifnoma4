@@ -21,39 +21,39 @@ interface StandardTemplateSettingsProps {
 const BACKGROUND_TEMPLATES = [
   {
     id: 'template1',
-    name: 'Garden Romance',
+    nameKey: 'templateSettings.bg.gardenRomance',
     image: 'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    description: 'Beautiful outdoor garden setting'
+    descKey: 'templateSettings.bg.gardenRomanceDesc'
   },
   {
     id: 'template2',
-    name: 'Classic Elegance',
+    nameKey: 'templateSettings.bg.classicElegance',
     image: 'https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    description: 'Timeless indoor celebration'
+    descKey: 'templateSettings.bg.classicEleganceDesc'
   },
   {
     id: 'template3',
-    name: 'Beach Bliss',
+    nameKey: 'templateSettings.bg.beachBliss',
     image: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    description: 'Coastal wedding vibes'
+    descKey: 'templateSettings.bg.beachBlissDesc'
   },
   {
     id: 'template4',
-    name: 'Rustic Charm',
+    nameKey: 'templateSettings.bg.rusticCharm',
     image: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    description: 'Country-style celebration'
+    descKey: 'templateSettings.bg.rusticCharmDesc'
   },
   {
     id: 'template5',
-    name: 'Modern Luxury',
+    nameKey: 'templateSettings.bg.modernLuxury',
     image: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    description: 'Contemporary sophistication'
+    descKey: 'templateSettings.bg.modernLuxuryDesc'
   },
   {
     id: 'template6',
-    name: 'Vintage Romance',
+    nameKey: 'templateSettings.bg.vintageRomance',
     image: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    description: 'Classic vintage appeal'
+    descKey: 'templateSettings.bg.vintageRomanceDesc'
   }
 ];
 
@@ -77,7 +77,7 @@ export function StandardTemplateSettings({ wedding }: StandardTemplateSettingsPr
     onSuccess: () => {
       toast({
         title: t('common.success'),
-        description: 'Template settings updated successfully',
+        description: t('templateSettings.updateSuccess'),
       });
       queryClient.invalidateQueries({
         queryKey: ['/api/weddings', wedding.id]
@@ -86,7 +86,7 @@ export function StandardTemplateSettings({ wedding }: StandardTemplateSettingsPr
     onError: (error: any) => {
       toast({
         title: t('common.error'),
-        description: error.message || 'Failed to update template settings',
+        description: error.message || t('templateSettings.updateError'),
         variant: 'destructive',
       });
     },
@@ -104,7 +104,7 @@ export function StandardTemplateSettings({ wedding }: StandardTemplateSettingsPr
       });
       
       if (!response.ok) {
-        throw new Error('Failed to upload photo');
+        throw new Error(t('templateSettings.uploadError'));
       }
       
       return response.json();
@@ -122,7 +122,7 @@ export function StandardTemplateSettings({ wedding }: StandardTemplateSettingsPr
     onError: (error: any) => {
       toast({
         title: t('common.error'),
-        description: 'Failed to upload couple photo',
+        description: t('templateSettings.uploadPhotoError'),
         variant: 'destructive',
       });
     },
@@ -169,23 +169,23 @@ export function StandardTemplateSettings({ wedding }: StandardTemplateSettingsPr
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Palette className="h-5 w-5" />
-          Standard Template Settings
+          {t('templateSettings.title')}
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Customize your standard template with background options and dear guest message.
+          {t('templateSettings.subtitle')}
         </p>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="background" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="background">Background & Photo</TabsTrigger>
-            <TabsTrigger value="message">Dear Guest Message</TabsTrigger>
+            <TabsTrigger value="background">{t('templateSettings.tabBackground')}</TabsTrigger>
+            <TabsTrigger value="message">{t('templateSettings.tabMessage')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="background" className="space-y-6">
             {/* Background Type Selection */}
             <div className="space-y-4">
-              <Label className="text-base font-semibold">Background Option</Label>
+              <Label className="text-base font-semibold">{t('templateSettings.backgroundOption')}</Label>
               <RadioGroup
                 value={backgroundType}
                 onValueChange={(value) => setBackgroundType(value as 'custom' | 'template')}
@@ -194,13 +194,13 @@ export function StandardTemplateSettings({ wedding }: StandardTemplateSettingsPr
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="custom" id="custom" />
                   <Label htmlFor="custom" className="cursor-pointer">
-                    Upload your own couple photo
+                    {t('templateSettings.uploadOwnPhoto')}
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="template" id="template" />
                   <Label htmlFor="template" className="cursor-pointer">
-                    Choose from pre-designed backgrounds
+                    {t('templateSettings.choosePredesigned')}
                   </Label>
                 </div>
               </RadioGroup>
@@ -209,26 +209,26 @@ export function StandardTemplateSettings({ wedding }: StandardTemplateSettingsPr
             {/* Custom Photo Upload */}
             {backgroundType === 'custom' && (
               <div className="space-y-4">
-                <Label className="text-base font-semibold">Upload Couple Photo</Label>
+                <Label className="text-base font-semibold">{t('templateSettings.uploadCouplePhoto')}</Label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                   {previewUrl ? (
                     <div className="space-y-4">
                       <img
                         src={previewUrl}
-                        alt="Couple photo preview"
+                        alt={t('templateSettings.couplePhotoPreviewAlt')}
                         className="max-w-full h-48 object-cover rounded-lg mx-auto"
                       />
                       <p className="text-sm text-muted-foreground">
-                        Current couple photo
+                        {t('templateSettings.currentCouplePhoto')}
                       </p>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       <Upload className="h-12 w-12 mx-auto text-gray-400" />
                       <div>
-                        <p className="text-base font-medium">Upload your couple photo</p>
+                        <p className="text-base font-medium">{t('templateSettings.uploadCouplePhotoTitle')}</p>
                         <p className="text-sm text-muted-foreground">
-                          This will be the main background image for your wedding website
+                          {t('templateSettings.uploadCouplePhotoHint')}
                         </p>
                       </div>
                     </div>
@@ -247,7 +247,7 @@ export function StandardTemplateSettings({ wedding }: StandardTemplateSettingsPr
                     disabled={uploadPhotoMutation.isPending}
                   >
                     <Upload className="h-4 w-4 mr-2" />
-                    {uploadPhotoMutation.isPending ? 'Uploading...' : 'Choose Photo'}
+                    {uploadPhotoMutation.isPending ? t('message.saving') : t('templateSettings.choosePhoto')}
                   </Button>
                 </div>
               </div>
@@ -256,7 +256,7 @@ export function StandardTemplateSettings({ wedding }: StandardTemplateSettingsPr
             {/* Template Selection */}
             {backgroundType === 'template' && (
               <div className="space-y-4">
-                <Label className="text-base font-semibold">Choose Background Template</Label>
+                <Label className="text-base font-semibold">{t('templateSettings.chooseBackgroundTemplate')}</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {BACKGROUND_TEMPLATES.map((template) => (
                     <div
@@ -270,19 +270,19 @@ export function StandardTemplateSettings({ wedding }: StandardTemplateSettingsPr
                     >
                       <img
                         src={template.image}
-                        alt={template.name}
+                        alt={t(template.nameKey)}
                         className="w-full h-32 object-cover"
                       />
                       <div className="p-3">
-                        <h4 className="font-medium text-sm">{template.name}</h4>
+                        <h4 className="font-medium text-sm">{t(template.nameKey)}</h4>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {template.description}
+                          {t(template.descKey)}
                         </p>
                       </div>
                       {selectedTemplate === template.id && (
                         <div className="absolute top-2 right-2">
                           <Badge className="bg-primary text-primary-foreground">
-                            Selected
+                            {t('templateSettings.selected')}
                           </Badge>
                         </div>
                       )}
@@ -297,30 +297,30 @@ export function StandardTemplateSettings({ wedding }: StandardTemplateSettingsPr
             {/* Dear Guest Message */}
             <div className="space-y-4">
               <Label htmlFor="dear-guest-message" className="text-base font-semibold">
-                Dear Guest Message
+                {t('templateSettings.dearGuestMessage')}
               </Label>
               <p className="text-sm text-muted-foreground">
-                Write a personal message to welcome your guests to your wedding website.
+                {t('templateSettings.dearGuestMessageDesc')}
               </p>
               <Textarea
                 id="dear-guest-message"
-                placeholder="Write your heartfelt message to guests here..."
+                placeholder={t('templateSettings.dearGuestMessagePlaceholder')}
                 value={dearGuestMessage}
                 onChange={(e) => setDearGuestMessage(e.target.value)}
                 rows={6}
                 className="resize-none"
               />
               <p className="text-xs text-muted-foreground">
-                This message will appear in the "Dear Guests" section of your wedding website.
+                {t('templateSettings.dearGuestMessageHint')}
               </p>
             </div>
 
             {/* Preview */}
             {dearGuestMessage && (
               <div className="space-y-4">
-                <Label className="text-base font-semibold">Preview</Label>
+                <Label className="text-base font-semibold">{t('templateSettings.preview')}</Label>
                 <div className="p-4 border rounded-lg bg-muted/50">
-                  <h4 className="font-semibold mb-2">Dear Guests</h4>
+                  <h4 className="font-semibold mb-2">{t('wedding.dearGuests')}</h4>
                   <div className="prose prose-sm">
                     {dearGuestMessage.split('\n').map((paragraph, index) => (
                       <p key={index} className="mb-2 last:mb-0">
@@ -345,23 +345,23 @@ export function StandardTemplateSettings({ wedding }: StandardTemplateSettingsPr
             className="flex items-center gap-2"
           >
             <Save className="h-4 w-4" />
-            {updateWeddingMutation.isPending ? 'Saving...' : 'Save Settings'}
+            {updateWeddingMutation.isPending ? t('message.saving') : t('templateSettings.saveSettings')}
           </Button>
-          
-          <Button 
+
+          <Button
             variant="outline"
             onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
             className="flex items-center gap-2"
           >
             <Eye className="h-4 w-4" />
-            Preview Website
+            {t('templateSettings.previewWebsite')}
           </Button>
         </div>
 
         {hasChanges() && (
           <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-sm text-amber-800">
-              You have unsaved changes. Click "Save Settings" to apply them.
+              {t('templateSettings.unsavedChanges')}
             </p>
           </div>
         )}

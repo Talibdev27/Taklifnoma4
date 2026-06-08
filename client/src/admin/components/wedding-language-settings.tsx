@@ -49,7 +49,7 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
     onSuccess: () => {
       toast({
         title: t('common.success'),
-        description: 'Language settings updated successfully',
+        description: t('languageSettings.updateSuccess'),
       });
       queryClient.invalidateQueries({
         queryKey: ['/api/weddings', wedding.id]
@@ -61,7 +61,7 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
     onError: (error: any) => {
       toast({
         title: t('common.error'),
-        description: error.message || 'Failed to update language settings',
+        description: error.message || t('languageSettings.updateError'),
         variant: 'destructive',
       });
     },
@@ -74,7 +74,7 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
       if (selectedLanguages.length <= 1) {
         toast({
           title: t('common.error'),
-          description: 'At least one language must be selected',
+          description: t('languageSettings.atLeastOneRequired'),
           variant: 'destructive',
         });
         return;
@@ -93,7 +93,7 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
     if (!selectedLanguages.includes(langCode)) {
       toast({
         title: t('common.error'),
-        description: 'Default language must be in the available languages list',
+        description: t('languageSettings.defaultMustBeAvailable'),
         variant: 'destructive',
       });
       return;
@@ -105,7 +105,7 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
     if (selectedLanguages.length === 0) {
       toast({
         title: t('common.error'),
-        description: 'At least one language must be selected',
+        description: t('languageSettings.atLeastOneRequired'),
         variant: 'destructive',
       });
       return;
@@ -114,7 +114,7 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
     if (!selectedLanguages.includes(defaultLanguage)) {
       toast({
         title: t('common.error'),
-        description: 'Default language must be in the available languages list',
+        description: t('languageSettings.defaultMustBeAvailable'),
         variant: 'destructive',
       });
       return;
@@ -140,7 +140,7 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Languages className="h-5 w-5" />
-            Language Settings
+            {t('languageSettings.title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -159,19 +159,19 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Languages className="h-5 w-5" />
-          Language Settings
+          {t('languageSettings.title')}
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Control which languages are available for your wedding website and set the default language for guests.
+          {t('languageSettings.subtitle')}
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Available Languages Section */}
         <div className="space-y-4">
           <div>
-            <h3 className="text-base font-semibold mb-2">Available Languages</h3>
+            <h3 className="text-base font-semibold mb-2">{t('languageSettings.availableLanguages')}</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Select which languages guests can choose from when viewing your wedding website.
+              {t('languageSettings.availableLanguagesDesc')}
             </p>
           </div>
           
@@ -193,7 +193,7 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
                   {language.name}
                   {defaultLanguage === language.code && (
                     <Badge variant="secondary" className="text-xs">
-                      Default
+                      {t('languageSettings.default')}
                     </Badge>
                   )}
                 </Label>
@@ -205,15 +205,15 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
         {/* Default Language Section */}
         <div className="space-y-4">
           <div>
-            <h3 className="text-base font-semibold mb-2">Default Language</h3>
+            <h3 className="text-base font-semibold mb-2">{t('languageSettings.defaultLanguage')}</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              The language that guests will see when they first visit your wedding website.
+              {t('languageSettings.defaultLanguageDesc')}
             </p>
           </div>
           
           <Select value={defaultLanguage} onValueChange={handleDefaultLanguageChange}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select default language" />
+              <SelectValue placeholder={t('languageSettings.selectDefaultPlaceholder')} />
             </SelectTrigger>
             <SelectContent>
               {SUPPORTED_LANGUAGES
@@ -233,16 +233,16 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
         {/* Preview Section */}
         <div className="space-y-4">
           <div>
-            <h3 className="text-base font-semibold mb-2">Language Switcher Preview</h3>
+            <h3 className="text-base font-semibold mb-2">{t('languageSettings.switcherPreview')}</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              This is how the language selector will appear on your wedding website.
+              {t('languageSettings.switcherPreviewDesc')}
             </p>
           </div>
           
           <div className="p-4 border rounded-lg bg-muted/50">
             <div className="flex items-center gap-2 text-sm">
               <Globe className="h-4 w-4" />
-              <span className="font-medium">Languages:</span>
+              <span className="font-medium">{t('languageSettings.languagesLabel')}</span>
               <div className="flex gap-2">
                 {selectedLanguages.map(langCode => {
                   const lang = SUPPORTED_LANGUAGES.find(l => l.code === langCode);
@@ -269,23 +269,23 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
             className="flex items-center gap-2"
           >
             <Save className="h-4 w-4" />
-            {updateLanguagesMutation.isPending ? 'Saving...' : 'Save Settings'}
+            {updateLanguagesMutation.isPending ? t('message.saving') : t('languageSettings.saveSettings')}
           </Button>
-          
-          <Button 
+
+          <Button
             variant="outline"
             onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
             className="flex items-center gap-2"
           >
             <Eye className="h-4 w-4" />
-            Preview Website
+            {t('languageSettings.previewWebsite')}
           </Button>
         </div>
 
         {hasChanges() && (
           <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-sm text-amber-800">
-              You have unsaved changes. Click "Save Settings" to apply them.
+              {t('languageSettings.unsavedChanges')}
             </p>
           </div>
         )}

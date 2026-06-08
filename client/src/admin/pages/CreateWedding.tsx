@@ -106,7 +106,7 @@ export default function CreateWedding() {
         // Get current user from API using auth token
         const token = localStorage.getItem('token');
         if (!token) {
-          throw new Error('Please register or login to create a wedding website');
+          throw new Error(t('createWedding.loginRequiredToCreate'));
         }
 
         const currentUserResponse = await fetch('/api/user/current', {
@@ -116,7 +116,7 @@ export default function CreateWedding() {
         });
 
         if (!currentUserResponse.ok) {
-          throw new Error('Please register or login to create a wedding website');
+          throw new Error(t('createWedding.loginRequiredToCreate'));
         }
 
         const currentUser = await currentUserResponse.json();
@@ -167,7 +167,7 @@ export default function CreateWedding() {
         if (!weddingResponse.ok) {
           const errorText = await weddingResponse.text();
           console.error('Wedding creation failed:', errorText);
-          throw new Error(`Failed to create wedding: ${errorText}`);
+          throw new Error(t('createWedding.failedToCreate', { error: errorText }));
         }
         
         const result = await weddingResponse.json();
@@ -207,8 +207,8 @@ export default function CreateWedding() {
     const allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a', 'audio/aac', 'audio/mp4'];
     if (!allowedTypes.includes(file.type)) {
       toast({
-        title: "Xato",
-        description: "Faqat audio fayllar qabul qilinadi (MP3, WAV, OGG, M4A, AAC)",
+        title: t('common.error'),
+        description: t('createWedding.audioOnly'),
         variant: "destructive",
       });
       return;
@@ -217,8 +217,8 @@ export default function CreateWedding() {
     // Check file size (10MB max)
     if (file.size > 10 * 1024 * 1024) {
       toast({
-        title: "Xato",
-        description: "Fayl hajmi 10MB dan oshmasligi kerak",
+        title: t('common.error'),
+        description: t('createWedding.fileTooLargeMusic'),
         variant: "destructive",
       });
       return;
@@ -241,7 +241,7 @@ export default function CreateWedding() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to upload music');
+        throw new Error(t('createWedding.failedToUploadMusic'));
       }
 
       const data = await response.json();
@@ -250,14 +250,14 @@ export default function CreateWedding() {
       form.setValue('backgroundMusicUrl', data.url);
       
       toast({
-        title: "Muvaffaqiyat!",
-        description: "Fon musiqasi yuklandi",
+        title: t('message.success'),
+        description: t('createWedding.musicUploaded'),
       });
     } catch (error) {
       console.error('Music upload error:', error);
       toast({
-        title: "Xato",
-        description: "Fon musiqasini yuklashda xatolik yuz berdi",
+        title: t('common.error'),
+        description: t('createWedding.musicUploadError'),
         variant: "destructive",
       });
       setMusicFileName("");
@@ -276,7 +276,7 @@ export default function CreateWedding() {
         if (!data.bride?.trim() || !data.groom?.trim()) {
           toast({
             title: t('createWedding.error'),
-            description: "Kelin va kuyov ismlarini to'ldiring",
+            description: t('createWedding.fillBrideGroom'),
             variant: "destructive",
           });
           return;
@@ -284,7 +284,7 @@ export default function CreateWedding() {
         if (!data.weddingDate) {
           toast({
             title: t('createWedding.error'),
-            description: "To'y sanasini tanlang",
+            description: t('createWedding.selectWeddingDate'),
             variant: "destructive",
           });
           return;
@@ -302,12 +302,12 @@ export default function CreateWedding() {
       if (!data.bride?.trim() || !data.groom?.trim()) {
         toast({
           title: t('createWedding.error'),
-          description: "Kelin va kuyov ismlarini to'ldiring",
+          description: t('createWedding.fillBrideGroom'),
           variant: "destructive",
         });
         return;
       }
-      
+
       // Ensure template is selected
       if (!data.template) {
         data.template = "modern";
@@ -584,7 +584,7 @@ export default function CreateWedding() {
                             {uploadingMusic && (
                               <div className="flex items-center gap-2 text-sm text-taklif-navy/70">
                                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-taklif-gold"></div>
-                                <span>Yuklanmoqda...</span>
+                                <span>{t('common.loading')}</span>
                               </div>
                             )}
                             {musicFileName && !uploadingMusic && (
@@ -596,13 +596,13 @@ export default function CreateWedding() {
                             {field.value && (
                               <audio controls className="w-full mt-2">
                                 <source src={field.value} type="audio/mpeg" />
-                                Brauzeringiz audio elementni qo'llab-quvvatlamaydi.
+                                {t('createWedding.audioNotSupported')}
                               </audio>
                             )}
                           </div>
                         </FormControl>
                         <p className="text-xs text-taklif-navy/60">
-                          MP3, WAV, OGG, M4A, AAC (10MB gacha)
+                          {t('createWedding.musicFormatsHint')}
                         </p>
                         <FormMessage />
                       </FormItem>
@@ -805,7 +805,7 @@ export default function CreateWedding() {
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span className="hidden sm:inline">{t('createWedding.previous')}</span>
-                <span className="sm:hidden">Previous</span>
+                <span className="sm:hidden">{t('createWedding.previous')}</span>
               </Button>
 
               <div className="text-center order-1 sm:order-2">
@@ -822,13 +822,13 @@ export default function CreateWedding() {
                 {currentStep === totalSteps ? (
                   <>
                     <span className="hidden sm:inline">{createWedding.isPending ? t('createWedding.creating') : t('createWedding.createWebsite')}</span>
-                    <span className="sm:hidden">{createWedding.isPending ? 'Creating...' : 'Create'}</span>
+                    <span className="sm:hidden">{createWedding.isPending ? t('createWedding.creating') : t('createWedding.createShort')}</span>
                     <Heart className="w-4 h-4" />
                   </>
                 ) : (
                   <>
                     <span className="hidden sm:inline">{t('createWedding.next')}</span>
-                    <span className="sm:hidden">Next</span>
+                    <span className="sm:hidden">{t('createWedding.next')}</span>
                     <ChevronRight className="w-4 h-4" />
                   </>
                 )}

@@ -70,8 +70,8 @@ export function AddGuestDialog({ weddingId, trigger }: AddGuestDialogProps) {
     },
     onError: (error: any) => {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to add guest',
+        title: t('common.error'),
+        description: error.message || t('guests.failedToAdd'),
         variant: 'destructive',
       });
     },
@@ -81,8 +81,8 @@ export function AddGuestDialog({ weddingId, trigger }: AddGuestDialogProps) {
     e.preventDefault();
     if (!formData.name.trim()) {
       toast({
-        title: 'Validation Error',
-        description: 'Guest name is required',
+        title: t('guests.validationError'),
+        description: t('guests.nameRequired'),
         variant: 'destructive',
       });
       return;
@@ -101,7 +101,7 @@ export function AddGuestDialog({ weddingId, trigger }: AddGuestDialogProps) {
           <Button 
             size="lg"
             className="h-14 w-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-3xl transition-all duration-200 active:scale-95"
-            title="Add new guest"
+            title={t('guests.addNewGuest')}
           >
             <Plus className="h-6 w-6" />
           </Button>
@@ -118,75 +118,75 @@ export function AddGuestDialog({ weddingId, trigger }: AddGuestDialogProps) {
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name *</Label>
+            <Label htmlFor="name">{t('guests.name')} *</Label>
             <Input
               id="name"
               type="text"
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
-              placeholder="Enter guest name"
+              placeholder={t('guests.enterGuestName')}
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t('guests.email')}</Label>
             <Input
               id="email"
               type="email"
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              placeholder="Enter email address"
+              placeholder={t('guests.enterEmailAddress')}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">{t('guests.phone')}</Label>
             <Input
               id="phone"
               type="tel"
               value={formData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
-              placeholder="Enter phone number"
+              placeholder={t('guests.enterPhoneNumber')}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
+              <Label htmlFor="category">{t('guests.category')}</Label>
               <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue placeholder={t('guests.selectCategory')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="family">Family</SelectItem>
-                  <SelectItem value="friends">Friends</SelectItem>
-                  <SelectItem value="colleagues">Colleagues</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="family">{t('guests.family')}</SelectItem>
+                  <SelectItem value="friends">{t('guests.friends')}</SelectItem>
+                  <SelectItem value="colleagues">{t('guests.colleagues')}</SelectItem>
+                  <SelectItem value="other">{t('guests.other')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="side">Side</Label>
+              <Label htmlFor="side">{t('guests.side')}</Label>
               <Select value={formData.side} onValueChange={(value) => handleInputChange('side', value as any)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select side" />
+                  <SelectValue placeholder={t('guests.selectSide')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="bride">Bride</SelectItem>
-                  <SelectItem value="groom">Groom</SelectItem>
-                  <SelectItem value="both">Both</SelectItem>
+                  <SelectItem value="bride">{t('guests.bride')}</SelectItem>
+                  <SelectItem value="groom">{t('guests.groom')}</SelectItem>
+                  <SelectItem value="both">{t('guests.both')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="rsvpStatus">Initial Status</Label>
+            <Label htmlFor="rsvpStatus">{t('guests.initialStatus')}</Label>
             <Select value={formData.rsvpStatus} onValueChange={(value) => handleInputChange('rsvpStatus', value as any)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select status" />
+                <SelectValue placeholder={t('guests.selectStatus')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="pending">{t('guestList.pending')}</SelectItem>
@@ -206,12 +206,12 @@ export function AddGuestDialog({ weddingId, trigger }: AddGuestDialogProps) {
               {addGuestMutation.isPending ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                  Adding...
+                  {t('guests.adding')}
                 </>
               ) : (
                 <>
                   <UserPlus className="h-4 w-4 mr-2" />
-                  Add Guest
+                  {t('guestList.addGuest')}
                 </>
               )}
             </Button>
@@ -221,7 +221,7 @@ export function AddGuestDialog({ weddingId, trigger }: AddGuestDialogProps) {
               onClick={() => setIsOpen(false)}
               disabled={addGuestMutation.isPending}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
           </div>
         </form>

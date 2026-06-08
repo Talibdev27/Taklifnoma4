@@ -6,10 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Shield, Eye, EyeOff } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function AdminLogin() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [credentials, setCredentials] = useState({
     username: '',
     password: ''
@@ -39,23 +41,23 @@ export default function AdminLogin() {
         localStorage.setItem('currentUser', JSON.stringify(data.user));
         
         toast({
-          title: "Login Successful",
-          description: "Welcome to the admin dashboard!",
+          title: t('auth.loginSuccess'),
+          description: t('adminLogin.welcomeToast'),
         });
-        
+
         setLocation('/system/dashboard');
       } else {
         const errorData = await response.json();
         toast({
-          title: "Login Failed",
-          description: errorData.message || "Invalid username or password. Please try again.",
+          title: t('adminLogin.loginFailed'),
+          description: errorData.message || t('adminLogin.invalidCredentials'),
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "An error occurred during login. Please try again.",
+        title: t('common.error'),
+        description: t('adminLogin.loginErrorOccurred'),
         variant: "destructive",
       });
     } finally {
@@ -69,9 +71,9 @@ export default function AdminLogin() {
       <div className="w-full bg-white/80 backdrop-blur-sm border-b border-taklif-gold/10 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img 
-              src="/takliflinklogo.jpg" 
-              alt="Taklif Link" 
+            <img
+              src="/takliflinklogo.jpg"
+              alt={t('adminLogin.logoAlt')}
               className="h-10 w-10 object-contain rounded-full shadow-md"
             />
             <h1 className="text-2xl font-playfair font-bold text-taklif-burgundy">
@@ -89,10 +91,10 @@ export default function AdminLogin() {
               <Shield className="w-8 h-8 text-white" />
             </div>
             <CardTitle className="text-2xl font-playfair font-bold text-taklif-navy text-center">
-              Admin Login
+              {t('adminLogin.title')}
             </CardTitle>
             <p className="text-taklif-navy/70 text-center">
-              Access the invitation platform management dashboard
+              {t('adminLogin.subtitle')}
             </p>
           </CardHeader>
           <CardContent className="px-6">
@@ -100,12 +102,12 @@ export default function AdminLogin() {
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="username" className="text-taklif-navy font-semibold">
-                Username
+                {t('adminLogin.username')}
               </Label>
               <Input
                 id="username"
                 type="text"
-                placeholder="Enter admin username"
+                placeholder={t('adminLogin.usernamePlaceholder')}
                 value={credentials.username}
                 onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
                 className="wedding-input"
@@ -115,13 +117,13 @@ export default function AdminLogin() {
             
             <div className="space-y-2">
               <Label htmlFor="password" className="text-taklif-navy font-semibold">
-                Password
+                {t('adminLogin.password')}
               </Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter admin password"
+                  placeholder={t('adminLogin.passwordPlaceholder')}
                   value={credentials.password}
                   onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
                   className="wedding-input pr-10"
@@ -148,7 +150,7 @@ export default function AdminLogin() {
               className="w-full wedding-button"
               disabled={isLoading || !credentials.username || !credentials.password}
             >
-              {isLoading ? "Signing In..." : "Sign In"}
+              {isLoading ? t('auth.signingIn') : t('auth.signIn')}
             </Button>
           </form>
           </div>

@@ -91,7 +91,7 @@ export function AdminGuestBookManager({ weddingId }: AdminGuestBookManagerProps)
     return (
       <Card>
         <CardContent className="p-6">
-          <div className="text-center">Loading guest book entries...</div>
+          <div className="text-center">{t('adminGuestBook.loadingEntries')}</div>
         </CardContent>
       </Card>
     );

@@ -63,20 +63,20 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rsvpStatus: status, respondedAt: new Date() })
       });
-      if (!response.ok) throw new Error('Failed to update RSVP');
+      if (!response.ok) throw new Error(t('rsvp.failedToUpdateRsvp'));
       return response.json();
     },
     onSuccess: (updatedGuest) => {
       queryClient.invalidateQueries({ queryKey: [`/api/guests/wedding/${wedding.id}`] });
       toast({
-        title: "RSVP Updated!",
-        description: `${updatedGuest.name}'s RSVP status has been updated to ${updatedGuest.rsvpStatus}.`,
+        title: t('rsvp.rsvpUpdatedTitle'),
+        description: t('rsvp.rsvpStatusUpdatedTo', { name: updatedGuest.name, status: updatedGuest.rsvpStatus }),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to update RSVP status. Please try again.",
+        title: t('common.error'),
+        description: t('rsvp.failedToUpdateStatus'),
         variant: "destructive"
       });
     }
@@ -100,8 +100,8 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
       setSelectedGuests([]);
       setBulkAction('');
       toast({
-        title: "Bulk Update Complete!",
-        description: `Updated ${selectedGuests.length} guest(s) successfully.`,
+        title: t('rsvp.bulkUpdateComplete'),
+        description: t('rsvp.bulkUpdateSuccess', { count: selectedGuests.length }),
       });
     }
   });
@@ -190,7 +190,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
               <div className="text-lg sm:text-2xl font-bold text-purple-600">{stats.withComments}</div>
               <div className="text-xs sm:text-sm text-purple-700 font-medium flex items-center justify-center gap-1">
                 <MessageSquare className="h-3 w-3" />
-                Comments
+                {t('rsvp.comments')}
               </div>
             </div>
           </div>
@@ -214,7 +214,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   id="search"
-                  placeholder="Search guests..."
+                  placeholder={t('rsvp.searchGuestsPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -241,16 +241,16 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
               </div>
               
               <div>
-                <Label htmlFor="comment-filter" className="text-sm font-medium">Comments</Label>
+                <Label htmlFor="comment-filter" className="text-sm font-medium">{t('rsvp.comments')}</Label>
                 <Select value={commentFilter} onValueChange={setCommentFilter}>
                   <SelectTrigger className="w-full mt-1">
                     <MessageSquare className="h-4 w-4 mr-2" />
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="with-comments">With Comments</SelectItem>
-                    <SelectItem value="no-comments">No Comments</SelectItem>
+                    <SelectItem value="all">{t('guestList.all')}</SelectItem>
+                    <SelectItem value="with-comments">{t('guestList.withComments')}</SelectItem>
+                    <SelectItem value="no-comments">{t('guestList.noComments')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -261,25 +261,25 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
           {selectedGuests.length > 0 && (
             <div className="flex items-center gap-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <span className="text-sm font-medium">
-                {selectedGuests.length} guest(s) selected
+                {t('rsvp.guestsSelected', { count: selectedGuests.length })}
               </span>
               <Select value={bulkAction} onValueChange={setBulkAction}>
                 <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Bulk action" />
+                  <SelectValue placeholder={t('rsvp.bulkAction')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="confirmed">Mark Confirmed</SelectItem>
-                  <SelectItem value="pending">Mark Pending</SelectItem>
-                  <SelectItem value="maybe">Mark Maybe</SelectItem>
-                  <SelectItem value="declined">Mark Declined</SelectItem>
+                  <SelectItem value="confirmed">{t('rsvp.markConfirmed')}</SelectItem>
+                  <SelectItem value="pending">{t('rsvp.markPending')}</SelectItem>
+                  <SelectItem value="maybe">{t('rsvp.markMaybe')}</SelectItem>
+                  <SelectItem value="declined">{t('rsvp.markDeclined')}</SelectItem>
                 </SelectContent>
               </Select>
-              <Button 
+              <Button
                 onClick={handleBulkAction}
                 disabled={!bulkAction || bulkUpdateMutation.isPending}
                 size="sm"
               >
-                {bulkUpdateMutation.isPending ? 'Updating...' : 'Apply'}
+                {bulkUpdateMutation.isPending ? t('rsvp.updating') : t('rsvp.apply')}
               </Button>
             </div>
           )}
@@ -301,7 +301,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
               size="sm"
               onClick={selectAll}
             >
-              {selectedGuests.length === filteredGuests.length ? t('guests.deselectAll') : 'Select All'}
+              {selectedGuests.length === filteredGuests.length ? t('guests.deselectAll') : t('rsvp.selectAll')}
             </Button>
           </div>
         </CardHeader>
@@ -347,7 +347,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
                   {guest.respondedAt && (
                     <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
                       <Calendar className="h-3 w-3" />
-                      <span>Responded: {new Date(guest.respondedAt).toLocaleDateString()}</span>
+                      <span>{t('rsvp.responded', { date: new Date(guest.respondedAt).toLocaleDateString() })}</span>
                     </div>
                   )}
                 </div>
@@ -361,7 +361,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
                       onClick={() => updateRSVPMutation.mutate({ guestId: guest.id, status: 'confirmed' })}
                       disabled={updateRSVPMutation.isPending}
                       className={`p-2 ${guest.rsvpStatus === 'confirmed' ? 'bg-green-100 border-green-300' : ''}`}
-                      title="Mark as Confirmed"
+                      title={t('rsvp.markAsConfirmed')}
                     >
                       <Check className="h-3 w-3" />
                     </Button>
@@ -371,7 +371,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
                       onClick={() => updateRSVPMutation.mutate({ guestId: guest.id, status: 'maybe' })}
                       disabled={updateRSVPMutation.isPending}
                       className={`p-2 ${guest.rsvpStatus === 'maybe' ? 'bg-blue-100 border-blue-300' : ''}`}
-                      title="Mark as Maybe"
+                      title={t('rsvp.markAsMaybe')}
                     >
                       <HelpCircle className="h-3 w-3" />
                     </Button>
@@ -381,7 +381,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
                       onClick={() => updateRSVPMutation.mutate({ guestId: guest.id, status: 'declined' })}
                       disabled={updateRSVPMutation.isPending}
                       className={`p-2 ${guest.rsvpStatus === 'declined' ? 'bg-red-100 border-red-300' : ''}`}
-                      title="Mark as Declined"
+                      title={t('rsvp.markAsDeclined')}
                     >
                       <X className="h-3 w-3" />
                     </Button>
@@ -391,7 +391,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
                       onClick={() => updateRSVPMutation.mutate({ guestId: guest.id, status: 'pending' })}
                       disabled={updateRSVPMutation.isPending}
                       className={`p-2 ${guest.rsvpStatus === 'pending' ? 'bg-yellow-100 border-yellow-300' : ''}`}
-                      title="Mark as Pending"
+                      title={t('rsvp.markAsPending')}
                     >
                       <Clock className="h-3 w-3" />
                     </Button>

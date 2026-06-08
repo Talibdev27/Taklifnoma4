@@ -134,15 +134,15 @@ export function Customer1Template({ wedding }: Customer1TemplateProps) {
       {/* Hero Section */}
       <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-slate-300 to-slate-100 opacity-40" />
-        <img 
-          src={heroImage} 
-          alt="Wedding venue" 
-          className="absolute inset-0 w-full h-full object-cover" 
+        <img
+          src={heroImage}
+          alt={t('customer1.weddingVenueAlt')}
+          className="absolute inset-0 w-full h-full object-cover"
         />
         
         <div className="relative z-10 text-center text-white px-6">
           <h1 className="text-6xl font-bold mb-4" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
-            WEDDING<br />DAY
+            {t('customer1.weddingWord')}<br />{t('customer1.dayWord')}
           </h1>
           <p className="text-4xl mb-8" style={{ fontFamily: 'Brush Script MT, cursive', fontSize: '3rem' }}>
             {coupleNames}
@@ -177,10 +177,10 @@ export function Customer1Template({ wedding }: Customer1TemplateProps) {
         <div className="max-w-md mx-auto">
           {/* Image with wavy divider */}
           <div className="relative mb-12 h-48 bg-gray-300 rounded-lg overflow-hidden">
-            <img 
-              src="/wedding-couple-venue-interior-elegant-hall.jpg" 
-              alt="Wedding venue interior" 
-              className="w-full h-full object-cover" 
+            <img
+              src="/wedding-couple-venue-interior-elegant-hall.jpg"
+              alt={t('customer1.venueInteriorAlt')}
+              className="w-full h-full object-cover"
             />
             <p className="absolute top-6 left-0 right-0 text-center text-white text-2xl" style={{ fontFamily: 'Brush Script MT, cursive', fontSize: '2rem' }}>
               {t('customer1.countdownTitle') || 'Until the Wedding'}
@@ -388,9 +388,9 @@ export function Customer1Template({ wedding }: Customer1TemplateProps) {
               onChange={(e) => setContactName(e.target.value)}
               className="w-full border-2 border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:border-[#5a7d6f]"
             />
-            <input 
-              type="email" 
-              placeholder="Email" 
+            <input
+              type="email"
+              placeholder={t('customer1.email')}
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
               className="w-full border-2 border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:border-[#5a7d6f]"

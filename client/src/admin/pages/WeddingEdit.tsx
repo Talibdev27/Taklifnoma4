@@ -32,11 +32,13 @@ import type { User, Wedding, Guest, Photo, insertGuestSchema } from "@shared/sch
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { TEMPLATE_REGISTRY, EVENT_TYPES } from '@/lib/templates';
+import { useTranslation } from 'react-i18next';
 
 export default function AdminWeddingEdit() {
   const params = useParams();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const weddingUrl = params.weddingUrl;
 
   const [isAdmin, setIsAdmin] = useState(false);
@@ -131,8 +133,8 @@ export default function AdminWeddingEdit() {
     },
     onSuccess: () => {
       toast({
-        title: "Wedding Updated",
-        description: "Wedding details have been successfully updated.",
+        title: t('weddingEdit.weddingUpdated'),
+        description: t('weddingEdit.weddingUpdatedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: [`/api/weddings/url/${weddingUrl}`] });
       setEditMode(false);
@@ -140,8 +142,8 @@ export default function AdminWeddingEdit() {
     onError: (error: any) => {
       console.error('Wedding update error:', error);
       toast({
-        title: "Update Failed",
-        description: error.message || "Failed to update wedding details.",
+        title: t('weddingEdit.updateFailed'),
+        description: error.message || t('weddingEdit.updateFailedDesc'),
         variant: "destructive",
       });
     },
@@ -177,16 +179,16 @@ export default function AdminWeddingEdit() {
     },
     onSuccess: () => {
       toast({
-        title: "Photo Deleted",
-        description: "Photo has been successfully deleted.",
+        title: t('weddingEdit.photoDeleted'),
+        description: t('weddingEdit.photoDeletedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
       queryClient.invalidateQueries({ queryKey: [`/api/photos/wedding/${wedding?.id}`] });
     },
     onError: () => {
       toast({
-        title: "Delete Failed",
-        description: "Failed to delete photo.",
+        title: t('weddingEdit.deleteFailed'),
+        description: t('weddingEdit.deleteFailedDesc'),
         variant: "destructive",
       });
     },
@@ -203,15 +205,15 @@ export default function AdminWeddingEdit() {
     },
     onSuccess: () => {
       toast({
-        title: "Photo Added",
-        description: "Photo has been successfully added.",
+        title: t('weddingEdit.photoAdded'),
+        description: t('weddingEdit.photoAddedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
     },
     onError: () => {
       toast({
-        title: "Upload Failed",
-        description: "Failed to add photo.",
+        title: t('weddingEdit.uploadFailed'),
+        description: t('weddingEdit.photoAddFailedDesc'),
         variant: "destructive",
       });
     },
@@ -236,8 +238,8 @@ export default function AdminWeddingEdit() {
     },
     onSuccess: () => {
       toast({
-        title: "Guest Added",
-        description: "Guest has been successfully added to the list.",
+        title: t('weddingEdit.guestAdded'),
+        description: t('weddingEdit.guestAddedDesc'),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/guests', wedding?.id] });
       setIsAddGuestDialogOpen(false);
@@ -245,8 +247,8 @@ export default function AdminWeddingEdit() {
     },
     onError: () => {
       toast({
-        title: "Failed to Add Guest",
-        description: "There was an error adding the guest. Please try again.",
+        title: t('weddingEdit.guestAddFailed'),
+        description: t('weddingEdit.guestAddFailedDesc'),
         variant: "destructive",
       });
     },
@@ -273,7 +275,7 @@ export default function AdminWeddingEdit() {
       <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4B08C] mx-auto mb-4"></div>
-          <p className="text-[#2C3338]">Loading wedding details...</p>
+          <p className="text-[#2C3338]">{t('manage.loadingDetails')}</p>
         </div>
       </div>
     );
@@ -284,11 +286,11 @@ export default function AdminWeddingEdit() {
       <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
-            <h2 className="text-xl font-semibold text-[#2C3338] mb-2">Wedding Not Found</h2>
-            <p className="text-[#2C3338]/70 mb-4">The wedding you're looking for doesn't exist.</p>
+            <h2 className="text-xl font-semibold text-[#2C3338] mb-2">{t('wedding.notFound')}</h2>
+            <p className="text-[#2C3338]/70 mb-4">{t('weddingEdit.notFoundDesc')}</p>
             <Button onClick={() => setLocation('/admin/dashboard')} className="wedding-button">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Dashboard
+              {t('nav.backToDashboard')}
             </Button>
           </CardContent>
         </Card>
@@ -308,14 +310,14 @@ export default function AdminWeddingEdit() {
                 className="border-gray-200"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Dashboard
+                {t('nav.backToDashboard')}
               </Button>
               <div>
                 <h1 className="text-2xl font-bold text-[#2C3338]">
-                  {wedding?.template === 'birthday' ? 'Manage Birthday Event' : 'Manage Event'}: {wedding.template === 'birthday' ? wedding.bride : `${wedding.bride} & ${wedding.groom}`}
+                  {wedding?.template === 'birthday' ? t('weddingEdit.manageBirthdayEvent') : t('weddingEdit.manageEvent')}: {wedding.template === 'birthday' ? wedding.bride : `${wedding.bride} & ${wedding.groom}`}
                 </h1>
                 <p className="text-[#2C3338]/70">
-                  {wedding.isPublic ? 'Public' : 'Private'} • {wedding.uniqueUrl}
+                  {wedding.isPublic ? t('manage.publicLabel') : t('manage.privateLabel')} • {wedding.uniqueUrl}
                 </p>
               </div>
             </div>
@@ -326,7 +328,7 @@ export default function AdminWeddingEdit() {
                 className="border-gray-200"
               >
                 <Eye className="w-4 h-4 mr-2" />
-                View Site
+                {t('weddingEdit.viewSite')}
               </Button>
               {editMode ? (
                 <>
@@ -336,7 +338,7 @@ export default function AdminWeddingEdit() {
                     className="wedding-button"
                   >
                     <Save className="w-4 h-4 mr-2" />
-                    Save Changes
+                    {t('weddingEdit.saveChanges')}
                   </Button>
                   <Button
                     variant="outline"
@@ -346,7 +348,7 @@ export default function AdminWeddingEdit() {
                     }}
                     className="border-gray-200"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </Button>
                 </>
               ) : (
@@ -355,7 +357,7 @@ export default function AdminWeddingEdit() {
                   className="wedding-button"
                 >
                   <Edit className="w-4 h-4 mr-2" />
-                  {wedding?.template === 'birthday' ? 'Edit Birthday Event' : 'Edit Wedding'}
+                  {wedding?.template === 'birthday' ? t('weddingEdit.editBirthdayEvent') : t('weddingEdit.editWedding')}
                 </Button>
               )}
             </div>
@@ -367,11 +369,11 @@ export default function AdminWeddingEdit() {
         <Tabs defaultValue="details" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="details">
-                                {wedding?.template === 'birthday' ? 'Birthday Details' : 'Event Details'}
+                                {wedding?.template === 'birthday' ? t('weddingEdit.birthdayDetails') : t('weddingEdit.eventDetails')}
             </TabsTrigger>
-            <TabsTrigger value="photos">Photo Management</TabsTrigger>
-            <TabsTrigger value="guests">Guest Management</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="photos">{t('manage.photoManagement')}</TabsTrigger>
+            <TabsTrigger value="guests">{t('manage.guestManagement')}</TabsTrigger>
+            <TabsTrigger value="settings">{t('admin.settings')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="details" className="space-y-6">
@@ -379,7 +381,7 @@ export default function AdminWeddingEdit() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Heart className="h-5 w-5 text-[#D4B08C]" />
-                  {wedding?.template === 'birthday' ? 'Birthday Information' : 'Event Information'}
+                  {wedding?.template === 'birthday' ? t('weddingEdit.birthdayInformation') : t('weddingEdit.eventInformation')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -387,14 +389,14 @@ export default function AdminWeddingEdit() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {wedding?.template === 'birthday' ? 'Birthday Person\'s Name' : 'Event Host\'s Name'}
+                        {wedding?.template === 'birthday' ? t('weddingEdit.birthdayPersonName') : t('weddingEdit.eventHostName')}
                       </label>
                       {editMode ? (
                         <Input
                           value={weddingData?.bride || ''}
                           onChange={(e) => handleInputChange('bride', e.target.value)}
                           className="wedding-input"
-                          placeholder={wedding?.template === 'birthday' ? 'Enter birthday person\'s name' : 'Enter event host\'s name'}
+                          placeholder={wedding?.template === 'birthday' ? t('weddingEdit.enterBirthdayPersonName') : t('weddingEdit.enterEventHostName')}
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">{wedding.bride}</p>
@@ -403,14 +405,14 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {wedding?.template === 'birthday' ? 'Event Type' : 'Groom\'s Name'}
+                        {wedding?.template === 'birthday' ? t('weddingEdit.eventType') : t('weddingEdit.groomName')}
                       </label>
                       {editMode ? (
                         <Input
                           value={weddingData?.groom || ''}
                           onChange={(e) => handleInputChange('groom', e.target.value)}
                           className="wedding-input"
-                          placeholder={wedding?.template === 'birthday' ? 'e.g., Birthday Celebration, Sweet 16, etc.' : 'Enter groom\'s name'}
+                          placeholder={wedding?.template === 'birthday' ? t('weddingEdit.eventTypePlaceholder') : t('weddingEdit.enterGroomName')}
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">{wedding.groom}</p>
@@ -419,7 +421,7 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {wedding?.template === 'birthday' ? 'Birthday Date' : 'Event Date'}
+                        {wedding?.template === 'birthday' ? t('weddingEdit.birthdayDate') : t('weddingEdit.eventDate')}
                       </label>
                       {editMode ? (
                         <Input
@@ -430,21 +432,21 @@ export default function AdminWeddingEdit() {
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">
-                          {wedding.weddingDate ? new Date(wedding.weddingDate).toLocaleDateString() : `No ${wedding?.template === 'birthday' ? 'birthday' : 'wedding'} date set`}
+                          {wedding.weddingDate ? new Date(wedding.weddingDate).toLocaleDateString() : (wedding?.template === 'birthday' ? t('weddingEdit.noBirthdayDateSet') : t('weddingEdit.noWeddingDateSet'))}
                         </p>
                       )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {wedding?.template === 'birthday' ? 'Party Time' : 'Event Time'}
+                        {wedding?.template === 'birthday' ? t('weddingEdit.partyTime') : t('weddingEdit.eventTime')}
                       </label>
                       {editMode ? (
                         <Input
                           value={weddingData?.weddingTime || ''}
                           onChange={(e) => handleInputChange('weddingTime', e.target.value)}
                           className="wedding-input"
-                          placeholder={wedding?.template === 'birthday' ? 'e.g., 18:00, 7:00 PM, 14:30' : 'e.g., 4:00 PM, 16:00, 2:30 PM'}
+                          placeholder={wedding?.template === 'birthday' ? t('weddingEdit.partyTimePlaceholder') : t('weddingEdit.eventTimePlaceholder')}
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">
@@ -455,10 +457,10 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {wedding?.template === 'birthday' ? 'Party Timezone' : 'Wedding Timezone'}
+                        {wedding?.template === 'birthday' ? t('weddingEdit.partyTimezone') : t('weddingEdit.weddingTimezone')}
                       </label>
                       <p className="text-sm text-gray-600 mb-3">
-                        Set the timezone for your {wedding?.template === 'birthday' ? 'birthday party' : 'event'} location. All countdown timers will be based on this timezone.
+                        {t('weddingEdit.timezoneHint', { type: wedding?.template === 'birthday' ? t('weddingEdit.typeBirthdayParty') : t('weddingEdit.typeEvent') })}
                       </p>
                       {editMode ? (
                         <select
@@ -516,14 +518,14 @@ export default function AdminWeddingEdit() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {wedding?.template === 'birthday' ? 'Party Venue' : 'Event Venue'}
+                        {wedding?.template === 'birthday' ? t('weddingEdit.partyVenue') : t('weddingEdit.eventVenue')}
                       </label>
                       {editMode ? (
                         <Input
                           value={weddingData?.venue || ''}
                           onChange={(e) => handleInputChange('venue', e.target.value)}
                           className="wedding-input"
-                          placeholder={wedding?.template === 'birthday' ? 'Birthday party venue' : 'Enter venue name'}
+                          placeholder={wedding?.template === 'birthday' ? t('weddingEdit.partyVenuePlaceholder') : t('weddingEdit.enterVenueName')}
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">{wedding.venue}</p>
@@ -532,14 +534,14 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {wedding?.template === 'birthday' ? 'Party Location Address' : 'Event Location Address'}
+                        {wedding?.template === 'birthday' ? t('weddingEdit.partyLocationAddress') : t('weddingEdit.eventLocationAddress')}
                       </label>
                       {editMode ? (
                         <Input
                           value={weddingData?.venueAddress || ''}
                           onChange={(e) => handleInputChange('venueAddress', e.target.value)}
                           className="wedding-input"
-                          placeholder={wedding?.template === 'birthday' ? 'Full party location address' : 'Full venue address'}
+                          placeholder={wedding?.template === 'birthday' ? t('weddingEdit.partyLocationPlaceholder') : t('weddingEdit.fullVenueAddress')}
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">{wedding.venueAddress}</p>
@@ -548,66 +550,66 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Dress Code (Optional)
+                        {t('weddingEdit.dressCodeOptional')}
                       </label>
                       <p className="text-sm text-gray-600 mb-3">
-                        Specify attire expectations for {wedding?.template === 'birthday' ? 'birthday party' : 'event'} guests. Only shows if filled.
+                        {t('weddingEdit.dressCodeHint', { type: wedding?.template === 'birthday' ? t('weddingEdit.typeBirthdayParty') : t('weddingEdit.typeEvent') })}
                       </p>
                       {editMode ? (
                         <Input
                           value={weddingData?.dressCode || ''}
                           onChange={(e) => handleInputChange('dressCode', e.target.value)}
                           className="wedding-input"
-                          placeholder={wedding?.template === 'birthday' ? 'e.g., Casual, Party attire, Color theme...' : 'e.g., Formal attire, Cocktail dress, Beach casual...'}
+                          placeholder={wedding?.template === 'birthday' ? t('weddingEdit.dressCodePlaceholderBirthday') : t('weddingEdit.dressCodePlaceholderWedding')}
                         />
                       ) : (
-                        <p className="p-3 bg-gray-50 rounded-lg">{wedding.dressCode || 'Not specified'}</p>
+                        <p className="p-3 bg-gray-50 rounded-lg">{wedding.dressCode || t('weddingEdit.notSpecified')}</p>
                       )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Map Pin URL (Optional)
+                        {t('weddingEdit.mapPinUrlOptional')}
                       </label>
                       <p className="text-sm text-gray-600 mb-3">
-                        Custom map link for the "Show on Map" button. If empty, will use {wedding?.template === 'birthday' ? 'party' : 'event venue'} address.
+                        {t('weddingEdit.mapPinHint', { type: wedding?.template === 'birthday' ? t('weddingEdit.typeParty') : t('weddingEdit.typeEventVenue') })}
                       </p>
                       {editMode ? (
                         <Input
                           value={weddingData?.mapPinUrl || ''}
                           onChange={(e) => handleInputChange('mapPinUrl', e.target.value)}
                           className="wedding-input"
-                          placeholder="https://maps.app.goo.gl/example or Google Maps URL"
+                          placeholder={t('weddingEdit.mapPinUrlPlaceholder')}
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">
-                          {wedding.mapPinUrl || `Not set - using ${wedding?.template === 'birthday' ? 'party location' : 'event venue'} address`}
+                          {wedding.mapPinUrl || t('weddingEdit.mapPinNotSet', { type: wedding?.template === 'birthday' ? t('weddingEdit.typePartyLocation') : t('weddingEdit.typeEventVenue') })}
                         </p>
                       )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        {wedding?.template === 'birthday' ? 'Birthday Person Photo (Optional)' : 'Event Photo (Optional)'}
+                        {wedding?.template === 'birthday' ? t('weddingEdit.birthdayPersonPhotoOptional') : t('weddingEdit.eventPhotoOptional')}
                       </label>
                       <p className="text-xs text-gray-500 mb-1">
-                        Upload a {wedding?.template === 'birthday' ? 'birthday person' : 'event'} photo to use as the hero image instead of template background
+                        {t('weddingEdit.heroPhotoHint', { type: wedding?.template === 'birthday' ? t('weddingEdit.typeBirthdayPerson') : t('weddingEdit.typeEvent') })}
                       </p>
                       {editMode ? (
                         <>
                           {weddingData?.couplePhotoUrl && (
                             <div className="mb-2">
-                              <img 
-                                src={weddingData.couplePhotoUrl} 
-                                alt={wedding?.template === 'birthday' ? 'Birthday Person' : 'Couple'} 
-                                className="w-32 h-32 object-cover rounded-lg border mb-2" 
+                              <img
+                                src={weddingData.couplePhotoUrl}
+                                alt={wedding?.template === 'birthday' ? t('weddingEdit.altBirthdayPerson') : t('weddingEdit.altCouple')}
+                                className="w-32 h-32 object-cover rounded-lg border mb-2"
                               />
-                              <button 
+                              <button
                                 type="button"
                                 onClick={() => handleInputChange('couplePhotoUrl', '')}
                                 className="text-red-500 text-sm hover:underline block mb-2"
                               >
-                                Remove photo
+                                {t('weddingEdit.removePhoto')}
                               </button>
                             </div>
                           )}
@@ -630,10 +632,10 @@ export default function AdminWeddingEdit() {
                                   const result = await response.json();
                                   handleInputChange('couplePhotoUrl', result.url);
                                 } else {
-                                  alert(`Failed to upload ${wedding?.template === 'birthday' ? 'birthday person' : 'couple'} photo`);
+                                  alert(t('weddingEdit.uploadPhotoFailed', { type: wedding?.template === 'birthday' ? t('weddingEdit.typeBirthdayPerson') : t('weddingEdit.typeCouple') }));
                                 }
                               } catch (err) {
-                                alert(`Failed to upload ${wedding?.template === 'birthday' ? 'birthday person' : 'couple'} photo`);
+                                alert(t('weddingEdit.uploadPhotoFailed', { type: wedding?.template === 'birthday' ? t('weddingEdit.typeBirthdayPerson') : t('weddingEdit.typeCouple') }));
                               }
                             }}
                             className="mb-2"
@@ -641,41 +643,41 @@ export default function AdminWeddingEdit() {
                         </>
                       ) : (
                         wedding.couplePhotoUrl ? (
-                          <img 
-                            src={wedding.couplePhotoUrl} 
-                            alt={wedding?.template === 'birthday' ? 'Birthday Person' : 'Couple'} 
-                            className="w-32 h-32 object-cover rounded-lg border mb-2" 
+                          <img
+                            src={wedding.couplePhotoUrl}
+                            alt={wedding?.template === 'birthday' ? t('weddingEdit.altBirthdayPerson') : t('weddingEdit.altCouple')}
+                            className="w-32 h-32 object-cover rounded-lg border mb-2"
                           />
                         ) : (
-                          <span className="text-gray-400">No {wedding?.template === 'birthday' ? 'birthday person' : 'couple'} photo uploaded</span>
+                          <span className="text-gray-400">{t('weddingEdit.noPhotoUploaded', { type: wedding?.template === 'birthday' ? t('weddingEdit.typeBirthdayPerson') : t('weddingEdit.typeCouple') })}</span>
                         )
                       )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Background Music (Optional)
+                        {t('weddingEdit.backgroundMusicOptional')}
                       </label>
                       <p className="text-xs text-gray-500 mb-1">
-                        Upload background music (MP3, WAV) that will play on the {wedding?.template === 'birthday' ? 'birthday site' : 'event site'}. Max 10MB.
+                        {t('weddingEdit.backgroundMusicHint', { site: wedding?.template === 'birthday' ? t('weddingEdit.siteBirthday') : t('weddingEdit.siteEvent') })}
                       </p>
                       {editMode ? (
                         <>
                           {weddingData?.backgroundMusicUrl && (
                             <div className="mb-2">
-                              <audio 
-                                controls 
+                              <audio
+                                controls
                                 className="w-full"
                                 src={weddingData.backgroundMusicUrl}
                               >
-                                Your browser does not support the audio element.
+                                {t('weddingEdit.audioNotSupported')}
                               </audio>
-                              <button 
+                              <button
                                 type="button"
                                 onClick={() => handleInputChange('backgroundMusicUrl', '')}
                                 className="text-red-500 text-sm hover:underline block mb-2"
                               >
-                                Remove music
+                                {t('music.removeMusic')}
                               </button>
                             </div>
                           )}
@@ -688,13 +690,13 @@ export default function AdminWeddingEdit() {
                               
                               // Validate file type
                               if (!file.type.startsWith('audio/')) {
-                                alert('Please upload an audio file (MP3, WAV, etc.).');
+                                alert(t('music.invalidFileTypeDesc'));
                                 return;
                               }
-                              
+
                               // Validate file size (max 10MB)
                               if (file.size > 10 * 1024 * 1024) {
-                                alert('Please upload a file smaller than 10MB.');
+                                alert(t('music.fileTooLargeDesc'));
                                 return;
                               }
                               
@@ -717,23 +719,23 @@ export default function AdminWeddingEdit() {
                                   console.log('Upload successful:', result);
                                   handleInputChange('backgroundMusicUrl', result.url);
                                   toast({
-                                    title: "Music Uploaded",
-                                    description: "Background music has been uploaded successfully.",
+                                    title: t('music.musicUploaded'),
+                                    description: t('weddingEdit.musicUploadedDesc'),
                                   });
                                 } else {
                                   const errorText = await response.text();
                                   console.error('Upload failed:', response.status, errorText);
                                   toast({
-                                    title: "Upload Failed",
-                                    description: `Failed to upload music: ${response.status} ${response.statusText}`,
+                                    title: t('music.uploadFailed'),
+                                    description: t('weddingEdit.musicUploadFailedStatus', { status: response.status, statusText: response.statusText }),
                                     variant: "destructive",
                                   });
                                 }
                               } catch (err) {
                                 console.error('Upload error:', err);
                                 toast({
-                                  title: "Upload Error",
-                                  description: "Failed to upload music. Please try again.",
+                                  title: t('weddingEdit.uploadError'),
+                                  description: t('weddingEdit.musicUploadErrorDesc'),
                                   variant: "destructive",
                                 });
                               }
@@ -744,23 +746,23 @@ export default function AdminWeddingEdit() {
                       ) : (
                         wedding.backgroundMusicUrl ? (
                           <div>
-                            <audio 
-                              controls 
+                            <audio
+                              controls
                               className="w-full"
                               src={wedding.backgroundMusicUrl}
                             >
-                              Your browser does not support the audio element.
+                              {t('weddingEdit.audioNotSupported')}
                             </audio>
                           </div>
                         ) : (
-                          <span className="text-gray-400">No background music uploaded</span>
+                          <span className="text-gray-400">{t('weddingEdit.noBackgroundMusic')}</span>
                         )
                       )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Event Type
+                        {t('weddingEdit.eventType')}
                       </label>
                       {editMode ? (
                         <select
@@ -784,7 +786,7 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Template
+                        {t('manage.template')}
                       </label>
                       {editMode ? (
                         <select
@@ -808,14 +810,14 @@ export default function AdminWeddingEdit() {
                       <div>
                         <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          Epic Template Colors
+                          {t('weddingEdit.epicTemplateColors')}
                         </h3>
-                        <p className="text-sm text-gray-600 mb-6">Customize the color scheme for your Epic template</p>
-                        
+                        <p className="text-sm text-gray-600 mb-6">{t('weddingEdit.epicColorsHint')}</p>
+
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                              Primary Color
+                              {t('createWedding.primaryColor')}
                             </label>
                             <div className="flex items-center space-x-3">
                               <input
@@ -831,12 +833,12 @@ export default function AdminWeddingEdit() {
                                 className="flex-1"
                               />
                             </div>
-                            <p className="text-xs text-gray-500 mt-1">Used for main elements and countdown</p>
+                            <p className="text-xs text-gray-500 mt-1">{t('weddingEdit.primaryColorHint')}</p>
                           </div>
 
                           <div>
                             <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                              Accent Color
+                              {t('createWedding.accentColor')}
                             </label>
                             <div className="flex items-center space-x-3">
                               <input
@@ -852,7 +854,7 @@ export default function AdminWeddingEdit() {
                                 className="flex-1"
                               />
                             </div>
-                            <p className="text-xs text-gray-500 mt-1">Used for buttons and highlights</p>
+                            <p className="text-xs text-gray-500 mt-1">{t('weddingEdit.accentColorHint')}</p>
                           </div>
                         </div>
                       </div>
@@ -860,7 +862,7 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        RSVP Mode
+                        {t('weddingEdit.rsvpMode')}
                       </label>
                       {editMode ? (
                         <select
@@ -868,22 +870,22 @@ export default function AdminWeddingEdit() {
                           onChange={(e) => handleInputChange('rsvpMode', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
-                          <option value="both">Both (Manual Entry + Pre-registered Guest List)</option>
-                          <option value="manual">Manual Entry Only (Guest Book)</option>
-                          <option value="preregistered">Pre-registered Guest List Only</option>
+                          <option value="both">{t('weddingEdit.rsvpModeBoth')}</option>
+                          <option value="manual">{t('weddingEdit.rsvpModeManual')}</option>
+                          <option value="preregistered">{t('weddingEdit.rsvpModePreregistered')}</option>
                         </select>
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg capitalize">
-                          {wedding.rsvpMode === 'both' && 'Both (Manual Entry + Pre-registered Guest List)'}
-                          {wedding.rsvpMode === 'manual' && 'Manual Entry Only (Guest Book)'}
-                          {wedding.rsvpMode === 'preregistered' && 'Pre-registered Guest List Only'}
+                          {wedding.rsvpMode === 'both' && t('weddingEdit.rsvpModeBoth')}
+                          {wedding.rsvpMode === 'manual' && t('weddingEdit.rsvpModeManual')}
+                          {wedding.rsvpMode === 'preregistered' && t('weddingEdit.rsvpModePreregistered')}
                         </p>
                       )}
                       {editMode && (
                         <p className="text-xs text-gray-500 mt-1">
-                          {weddingData?.rsvpMode === 'both' && 'Guests can either enter their name manually or search from the pre-registered list'}
-                          {weddingData?.rsvpMode === 'manual' && 'Guests will enter their name manually. No pre-registered list needed.'}
-                          {weddingData?.rsvpMode === 'preregistered' && 'Guests can only RSVP if they are in the pre-registered list.'}
+                          {weddingData?.rsvpMode === 'both' && t('weddingEdit.rsvpModeBothHint')}
+                          {weddingData?.rsvpMode === 'manual' && t('weddingEdit.rsvpModeManualHint')}
+                          {weddingData?.rsvpMode === 'preregistered' && t('weddingEdit.rsvpModePreregisteredHint')}
                         </p>
                       )}
                     </div>
@@ -893,39 +895,39 @@ export default function AdminWeddingEdit() {
                       <>
                         <div>
                           <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                            Age Turning
+                            {t('weddingEdit.ageTurning')}
                           </label>
                           {editMode ? (
                             <Input
                               value={weddingData?.age || ''}
                               onChange={(e) => handleInputChange('age', e.target.value)}
                               className="wedding-input"
-                              placeholder="e.g., 25, 30, Sweet 16"
+                              placeholder={t('weddingEdit.ageTurningPlaceholder')}
                             />
                           ) : (
-                            <p className="p-3 bg-gray-50 rounded-lg">{wedding.age || 'Not specified'}</p>
+                            <p className="p-3 bg-gray-50 rounded-lg">{wedding.age || t('weddingEdit.notSpecified')}</p>
                           )}
                         </div>
 
                         <div>
                           <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                            Party Theme (Optional)
+                            {t('weddingEdit.partyThemeOptional')}
                           </label>
                           {editMode ? (
                             <Input
                               value={weddingData?.partyTheme || ''}
                               onChange={(e) => handleInputChange('partyTheme', e.target.value)}
                               className="wedding-input"
-                              placeholder="e.g., Tropical, Superhero, Vintage, etc."
+                              placeholder={t('weddingEdit.partyThemePlaceholder')}
                             />
                           ) : (
-                            <p className="p-3 bg-gray-50 rounded-lg">{wedding.partyTheme || 'Not specified'}</p>
+                            <p className="p-3 bg-gray-50 rounded-lg">{wedding.partyTheme || t('weddingEdit.notSpecified')}</p>
                           )}
                         </div>
 
                         <div>
                           <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                            RSVP Deadline (Optional)
+                            {t('weddingEdit.rsvpDeadlineOptional')}
                           </label>
                           {editMode ? (
                             <Input
@@ -936,24 +938,24 @@ export default function AdminWeddingEdit() {
                             />
                           ) : (
                             <p className="p-3 bg-gray-50 rounded-lg">
-                              {wedding.rsvpDeadline ? new Date(wedding.rsvpDeadline).toLocaleDateString() : 'Not specified'}
+                              {wedding.rsvpDeadline ? new Date(wedding.rsvpDeadline).toLocaleDateString() : t('weddingEdit.notSpecified')}
                             </p>
                           )}
                         </div>
 
                         <div>
                           <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                            Contact Person for Questions
+                            {t('weddingEdit.contactPersonForQuestions')}
                           </label>
                           {editMode ? (
                             <Input
                               value={weddingData?.contactPerson || ''}
                               onChange={(e) => handleInputChange('contactPerson', e.target.value)}
                               className="wedding-input"
-                              placeholder="e.g., John Doe - 123-456-7890"
+                              placeholder={t('weddingEdit.contactPersonPlaceholder')}
                             />
                           ) : (
-                            <p className="p-3 bg-gray-50 rounded-lg">{wedding.contactPerson || 'Not specified'}</p>
+                            <p className="p-3 bg-gray-50 rounded-lg">{wedding.contactPerson || t('weddingEdit.notSpecified')}</p>
                           )}
                         </div>
                       </>
@@ -961,10 +963,10 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Available Languages
+                        {t('weddingEdit.availableLanguages')}
                       </label>
                       <p className="text-xs text-gray-500 mb-3">
-                        Select which languages guests can switch between on the site.
+                        {t('weddingEdit.availableLanguagesHint')}
                       </p>
                       {editMode ? (
                         <div className="flex flex-wrap gap-3">
@@ -1006,7 +1008,7 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Default Language
+                        {t('weddingEdit.defaultLanguage')}
                       </label>
                       {editMode ? (
                         <select
@@ -1027,7 +1029,7 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Privacy Status
+                        {t('weddingEdit.privacyStatus')}
                       </label>
                       {editMode ? (
                         <select
@@ -1035,12 +1037,12 @@ export default function AdminWeddingEdit() {
                           onChange={(e) => handleInputChange('isPublic', e.target.value === 'public' ? 'true' : 'false')}
                           className="w-full p-3 border border-gray-200 rounded-lg bg-white"
                         >
-                          <option value="public">Public</option>
-                          <option value="private">Private</option>
+                          <option value="public">{t('manage.publicLabel')}</option>
+                          <option value="private">{t('manage.privateLabel')}</option>
                         </select>
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">
-                          {wedding.isPublic ? 'Public' : 'Private'}
+                          {wedding.isPublic ? t('manage.publicLabel') : t('manage.privateLabel')}
                         </p>
                       )}
                     </div>
@@ -1051,28 +1053,28 @@ export default function AdminWeddingEdit() {
                 <div className="mt-8">
                   <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                     <Heart className="h-5 w-5 text-[#D4B08C]" />
-                    {wedding?.template === 'birthday' ? 'Party Details' : 'Event Details'}
+                    {wedding?.template === 'birthday' ? t('birthday.partyDetails') : t('weddingEdit.eventDetails')}
                   </h3>
                   <div>
                     <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                      Welcome Message for Guests
+                      {t('weddingEdit.welcomeMessageForGuests')}
                     </label>
                     <p className="text-sm text-gray-600 mb-3">
-                      This message will appear in the {wedding?.template === 'birthday' ? 'birthday celebration' : 'event details'} section of the website.
+                      {t('weddingEdit.welcomeMessageHint', { section: wedding?.template === 'birthday' ? t('weddingEdit.sectionBirthdayCelebration') : t('weddingEdit.sectionEventDetails') })}
                     </p>
                     {editMode ? (
                       <Textarea
                         value={weddingData?.dearGuestMessage || ''}
                         onChange={(e) => handleInputChange('dearGuestMessage', e.target.value)}
                         className="wedding-input min-h-[120px]"
-                        placeholder="Write a welcome message for your guests..."
+                        placeholder={t('weddingEdit.welcomeMessagePlaceholder')}
                       />
                     ) : (
                       <div className="p-4 bg-gray-50 rounded-lg min-h-[120px]">
                         {wedding.dearGuestMessage ? (
                           <p className="text-gray-800 leading-relaxed">{wedding.dearGuestMessage}</p>
                         ) : (
-                          <p className="text-gray-500 italic">No dear guest message added yet.</p>
+                          <p className="text-gray-500 italic">{t('weddingEdit.noDearGuestMessage')}</p>
                         )}
                       </div>
                     )}
@@ -1082,16 +1084,16 @@ export default function AdminWeddingEdit() {
                 <div className="mt-8">
                   <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                     <Heart className="h-5 w-5 text-[#D4B08C]" />
-                    {wedding?.template === 'birthday' ? 'About [Name]' : 'Love Story'}
+                    {wedding?.template === 'birthday' ? t('weddingEdit.aboutName') : t('weddingEdit.loveStory')}
                   </h3>
                   <div>
                     <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                      {wedding?.template === 'birthday' ? 'About the Birthday Person' : 'Your Love Story (Optional)'}
+                      {wedding?.template === 'birthday' ? t('weddingEdit.aboutBirthdayPerson') : t('weddingEdit.yourLoveStoryOptional')}
                     </label>
                     <p className="text-sm text-gray-600 mb-3">
-                      {wedding?.template === 'birthday' 
-                        ? 'Tell us about the birthday person. What makes them special?' 
-                        : 'Tell your unique love story. If left empty, the website will show a beautiful photo layout instead.'
+                      {wedding?.template === 'birthday'
+                        ? t('weddingEdit.aboutBirthdayPersonHint')
+                        : t('weddingEdit.loveStoryHint')
                       }
                     </p>
                     {editMode ? (
@@ -1099,9 +1101,9 @@ export default function AdminWeddingEdit() {
                         value={weddingData?.story || ''}
                         onChange={(e) => handleInputChange('story', e.target.value)}
                         className="wedding-input min-h-[120px]"
-                        placeholder={wedding?.template === 'birthday' 
-                          ? "Tell us about the birthday person..." 
-                          : "Write your love story here... How did you meet? What makes your relationship special?"
+                        placeholder={wedding?.template === 'birthday'
+                          ? t('weddingEdit.aboutBirthdayPersonPlaceholder')
+                          : t('weddingEdit.loveStoryPlaceholder')
                         }
                       />
                     ) : (
@@ -1110,9 +1112,9 @@ export default function AdminWeddingEdit() {
                           <p className="text-gray-800 leading-relaxed">{wedding.story}</p>
                         ) : (
                           <p className="text-gray-500 italic">
-                            {wedding?.template === 'birthday' 
-                              ? 'No birthday person description added yet.' 
-                              : 'No love story added yet. The website will display a beautiful photo layout.'
+                            {wedding?.template === 'birthday'
+                              ? t('weddingEdit.noBirthdayDescription')
+                              : t('weddingEdit.noLoveStory')
                             }
                           </p>
                         )}
@@ -1126,26 +1128,26 @@ export default function AdminWeddingEdit() {
                   <div className="mt-8">
                     <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                       <Heart className="h-5 w-5 text-[#D4B08C]" />
-                      Birthday Party Details
+                      {t('weddingEdit.birthdayPartyDetails')}
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          Gift Registry Information (Optional)
+                          {t('weddingEdit.giftRegistryInfoOptional')}
                         </label>
                         {editMode ? (
                           <Textarea
                             value={weddingData?.giftRegistryInfo || ''}
                             onChange={(e) => handleInputChange('giftRegistryInfo', e.target.value)}
                             className="wedding-input min-h-[120px]"
-                            placeholder="e.g., Amazon wishlist link, preferred gifts, no gifts please..."
+                            placeholder={t('weddingEdit.giftRegistryPlaceholder')}
                           />
                         ) : (
                           <div className="p-4 bg-gray-50 rounded-lg min-h-[120px]">
                             {wedding.giftRegistryInfo ? (
                               <p className="text-gray-800 leading-relaxed">{wedding.giftRegistryInfo}</p>
                             ) : (
-                              <p className="text-gray-500 italic">No gift registry information added yet.</p>
+                              <p className="text-gray-500 italic">{t('weddingEdit.noGiftRegistryInfo')}</p>
                             )}
                           </div>
                         )}
@@ -1153,21 +1155,21 @@ export default function AdminWeddingEdit() {
 
                       <div>
                         <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          Special Instructions (Optional)
+                          {t('weddingEdit.specialInstructionsOptional')}
                         </label>
                         {editMode ? (
                           <Textarea
                             value={weddingData?.specialInstructions || ''}
                             onChange={(e) => handleInputChange('specialInstructions', e.target.value)}
                             className="wedding-input min-h-[120px]"
-                            placeholder="e.g., What to bring, parking info, dietary restrictions..."
+                            placeholder={t('weddingEdit.specialInstructionsPlaceholder')}
                           />
                         ) : (
                           <div className="p-4 bg-gray-50 rounded-lg min-h-[120px]">
                             {wedding.specialInstructions ? (
                               <p className="text-gray-800 leading-relaxed">{wedding.specialInstructions}</p>
                             ) : (
-                              <p className="text-gray-500 italic">No special instructions added yet.</p>
+                              <p className="text-gray-500 italic">{t('weddingEdit.noSpecialInstructions')}</p>
                             )}
                           </div>
                         )}
@@ -1185,18 +1187,18 @@ export default function AdminWeddingEdit() {
                 <div className="flex justify-between items-center">
                   <CardTitle className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-[#D4B08C]" />
-                    Guest List ({guests?.length || 0} guests)
+                    {t('weddingEdit.guestListCount', { count: guests?.length || 0 })}
                   </CardTitle>
                   <Dialog open={isAddGuestDialogOpen} onOpenChange={setIsAddGuestDialogOpen}>
                     <DialogTrigger asChild>
                       <Button size="sm" className="bg-[#D4B08C] hover:bg-[#C19B75] text-white">
                         <UserPlus className="h-4 w-4 mr-2" />
-                        Add Guest
+                        {t('guestList.addGuest')}
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-md">
                       <DialogHeader>
-                        <DialogTitle>Add New Guest</DialogTitle>
+                        <DialogTitle>{t('weddingEdit.addNewGuest')}</DialogTitle>
                       </DialogHeader>
                       <Form {...guestForm}>
                         <form onSubmit={guestForm.handleSubmit(onSubmitGuest)} className="space-y-4">
@@ -1205,9 +1207,9 @@ export default function AdminWeddingEdit() {
                             name="name"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Name *</FormLabel>
+                                <FormLabel>{t('weddingEdit.nameRequired')}</FormLabel>
                                 <FormControl>
-                                  <Input {...field} placeholder="Enter guest name" />
+                                  <Input {...field} placeholder={t('weddingEdit.enterGuestName')} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -1218,9 +1220,9 @@ export default function AdminWeddingEdit() {
                             name="email"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Email</FormLabel>
+                                <FormLabel>{t('form.email')}</FormLabel>
                                 <FormControl>
-                                  <Input {...field} type="email" placeholder="Enter email address" />
+                                  <Input {...field} type="email" placeholder={t('weddingEdit.enterEmailAddress')} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -1231,9 +1233,9 @@ export default function AdminWeddingEdit() {
                             name="phone"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Phone</FormLabel>
+                                <FormLabel>{t('customer1.phone')}</FormLabel>
                                 <FormControl>
-                                  <Input {...field} placeholder="Enter phone number" />
+                                  <Input {...field} placeholder={t('weddingEdit.enterPhoneNumber')} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -1244,19 +1246,19 @@ export default function AdminWeddingEdit() {
                             name="rsvpStatus"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>RSVP Status</FormLabel>
+                                <FormLabel>{t('weddingEdit.rsvpStatus')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Select status" />
+                                      <SelectValue placeholder={t('weddingEdit.selectStatus')} />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="pending">Pending</SelectItem>
-                                    <SelectItem value="confirmed">Confirmed</SelectItem>
-                                    <SelectItem value="declined">Declined</SelectItem>
-                                    <SelectItem value="maybe">Maybe</SelectItem>
-                                    <SelectItem value="confirmed_with_guest">Confirmed with Guest</SelectItem>
+                                    <SelectItem value="pending">{t('guestList.pending')}</SelectItem>
+                                    <SelectItem value="confirmed">{t('guestList.confirmed')}</SelectItem>
+                                    <SelectItem value="declined">{t('guestList.declined')}</SelectItem>
+                                    <SelectItem value="maybe">{t('guestList.maybe')}</SelectItem>
+                                    <SelectItem value="confirmed_with_guest">{t('weddingEdit.confirmedWithGuest')}</SelectItem>
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -1269,14 +1271,14 @@ export default function AdminWeddingEdit() {
                               variant="outline"
                               onClick={() => setIsAddGuestDialogOpen(false)}
                             >
-                              Cancel
+                              {t('common.cancel')}
                             </Button>
                             <Button
                               type="submit"
                               className="bg-[#D4B08C] hover:bg-[#C19B75] text-white"
                               disabled={addGuestMutation.isPending}
                             >
-                              {addGuestMutation.isPending ? "Adding..." : "Add Guest"}
+                              {addGuestMutation.isPending ? t('weddingEdit.adding') : t('guestList.addGuest')}
                             </Button>
                           </div>
                         </form>
@@ -1289,16 +1291,16 @@ export default function AdminWeddingEdit() {
                 {guestsLoading ? (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D4B08C] mx-auto mb-4"></div>
-                    <p className="text-[#2C3338]/70">Loading guests...</p>
+                    <p className="text-[#2C3338]/70">{t('rsvp.loadingGuests')}</p>
                   </div>
                 ) : guests && guests.length > 0 ? (
                   <div className="space-y-3">
                     <div className="grid grid-cols-5 gap-4 text-sm font-medium text-gray-600 border-b pb-2">
-                      <div>Name</div>
-                      <div>Email</div>
-                      <div>Status</div>
-                      <div>Message</div>
-                      <div>Responded At</div>
+                      <div>{t('form.name')}</div>
+                      <div>{t('form.email')}</div>
+                      <div>{t('weddingEdit.status')}</div>
+                      <div>{t('form.message')}</div>
+                      <div>{t('weddingEdit.respondedAt')}</div>
                     </div>
                     {guests.map(guest => (
                       <div key={guest.id} className="grid grid-cols-5 gap-4 text-sm border-b border-gray-100 py-3">
@@ -1324,7 +1326,7 @@ export default function AdminWeddingEdit() {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-[#2C3338]/70">
-                    No guests added yet. Click "Add Guest" to get started.
+                    {t('weddingEdit.noGuestsAddedYet')}
                   </div>
                 )}
               </CardContent>
@@ -1336,14 +1338,14 @@ export default function AdminWeddingEdit() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Camera className="h-5 w-5 text-[#D4B08C]" />
-                  Photo Management
+                  {t('manage.photoManagement')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {photosLoading ? (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D4B08C] mx-auto mb-4"></div>
-                    <p className="text-[#2C3338]/70">Loading photos...</p>
+                    <p className="text-[#2C3338]/70">{t('weddingEdit.loadingPhotos')}</p>
                   </div>
                 ) : (
                   <div className="space-y-8">
@@ -1351,18 +1353,18 @@ export default function AdminWeddingEdit() {
                     <div>
                       <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                         <Heart className="h-4 w-4" />
-                        {wedding?.template === 'birthday' ? 'Birthday Person Photo (Hero Section)' : 'Event Photo (Hero Section)'}
+                        {wedding?.template === 'birthday' ? t('weddingEdit.birthdayPersonPhotoHero') : t('weddingEdit.eventPhotoHero')}
                       </h3>
-                      
+
                       {/* Upload Section for Couple Photo */}
                       <div className="mb-4 p-4 border-2 border-dashed border-gray-300 rounded-lg">
                         <div className="text-center">
                           <Heart className="h-8 w-8 mx-auto mb-2 text-gray-400" />
                           <h4 className="font-medium text-gray-700 mb-2">
-                            {wedding?.template === 'birthday' ? 'Upload Birthday Person Photo' : 'Upload Event Photo'}
+                            {wedding?.template === 'birthday' ? t('weddingEdit.uploadBirthdayPersonPhoto') : t('weddingEdit.uploadEventPhoto')}
                           </h4>
                           <p className="text-sm text-gray-500 mb-3">
-                            This photo will appear next to the {wedding?.template === 'birthday' ? 'birthday person section' : 'event details section'}
+                            {t('weddingEdit.photoNextToSection', { section: wedding?.template === 'birthday' ? t('weddingEdit.sectionBirthdayPerson') : t('weddingEdit.sectionEventDetailsLower') })}
                           </p>
                           <input
                             type="file"
@@ -1384,8 +1386,8 @@ export default function AdminWeddingEdit() {
                                   
                                   if (response.ok) {
                                     toast({
-                                      title: "Photo Uploaded",
-                                      description: "Photo has been successfully uploaded.",
+                                      title: t('weddingEdit.photoUploaded'),
+                                      description: t('weddingEdit.photoUploadedDesc'),
                                     });
                                     queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
                                   } else {
@@ -1393,8 +1395,8 @@ export default function AdminWeddingEdit() {
                                   }
                                 } catch (error) {
                                   toast({
-                                    title: "Upload Failed",
-                                    description: "Failed to upload photo. Please try again.",
+                                    title: t('weddingEdit.uploadFailed'),
+                                    description: t('weddingEdit.photoUploadFailedDesc'),
                                     variant: "destructive",
                                   });
                                 }
@@ -1410,7 +1412,7 @@ export default function AdminWeddingEdit() {
                             className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
                           >
                             <Camera className="h-4 w-4 mr-2" />
-                            {wedding?.template === 'birthday' ? 'Choose Birthday Person Photo' : 'Choose Couple Photo'}
+                            {wedding?.template === 'birthday' ? t('weddingEdit.chooseBirthdayPersonPhoto') : t('weddingEdit.chooseCouplePhoto')}
                           </label>
                         </div>
                       </div>
@@ -1420,9 +1422,9 @@ export default function AdminWeddingEdit() {
                           photos.filter((photo: any) => photo.photoType === 'couple').map((photo: any) => (
                             <div key={photo.id} className="border rounded-lg p-4 space-y-3">
                               <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                                <img 
-                                  src={photo.url} 
-                                  alt={photo.caption || (wedding?.template === 'birthday' ? "Birthday person photo" : "Couple photo")}
+                                <img
+                                  src={photo.url}
+                                  alt={photo.caption || (wedding?.template === 'birthday' ? t('weddingEdit.altBirthdayPersonPhoto') : t('weddingEdit.altCouplePhoto'))}
                                   className="w-full h-full object-cover"
                                 />
                               </div>
@@ -1449,8 +1451,8 @@ export default function AdminWeddingEdit() {
                         ) : (
                           <div className="col-span-2 text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
                             <Heart className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                            <p>No {wedding?.template === 'birthday' ? 'birthday person' : 'couple'} photo uploaded yet</p>
-                            <p className="text-sm text-gray-400 mt-1">This photo will appear next to the {wedding?.template === 'birthday' ? 'birthday person section' : '"How We Met" section'}</p>
+                            <p>{t('weddingEdit.noPhotoUploadedYet', { type: wedding?.template === 'birthday' ? t('weddingEdit.typeBirthdayPerson') : t('weddingEdit.typeCouple') })}</p>
+                            <p className="text-sm text-gray-400 mt-1">{t('weddingEdit.photoNextToSection', { section: wedding?.template === 'birthday' ? t('weddingEdit.sectionBirthdayPerson') : t('weddingEdit.sectionHowWeMet') })}</p>
                           </div>
                         )}
                       </div>
@@ -1461,13 +1463,13 @@ export default function AdminWeddingEdit() {
                       <div>
                         <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                           <Camera className="h-4 w-4" />
-                          Flower Template Photos
+                          {t('weddingEdit.flowerTemplatePhotos')}
                         </h3>
-                        <p className="text-sm text-gray-600 mb-6">Upload photos for specific sections of the Flower template</p>
-                        
+                        <p className="text-sm text-gray-600 mb-6">{t('weddingEdit.flowerTemplatePhotosHint')}</p>
+
                         {/* Photo 1 - Hero Section */}
                         <div className="mb-6">
-                          <h4 className="font-medium text-gray-700 mb-3">Photo 1 - Hero Section (Circular)</h4>
+                          <h4 className="font-medium text-gray-700 mb-3">{t('weddingEdit.flowerPhoto1Title')}</h4>
                           <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg">
                             <div className="text-center">
                               <input
@@ -1489,8 +1491,8 @@ export default function AdminWeddingEdit() {
                                       
                                       if (response.ok) {
                                         toast({
-                                          title: "Photo Uploaded",
-                                          description: "Photo 1 has been successfully uploaded.",
+                                          title: t('weddingEdit.photoUploaded'),
+                                          description: t('weddingEdit.photoNUploadedDesc', { number: 1 }),
                                         });
                                         queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
                                       } else {
@@ -1498,8 +1500,8 @@ export default function AdminWeddingEdit() {
                                       }
                                     } catch (error) {
                                       toast({
-                                        title: "Upload Failed",
-                                        description: "Failed to upload photo. Please try again.",
+                                        title: t('weddingEdit.uploadFailed'),
+                                        description: t('weddingEdit.photoUploadFailedDesc'),
                                         variant: "destructive",
                                       });
                                     }
@@ -1514,15 +1516,15 @@ export default function AdminWeddingEdit() {
                                 className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
                               >
                                 <Camera className="h-4 w-4 mr-2" />
-                                Upload Photo 1
+                                {t('weddingEdit.uploadPhotoN', { number: 1 })}
                               </label>
                             </div>
                           </div>
                           {photos && photos.filter((photo: any) => photo.photoType === 'flower_photo_1').length > 0 && (
                             <div className="mt-3">
-                              <img 
-                                src={photos.filter((photo: any) => photo.photoType === 'flower_photo_1')[0].url} 
-                                alt="Photo 1"
+                              <img
+                                src={photos.filter((photo: any) => photo.photoType === 'flower_photo_1')[0].url}
+                                alt={t('weddingEdit.altPhotoN', { number: 1 })}
                                 className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
                               />
                             </div>
@@ -1531,7 +1533,7 @@ export default function AdminWeddingEdit() {
 
                         {/* Photo 2 - Dear Guest Section */}
                         <div className="mb-6">
-                          <h4 className="font-medium text-gray-700 mb-3">Photo 2 - Under Invitation Text Section</h4>
+                          <h4 className="font-medium text-gray-700 mb-3">{t('weddingEdit.flowerPhoto2Title')}</h4>
                           <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg">
                             <div className="text-center">
                               <input
@@ -1553,8 +1555,8 @@ export default function AdminWeddingEdit() {
                                       
                                       if (response.ok) {
                                         toast({
-                                          title: "Photo Uploaded",
-                                          description: "Photo 2 has been successfully uploaded.",
+                                          title: t('weddingEdit.photoUploaded'),
+                                          description: t('weddingEdit.photoNUploadedDesc', { number: 2 }),
                                         });
                                         queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
                                       } else {
@@ -1562,8 +1564,8 @@ export default function AdminWeddingEdit() {
                                       }
                                     } catch (error) {
                                       toast({
-                                        title: "Upload Failed",
-                                        description: "Failed to upload photo. Please try again.",
+                                        title: t('weddingEdit.uploadFailed'),
+                                        description: t('weddingEdit.photoUploadFailedDesc'),
                                         variant: "destructive",
                                       });
                                     }
@@ -1578,16 +1580,16 @@ export default function AdminWeddingEdit() {
                                 className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
                               >
                                 <Camera className="h-4 w-4 mr-2" />
-                                Upload Photo 2
+                                {t('weddingEdit.uploadPhotoN', { number: 2 })}
                               </label>
-                              <p className="text-sm text-gray-500 mt-2">This photo will appear under the invitation text and signature</p>
+                              <p className="text-sm text-gray-500 mt-2">{t('weddingEdit.flowerPhoto2Hint')}</p>
                             </div>
                           </div>
                           {photos && photos.filter((photo: any) => photo.photoType === 'flower_photo_2').length > 0 && (
                             <div className="mt-3">
-                              <img 
-                                src={photos.filter((photo: any) => photo.photoType === 'flower_photo_2')[0].url} 
-                                alt="Photo 2"
+                              <img
+                                src={photos.filter((photo: any) => photo.photoType === 'flower_photo_2')[0].url}
+                                alt={t('weddingEdit.altPhotoN', { number: 2 })}
                                 className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
                               />
                             </div>
@@ -1596,7 +1598,7 @@ export default function AdminWeddingEdit() {
 
                         {/* Photo 3 - Calendar Section */}
                         <div className="mb-6">
-                          <h4 className="font-medium text-gray-700 mb-3">Photo 3 - Under Calendar Section</h4>
+                          <h4 className="font-medium text-gray-700 mb-3">{t('weddingEdit.flowerPhoto3Title')}</h4>
                           <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg">
                             <div className="text-center">
                               <input
@@ -1618,8 +1620,8 @@ export default function AdminWeddingEdit() {
                                       
                                       if (response.ok) {
                                         toast({
-                                          title: "Photo Uploaded",
-                                          description: "Photo 3 has been successfully uploaded.",
+                                          title: t('weddingEdit.photoUploaded'),
+                                          description: t('weddingEdit.photoNUploadedDesc', { number: 3 }),
                                         });
                                         queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
                                       } else {
@@ -1627,8 +1629,8 @@ export default function AdminWeddingEdit() {
                                       }
                                     } catch (error) {
                                       toast({
-                                        title: "Upload Failed",
-                                        description: "Failed to upload photo. Please try again.",
+                                        title: t('weddingEdit.uploadFailed'),
+                                        description: t('weddingEdit.photoUploadFailedDesc'),
                                         variant: "destructive",
                                       });
                                     }
@@ -1643,16 +1645,16 @@ export default function AdminWeddingEdit() {
                                 className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
                               >
                                 <Camera className="h-4 w-4 mr-2" />
-                                Upload Photo 3
+                                {t('weddingEdit.uploadPhotoN', { number: 3 })}
                               </label>
-                              <p className="text-sm text-gray-500 mt-2">This photo will appear under the calendar and countdown</p>
+                              <p className="text-sm text-gray-500 mt-2">{t('weddingEdit.flowerPhoto3Hint')}</p>
                             </div>
                           </div>
                           {photos && photos.filter((photo: any) => photo.photoType === 'flower_photo_3').length > 0 && (
                             <div className="mt-3">
-                              <img 
-                                src={photos.filter((photo: any) => photo.photoType === 'flower_photo_3')[0].url} 
-                                alt="Photo 3"
+                              <img
+                                src={photos.filter((photo: any) => photo.photoType === 'flower_photo_3')[0].url}
+                                alt={t('weddingEdit.altPhotoN', { number: 3 })}
                                 className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
                               />
                             </div>
@@ -1661,7 +1663,7 @@ export default function AdminWeddingEdit() {
 
                         {/* Photo 4 - Location Section */}
                         <div className="mb-6">
-                          <h4 className="font-medium text-gray-700 mb-3">Photo 4 - Location Section</h4>
+                          <h4 className="font-medium text-gray-700 mb-3">{t('weddingEdit.flowerPhoto4Title')}</h4>
                           <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg">
                             <div className="text-center">
                               <input
@@ -1683,8 +1685,8 @@ export default function AdminWeddingEdit() {
                                       
                                       if (response.ok) {
                                         toast({
-                                          title: "Photo Uploaded",
-                                          description: "Photo 4 has been successfully uploaded.",
+                                          title: t('weddingEdit.photoUploaded'),
+                                          description: t('weddingEdit.photoNUploadedDesc', { number: 4 }),
                                         });
                                         queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
                                       } else {
@@ -1692,8 +1694,8 @@ export default function AdminWeddingEdit() {
                                       }
                                     } catch (error) {
                                       toast({
-                                        title: "Upload Failed",
-                                        description: "Failed to upload photo. Please try again.",
+                                        title: t('weddingEdit.uploadFailed'),
+                                        description: t('weddingEdit.photoUploadFailedDesc'),
                                         variant: "destructive",
                                       });
                                     }
@@ -1708,15 +1710,15 @@ export default function AdminWeddingEdit() {
                                 className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
                               >
                                 <Camera className="h-4 w-4 mr-2" />
-                                Upload Photo 4
+                                {t('weddingEdit.uploadPhotoN', { number: 4 })}
                               </label>
                             </div>
                           </div>
                           {photos && photos.filter((photo: any) => photo.photoType === 'flower_photo_4').length > 0 && (
                             <div className="mt-3">
-                              <img 
-                                src={photos.filter((photo: any) => photo.photoType === 'flower_photo_4')[0].url} 
-                                alt="Photo 4"
+                              <img
+                                src={photos.filter((photo: any) => photo.photoType === 'flower_photo_4')[0].url}
+                                alt={t('weddingEdit.altPhotoN', { number: 4 })}
                                 className="w-32 h-20 object-cover rounded-lg border-2 border-gray-200"
                               />
                             </div>
@@ -1726,7 +1728,7 @@ export default function AdminWeddingEdit() {
                         {/* Photo 5 & 6 - Additional Section */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
-                            <h4 className="font-medium text-gray-700 mb-3">Photo 5 - Special Moment</h4>
+                            <h4 className="font-medium text-gray-700 mb-3">{t('weddingEdit.flowerPhoto5Title')}</h4>
                             <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg">
                               <div className="text-center">
                                 <input
@@ -1748,8 +1750,8 @@ export default function AdminWeddingEdit() {
                                         
                                         if (response.ok) {
                                           toast({
-                                            title: "Photo Uploaded",
-                                            description: "Photo 5 has been successfully uploaded.",
+                                            title: t('weddingEdit.photoUploaded'),
+                                            description: t('weddingEdit.photoNUploadedDesc', { number: 5 }),
                                           });
                                           queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
                                         } else {
@@ -1757,8 +1759,8 @@ export default function AdminWeddingEdit() {
                                         }
                                       } catch (error) {
                                         toast({
-                                          title: "Upload Failed",
-                                          description: "Failed to upload photo. Please try again.",
+                                          title: t('weddingEdit.uploadFailed'),
+                                          description: t('weddingEdit.photoUploadFailedDesc'),
                                           variant: "destructive",
                                         });
                                       }
@@ -1773,15 +1775,15 @@ export default function AdminWeddingEdit() {
                                   className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
                                 >
                                   <Camera className="h-4 w-4 mr-2" />
-                                  Upload Photo 5
+                                  {t('weddingEdit.uploadPhotoN', { number: 5 })}
                                 </label>
                               </div>
                             </div>
                             {photos && photos.filter((photo: any) => photo.photoType === 'flower_photo_5').length > 0 && (
                               <div className="mt-3">
-                                <img 
-                                  src={photos.filter((photo: any) => photo.photoType === 'flower_photo_5')[0].url} 
-                                  alt="Photo 5"
+                                <img
+                                  src={photos.filter((photo: any) => photo.photoType === 'flower_photo_5')[0].url}
+                                  alt={t('weddingEdit.altPhotoN', { number: 5 })}
                                   className="w-full h-24 object-cover rounded-lg border-2 border-gray-200"
                                 />
                               </div>
@@ -1789,7 +1791,7 @@ export default function AdminWeddingEdit() {
                           </div>
 
                           <div>
-                            <h4 className="font-medium text-gray-700 mb-3">Photo 6 - Beautiful Memory</h4>
+                            <h4 className="font-medium text-gray-700 mb-3">{t('weddingEdit.flowerPhoto6Title')}</h4>
                             <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg">
                               <div className="text-center">
                                 <input
@@ -1811,8 +1813,8 @@ export default function AdminWeddingEdit() {
                                         
                                         if (response.ok) {
                                           toast({
-                                            title: "Photo Uploaded",
-                                            description: "Photo 6 has been successfully uploaded.",
+                                            title: t('weddingEdit.photoUploaded'),
+                                            description: t('weddingEdit.photoNUploadedDesc', { number: 6 }),
                                           });
                                           queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
                                         } else {
@@ -1820,8 +1822,8 @@ export default function AdminWeddingEdit() {
                                         }
                                       } catch (error) {
                                         toast({
-                                          title: "Upload Failed",
-                                          description: "Failed to upload photo. Please try again.",
+                                          title: t('weddingEdit.uploadFailed'),
+                                          description: t('weddingEdit.photoUploadFailedDesc'),
                                           variant: "destructive",
                                         });
                                       }
@@ -1836,15 +1838,15 @@ export default function AdminWeddingEdit() {
                                   className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
                                 >
                                   <Camera className="h-4 w-4 mr-2" />
-                                  Upload Photo 6
+                                  {t('weddingEdit.uploadPhotoN', { number: 6 })}
                                 </label>
                               </div>
                             </div>
                             {photos && photos.filter((photo: any) => photo.photoType === 'flower_photo_6').length > 0 && (
                               <div className="mt-3">
-                                <img 
-                                  src={photos.filter((photo: any) => photo.photoType === 'flower_photo_6')[0].url} 
-                                  alt="Photo 6"
+                                <img
+                                  src={photos.filter((photo: any) => photo.photoType === 'flower_photo_6')[0].url}
+                                  alt={t('weddingEdit.altPhotoN', { number: 6 })}
                                   className="w-full h-24 object-cover rounded-lg border-2 border-gray-200"
                                 />
                               </div>
@@ -1859,15 +1861,15 @@ export default function AdminWeddingEdit() {
                     <div>
                       <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                         <Camera className="h-4 w-4" />
-                        Our Memories Gallery
+                        {t('weddingEdit.ourMemoriesGallery')}
                       </h3>
-                      
+
                       {/* Upload Section for Memory Photos */}
                       <div className="mb-4 p-4 border-2 border-dashed border-gray-300 rounded-lg">
                         <div className="text-center">
                           <Camera className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                          <h4 className="font-medium text-gray-700 mb-2">Upload Memory Photos</h4>
-                          <p className="text-sm text-gray-500 mb-3">These photos will appear in the "Our Memories" gallery section</p>
+                          <h4 className="font-medium text-gray-700 mb-2">{t('weddingEdit.uploadMemoryPhotos')}</h4>
+                          <p className="text-sm text-gray-500 mb-3">{t('weddingEdit.memoryPhotosHint')}</p>
                           <input
                             type="file"
                             accept="image/*"
@@ -1905,14 +1907,16 @@ export default function AdminWeddingEdit() {
                               // Show toast based on results
                               if (successCount > 0) {
                                 toast({
-                                  title: "Photos Uploaded",
-                                  description: `${successCount} photo(s) uploaded successfully${errorCount > 0 ? `. ${errorCount} failed.` : '.'}`,
+                                  title: t('weddingEdit.photosUploaded'),
+                                  description: errorCount > 0
+                                    ? t('weddingEdit.photosUploadedWithErrors', { count: successCount, errorCount })
+                                    : t('weddingEdit.photosUploadedSuccess', { count: successCount }),
                                 });
                                 queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
                               } else {
                                 toast({
-                                  title: "Upload Failed",
-                                  description: "Failed to upload photos. Please try again.",
+                                  title: t('weddingEdit.uploadFailed'),
+                                  description: t('weddingEdit.photosUploadFailedDesc'),
                                   variant: "destructive",
                                 });
                               }
@@ -1928,7 +1932,7 @@ export default function AdminWeddingEdit() {
                             className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
                           >
                             <Camera className="h-4 w-4 mr-2" />
-                            Choose Memory Photos
+                            {t('weddingEdit.chooseMemoryPhotos')}
                           </label>
                         </div>
                       </div>
@@ -1938,9 +1942,9 @@ export default function AdminWeddingEdit() {
                           photos.filter((photo: any) => photo.photoType === 'memory').map((photo: any) => (
                             <div key={photo.id} className="border rounded-lg p-3 space-y-2">
                               <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                                <img 
-                                  src={photo.url} 
-                                  alt={photo.caption || "Memory photo"}
+                                <img
+                                  src={photo.url}
+                                  alt={photo.caption || t('weddingEdit.altMemoryPhoto')}
                                   className="w-full h-full object-cover"
                                 />
                               </div>
@@ -1967,8 +1971,8 @@ export default function AdminWeddingEdit() {
                         ) : (
                           <div className="col-span-4 text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
                             <Camera className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                            <p>No memory photos uploaded yet</p>
-                            <p className="text-sm text-gray-400 mt-1">These photos will appear in the "Our Memories" gallery section</p>
+                            <p>{t('weddingEdit.noMemoryPhotosUploaded')}</p>
+                            <p className="text-sm text-gray-400 mt-1">{t('weddingEdit.memoryPhotosHint')}</p>
                           </div>
                         )}
                       </div>
@@ -1980,7 +1984,7 @@ export default function AdminWeddingEdit() {
                         <div className="bg-blue-50 p-4 rounded-lg">
                           <div className="flex items-center gap-2">
                             <Heart className="h-4 w-4 text-blue-600" />
-                            <span className="text-sm font-medium text-blue-700">Couple Photos</span>
+                            <span className="text-sm font-medium text-blue-700">{t('wedding.couplePhotos')}</span>
                           </div>
                           <p className="text-2xl font-bold text-blue-600 mt-1">
                             {photos.filter((photo: any) => photo.photoType === 'couple').length}
@@ -1989,7 +1993,7 @@ export default function AdminWeddingEdit() {
                         <div className="bg-green-50 p-4 rounded-lg">
                           <div className="flex items-center gap-2">
                             <Camera className="h-4 w-4 text-green-600" />
-                            <span className="text-sm font-medium text-green-700">Memory Photos</span>
+                            <span className="text-sm font-medium text-green-700">{t('weddingEdit.memoryPhotos')}</span>
                           </div>
                           <p className="text-2xl font-bold text-green-600 mt-1">
                             {photos.filter((photo: any) => photo.photoType === 'memory').length}
@@ -1998,7 +2002,7 @@ export default function AdminWeddingEdit() {
                         <div className="bg-purple-50 p-4 rounded-lg">
                           <div className="flex items-center gap-2">
                             <Camera className="h-4 w-4 text-purple-600" />
-                            <span className="text-sm font-medium text-purple-700">Total Photos</span>
+                            <span className="text-sm font-medium text-purple-700">{t('weddingEdit.totalPhotos')}</span>
                           </div>
                           <p className="text-2xl font-bold text-purple-600 mt-1">
                             {photos.length}
@@ -2017,33 +2021,33 @@ export default function AdminWeddingEdit() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5 text-[#D4B08C]" />
-                  Wedding Settings
+                  {t('weddingEdit.weddingSettings')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium text-[#2C3338]">Unique URL</h3>
-                      <p className="text-sm text-[#2C3338]/70">Wedding website address</p>
+                      <h3 className="font-medium text-[#2C3338]">{t('weddingEdit.uniqueUrl')}</h3>
+                      <p className="text-sm text-[#2C3338]/70">{t('weddingEdit.weddingWebsiteAddress')}</p>
                     </div>
                     <code className="bg-gray-100 px-3 py-1 rounded text-sm">
                       /wedding/{wedding.uniqueUrl}
                     </code>
                   </div>
-                  
+
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium text-[#2C3338]">Template</h3>
-                      <p className="text-sm text-[#2C3338]/70">Current design template</p>
+                      <h3 className="font-medium text-[#2C3338]">{t('manage.template')}</h3>
+                      <p className="text-sm text-[#2C3338]/70">{t('weddingEdit.currentDesignTemplate')}</p>
                     </div>
                     <Badge variant="outline">{wedding.template || 'Default'}</Badge>
                   </div>
 
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium text-[#2C3338]">Created</h3>
-                      <p className="text-sm text-[#2C3338]/70">Wedding creation date</p>
+                      <h3 className="font-medium text-[#2C3338]">{t('weddingEdit.created')}</h3>
+                      <p className="text-sm text-[#2C3338]/70">{t('weddingEdit.weddingCreationDate')}</p>
                     </div>
                     <span className="text-sm text-[#2C3338]/70">
                       {new Date(wedding.createdAt).toLocaleDateString()}

@@ -59,7 +59,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
       });
       
       if (!response.ok) {
-        throw new Error('Failed to update RSVP');
+        throw new Error(t('rsvp.updateError'));
       }
       
       return response.json();

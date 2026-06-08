@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,7 @@ export function BudgetPlanner({ weddingId, className = '' }: BudgetPlannerProps)
   const [newCategoryOpen, setNewCategoryOpen] = useState(false);
   const [newItemOpen, setNewItemOpen] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -56,7 +58,7 @@ export function BudgetPlanner({ weddingId, className = '' }: BudgetPlannerProps)
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/budget/categories', weddingId] });
       setNewCategoryOpen(false);
-      toast({ title: "Category created", description: "Budget category added successfully!" });
+      toast({ title: t('budget.categoryCreated'), description: t('budget.categoryCreatedDesc') });
     }
   });
 
@@ -72,7 +74,7 @@ export function BudgetPlanner({ weddingId, className = '' }: BudgetPlannerProps)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/budget/categories', weddingId] });
-      toast({ title: "Category updated", description: "Budget category updated successfully!" });
+      toast({ title: t('budget.categoryUpdated'), description: t('budget.categoryUpdatedDesc') });
     }
   });
 
@@ -131,31 +133,31 @@ export function BudgetPlanner({ weddingId, className = '' }: BudgetPlannerProps)
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DollarSign className="h-5 w-5 text-[#D4B08C]" />
-            Budget Overview
+            {t('budget.overview')}
           </CardTitle>
           <CardDescription>
-            Track your wedding expenses in real-time
+            {t('budget.overviewDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-gray-600">Estimated Budget</p>
+              <p className="text-sm text-gray-600">{t('budget.estimatedBudget')}</p>
               <p className="text-2xl font-bold text-blue-600">${totalEstimated.toLocaleString()}</p>
             </div>
             <div className="text-center p-4 bg-orange-50 rounded-lg">
-              <p className="text-sm text-gray-600">Actual Spent</p>
+              <p className="text-sm text-gray-600">{t('budget.actualSpent')}</p>
               <p className="text-2xl font-bold text-orange-600">${totalActual.toLocaleString()}</p>
             </div>
             <div className="text-center p-4 bg-green-50 rounded-lg">
-              <p className="text-sm text-gray-600">Amount Paid</p>
+              <p className="text-sm text-gray-600">{t('budget.amountPaid')}</p>
               <p className="text-2xl font-bold text-green-600">${totalPaid.toLocaleString()}</p>
             </div>
           </div>
           
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span>Budget Progress</span>
+              <span>{t('budget.budgetProgress')}</span>
               <span className={budgetProgress > 100 ? 'text-red-600' : 'text-green-600'}>
                 {budgetProgress.toFixed(1)}%
               </span>
@@ -167,7 +169,7 @@ export function BudgetPlanner({ weddingId, className = '' }: BudgetPlannerProps)
             {budgetProgress > 100 && (
               <div className="flex items-center gap-2 text-red-600 text-sm">
                 <AlertTriangle className="h-4 w-4" />
-                Over budget by ${(totalActual - totalEstimated).toLocaleString()}
+                {t('budget.overBudgetBy', { amount: (totalActual - totalEstimated).toLocaleString() })}
               </div>
             )}
           </div>
@@ -176,33 +178,33 @@ export function BudgetPlanner({ weddingId, className = '' }: BudgetPlannerProps)
 
       {/* Budget Categories */}
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Budget Categories</h3>
+        <h3 className="text-lg font-semibold">{t('budget.categories')}</h3>
         <Dialog open={newCategoryOpen} onOpenChange={setNewCategoryOpen}>
           <DialogTrigger asChild>
             <Button className="bg-[#D4B08C] hover:bg-[#C09E7A]">
               <Plus className="h-4 w-4 mr-2" />
-              Add Category
+              {t('budget.addCategory')}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add Budget Category</DialogTitle>
+              <DialogTitle>{t('budget.addBudgetCategory')}</DialogTitle>
               <DialogDescription>
-                Create a new category to organize your wedding expenses
+                {t('budget.addCategoryDesc')}
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleCategorySubmit} className="space-y-4">
               <div>
-                <Label htmlFor="name">Category Name</Label>
-                <Input 
+                <Label htmlFor="name">{t('budget.categoryName')}</Label>
+                <Input
                   id="name"
                   name="name"
-                  placeholder="e.g., Venue, Catering, Photography"
+                  placeholder={t('budget.categoryNamePlaceholder')}
                   required
                 />
               </div>
               <div>
-                <Label htmlFor="estimatedCost">Estimated Cost ($)</Label>
+                <Label htmlFor="estimatedCost">{t('budget.estimatedCost')}</Label>
                 <Input 
                   id="estimatedCost"
                   name="estimatedCost"
@@ -213,24 +215,24 @@ export function BudgetPlanner({ weddingId, className = '' }: BudgetPlannerProps)
                 />
               </div>
               <div>
-                <Label htmlFor="priority">Priority</Label>
+                <Label htmlFor="priority">{t('budget.priority')}</Label>
                 <Select name="priority" defaultValue="medium">
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="high">High Priority</SelectItem>
-                    <SelectItem value="medium">Medium Priority</SelectItem>
-                    <SelectItem value="low">Low Priority</SelectItem>
+                    <SelectItem value="high">{t('budget.highPriority')}</SelectItem>
+                    <SelectItem value="medium">{t('budget.mediumPriority')}</SelectItem>
+                    <SelectItem value="low">{t('budget.lowPriority')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label htmlFor="notes">Notes</Label>
-                <Textarea 
+                <Label htmlFor="notes">{t('budget.notes')}</Label>
+                <Textarea
                   id="notes"
                   name="notes"
-                  placeholder="Additional notes about this category..."
+                  placeholder={t('budget.notesPlaceholder')}
                 />
               </div>
               <Button 
@@ -238,7 +240,7 @@ export function BudgetPlanner({ weddingId, className = '' }: BudgetPlannerProps)
                 className="w-full bg-[#D4B08C] hover:bg-[#C09E7A]"
                 disabled={createCategory.isPending}
               >
-                {createCategory.isPending ? 'Creating...' : 'Create Category'}
+                {createCategory.isPending ? t('budget.creating') : t('budget.createCategory')}
               </Button>
             </form>
           </DialogContent>
@@ -257,12 +259,12 @@ export function BudgetPlanner({ weddingId, className = '' }: BudgetPlannerProps)
                   <div>
                     <h4 className="font-semibold text-lg">{category.name}</h4>
                     <Badge className={`mt-1 ${getPriorityColor(category.priority)}`}>
-                      {category.priority} priority
+                      {t('budget.priorityBadge', { priority: category.priority })}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="text-right">
-                      <p className="text-sm text-gray-600">Actual Cost</p>
+                      <p className="text-sm text-gray-600">{t('budget.actualCost')}</p>
                       <Input
                         type="number"
                         value={category.actualCost}
@@ -287,7 +289,7 @@ export function BudgetPlanner({ weddingId, className = '' }: BudgetPlannerProps)
 
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span>Budget: ${category.estimatedCost.toLocaleString()}</span>
+                    <span>{t('budget.budgetLabel', { amount: category.estimatedCost.toLocaleString() })}</span>
                     <span className={categoryProgress > 100 ? 'text-red-600' : 'text-gray-600'}>
                       ${category.actualCost.toLocaleString()} ({categoryProgress.toFixed(0)}%)
                     </span>
@@ -313,16 +315,16 @@ export function BudgetPlanner({ weddingId, className = '' }: BudgetPlannerProps)
         <Card className="text-center py-8">
           <CardContent>
             <TrendingUp className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No budget categories yet</h3>
+            <h3 className="text-lg font-semibold mb-2">{t('budget.noCategories')}</h3>
             <p className="text-gray-600 mb-4">
-              Start organizing your wedding budget by creating your first category
+              {t('budget.noCategoriesHint')}
             </p>
             <Button 
               onClick={() => setNewCategoryOpen(true)}
               className="bg-[#D4B08C] hover:bg-[#C09E7A]"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Add Your First Category
+              {t('budget.addFirstCategory')}
             </Button>
           </CardContent>
         </Card>
