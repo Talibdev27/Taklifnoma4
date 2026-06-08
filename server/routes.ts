@@ -80,8 +80,10 @@ const localAudioUpload = multer({
     }
   }),
   fileFilter: (req, file, cb) => {
-    const allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a', 'audio/aac', 'video/mp4', 'audio/mp4'];
-    if (allowedTypes.includes(file.mimetype)) {
+    const allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/x-wav', 'audio/ogg', 'audio/m4a', 'audio/x-m4a', 'audio/aac', 'video/mp4', 'audio/mp4', 'application/octet-stream'];
+    const allowedExt = ['.mp3', '.wav', '.ogg', '.m4a', '.aac', '.mp4'];
+    const okByExt = allowedExt.some((ext) => (file.originalname || '').toLowerCase().endsWith(ext));
+    if (allowedTypes.includes(file.mimetype) || okByExt) {
       cb(null, true);
     } else {
       cb(new Error('Invalid file type. Only audio files (MP3, WAV, OGG, M4A, AAC, MP4) are allowed.'));
@@ -91,6 +93,15 @@ const localAudioUpload = multer({
     fileSize: 10 * 1024 * 1024 // 10MB limit for audio files
   }
 });
+
+// Surface storage configuration at startup so production logs make it obvious
+// whether uploads go to Cloudinary (persistent) or local disk (ephemeral on
+// Render — files are lost on restart and break image/audio display).
+if (process.env.CLOUDINARY_CLOUD_NAME) {
+  console.log('[uploads] Cloudinary storage ENABLED (cloud:', process.env.CLOUDINARY_CLOUD_NAME + ')');
+} else {
+  console.warn('[uploads] Cloudinary NOT configured — falling back to LOCAL disk. On Render this is EPHEMERAL: uploaded files vanish on restart. Set CLOUDINARY_CLOUD_NAME/API_KEY/API_SECRET.');
+}
 
 // Use Cloudinary if configured, otherwise fallback to local
 const upload = process.env.CLOUDINARY_CLOUD_NAME ? uploadImage : localUpload;
@@ -124,6 +135,41 @@ function isFreeTemplate(template: string): boolean {
 
 function isPremiumTemplate(template: string): boolean {
   return (PREMIUM_TEMPLATES as readonly string[]).includes(template);
+}
+
+// Transliteration for building readable URL slugs from non-Latin names.
+const SLUG_TRANSLIT: Record<string, string> = {
+  а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'yo',ж:'j',з:'z',и:'i',й:'y',к:'k',л:'l',
+  м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'x',ц:'ts',ч:'ch',ш:'sh',
+  щ:'sh',ъ:'',ы:'i',ь:'',э:'e',ю:'yu',я:'ya',ў:'o',қ:'q',ғ:'g',ҳ:'h',ә:'a',і:'i',
+  ң:'ng',ө:'o',ұ:'u',ү:'u',һ:'h',
+};
+
+function slugifyName(s: string): string {
+  return (s || '')
+    .toLowerCase()
+    .split('')
+    .map((ch) => (ch in SLUG_TRANSLIT ? SLUG_TRANSLIT[ch] : ch))
+    .join('')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// Build a readable, unique wedding URL slug from the couple's names, e.g.
+// groom "Azamat" + bride "Sevara" -> "azamat-sevara". Falls back to a random
+// id when names produce no usable slug, and appends a counter on collision so
+// the unique_url constraint is never violated.
+async function generateUniqueWeddingSlug(groom?: string, bride?: string): Promise<string> {
+  const base = [slugifyName(groom || ''), slugifyName(bride || '')].filter(Boolean).join('-');
+  if (!base) return nanoid(10);
+  let candidate = base;
+  let n = 1;
+  while (await storage.getWeddingByUrl(candidate)) {
+    n += 1;
+    candidate = `${base}-${n}`;
+    if (n > 50) { candidate = `${base}-${nanoid(5)}`; break; }
+  }
+  return candidate;
 }
 
 // Middleware to verify JWT token
@@ -407,8 +453,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         data.template = defaultTemplate;
       }
 
-      // Generate unique URL
-      const uniqueUrl = nanoid(10);
+      // Generate a readable URL slug from the couple's names
+      const uniqueUrl = await generateUniqueWeddingSlug(data.groom, data.bride);
 
       // Then create wedding
       const weddingData = {
@@ -589,8 +635,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Generate unique URL
-      const uniqueUrl = nanoid(10);
+      // Generate a readable URL slug from the couple's names
+      const uniqueUrl = await generateUniqueWeddingSlug(groom, bride);
 
       const weddingData = {
         uniqueUrl: uniqueUrl, // Include the generated uniqueUrl
@@ -1380,8 +1426,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'No file uploaded' });
       }
 
-      // Always use the web-accessible path; req.file.path is a filesystem path
-      const photoUrl = `/uploads/${req.file.filename}`;
+      // When Cloudinary is configured, req.file.path is the hosted (persistent)
+      // URL. Local disk (req.file.filename -> /uploads) is ephemeral on Render,
+      // so prefer the Cloudinary URL whenever it is available.
+      const photoUrl = (process.env.CLOUDINARY_CLOUD_NAME && (req.file as any).path)
+        ? (req.file as any).path
+        : `/uploads/${req.file.filename}`;
       res.json({
         url: photoUrl,
         message: 'Couple photo uploaded successfully',
@@ -1487,9 +1537,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         path: req.file.path
       });
 
-      // Always use the web-accessible path; req.file.path is a filesystem path
-      // and cannot be fetched by the browser.
-      const musicUrl = `/uploads/${req.file.filename}`;
+      // When Cloudinary is configured, req.file.path is the hosted (persistent)
+      // URL. Local disk (/uploads) is ephemeral on Render, so prefer Cloudinary.
+      const musicUrl = (process.env.CLOUDINARY_CLOUD_NAME && (req.file as any).path)
+        ? (req.file as any).path
+        : `/uploads/${req.file.filename}`;
 
       console.log('Music URL generated:', musicUrl);
 
@@ -1548,8 +1600,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      // Generate unique URL
-      const uniqueUrl = nanoid(10);
+      // Generate a readable URL slug from the couple's names
+      const uniqueUrl = await generateUniqueWeddingSlug(weddingFields.groom, weddingFields.bride);
 
       // Create wedding data with all required fields
       const weddingData = {
