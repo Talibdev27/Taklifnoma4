@@ -13,6 +13,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { VelvetTemplate } from "@/website/components/templates/velvet-template";
 import { PearlTemplate } from "@/website/components/templates/pearl-template";
 import { AuroraTemplate } from "@/website/components/templates/aurora-template";
+import { EpicTemplate } from "@/website/components/templates/epic-template";
+import { FlowerTemplate } from "@/website/components/templates/flower-template";
 
 /* Demo wedding object used to preview the new premium templates. */
 const DEMO_WEDDING = {
@@ -841,8 +843,8 @@ export default function DemoWedding() {
     const urlParams = new URLSearchParams(window.location.search);
     const templateParam = urlParams.get('template');
     if (!templateParam) return;
-    // Premium templates (velvet, pearl, aurora) render via the real wedding-template components.
-    if (['velvet', 'pearl', 'aurora'].includes(templateParam)) {
+    // These templates render via their real wedding-template components.
+    if (['velvet', 'pearl', 'aurora', 'epic', 'flower'].includes(templateParam)) {
       setCurrentTemplate(templateParam);
       return;
     }
@@ -863,6 +865,12 @@ export default function DemoWedding() {
   }
   if (currentTemplate === 'aurora') {
     return <AuroraTemplate wedding={{ ...DEMO_WEDDING, template: 'aurora' } as any} photos={[]} />;
+  }
+  if (currentTemplate === 'epic') {
+    return <EpicTemplate wedding={{ ...DEMO_WEDDING, template: 'epic' } as any} />;
+  }
+  if (currentTemplate === 'flower') {
+    return <FlowerTemplate wedding={{ ...DEMO_WEDDING, template: 'flower' } as any} />;
   }
 
   const config = templateConfigs[currentTemplate as keyof typeof templateConfigs];
