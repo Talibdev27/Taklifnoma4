@@ -16,7 +16,6 @@ import { WeddingLanguageSwitcher } from '@/website/components/wedding-language-s
 import { EnhancedSocialShare } from '@/website/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
 import { EpicTemplate } from '@/website/components/templates/epic-template';
-import { BirthdayTemplate } from '@/website/components/templates/birthday-template';
 import { FlowerTemplate } from '@/website/components/templates/flower-template';
 import { AzamatTemplate } from '@/website/components/templates/azamat-template';
 import { VelvetTemplate } from '@/website/components/templates/velvet-template';
@@ -235,12 +234,6 @@ export default function WeddingSite() {
   if (wedding?.template === 'epic') {
     console.log('Rendering Epic template for wedding:', wedding);
     return <EpicTemplate wedding={wedding} />;
-  }
-
-  // Check for Birthday template
-  if (wedding?.template === 'birthday') {
-    console.log('Rendering Birthday template for wedding:', wedding);
-    return <BirthdayTemplate wedding={wedding} />;
   }
 
   // Check for Flower template

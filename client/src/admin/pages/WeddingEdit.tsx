@@ -31,7 +31,7 @@ import { z } from "zod";
 import type { User, Wedding, Guest, Photo, insertGuestSchema } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { TEMPLATE_REGISTRY, EVENT_TYPES } from '@/lib/templates';
+import { TEMPLATE_REGISTRY, EVENT_TYPES, getTemplatesForEvent } from '@/lib/templates';
 import { useTranslation } from 'react-i18next';
 
 export default function AdminWeddingEdit() {
@@ -770,7 +770,7 @@ export default function AdminWeddingEdit() {
                           onChange={(e) => {
                             handleInputChange('eventType', e.target.value);
                             // Reset template to first available for new event type
-                            const firstTemplate = TEMPLATE_REGISTRY[e.target.value as keyof typeof TEMPLATE_REGISTRY][0].value;
+                            const firstTemplate = getTemplatesForEvent(e.target.value)[0].value;
                             handleInputChange('template', firstTemplate);
                           }}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -790,11 +790,11 @@ export default function AdminWeddingEdit() {
                       </label>
                       {editMode ? (
                         <select
-                          value={weddingData?.template || 'standard'}
+                          value={weddingData?.template || 'modern'}
                           onChange={(e) => handleInputChange('template', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
-                          {TEMPLATE_REGISTRY[(weddingData?.eventType || wedding?.eventType || 'wedding') as keyof typeof TEMPLATE_REGISTRY].map(template => (
+                          {getTemplatesForEvent(weddingData?.eventType || wedding?.eventType).map(template => (
                             <option key={template.value} value={template.value}>
                               {template.label}
                             </option>

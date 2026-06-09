@@ -11,18 +11,18 @@ export const TEMPLATE_REGISTRY = {
     { value: 'pearl', label: 'Pearl' },
     { value: 'aurora', label: 'Aurora' },
   ],
-  birthday: [
-    { value: 'birthday', label: 'Tug\'ilgan kun bayrami' },
-    { value: 'standard', label: 'Standart' },
-    { value: 'flower', label: 'Gul' },
-  ],
 };
 
 export const EVENT_TYPES = [
   { value: 'wedding', label: 'To\'y' },
-  { value: 'birthday', label: 'Tug\'ilgan kun' },
 ];
 
 export type EventType = keyof typeof TEMPLATE_REGISTRY;
 export type TemplateValue = typeof TEMPLATE_REGISTRY[EventType][number]['value'];
 
+// Safe accessor: legacy records may carry an event type that no longer exists
+// (e.g. 'birthday'); fall back to the wedding set so admin forms never crash on
+// `TEMPLATE_REGISTRY[eventType].map(...)`.
+export function getTemplatesForEvent(eventType?: string) {
+  return TEMPLATE_REGISTRY[eventType as EventType] || TEMPLATE_REGISTRY.wedding;
+}

@@ -131,7 +131,6 @@ const JWT_SECRET = process.env.JWT_SECRET || 'wedding-platform-secret-key';
 
 // Template tier classification (must match client-side)
 const FREE_TEMPLATES = [
-  'standard',
   'bohoChic',
   'classicTradition',
   'beachBliss',
@@ -142,8 +141,7 @@ const FREE_TEMPLATES = [
 
 const PREMIUM_TEMPLATES = [
   'epic',
-  'flower',
-  'birthday'
+  'flower'
 ] as const;
 
 function isFreeTemplate(template: string): boolean {
@@ -682,7 +680,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         dearGuestMessage: dearGuestMessage?.trim() || "",
         couplePhotoUrl: couplePhotoUrl?.trim() || null,
         backgroundMusicUrl: req.body.backgroundMusicUrl?.trim() || null,
-        template: template || "standard",
+        template: template || "gardenRomance",
         primaryColor: primaryColor || "#D4B08C",
         accentColor: accentColor || "#89916B",
 
@@ -1609,7 +1607,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check template tier and payment requirements
-      const template = weddingFields.template || 'standard';
+      const template = weddingFields.template || 'gardenRomance';
       const templateRequiresPayment = isPremiumTemplate(template);
 
       // Only require payment for premium templates (unless user has paid subscription or is admin)
@@ -1645,7 +1643,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         dearGuestMessage: weddingFields.dearGuestMessage || null,
         couplePhotoUrl: weddingFields.couplePhotoUrl || null,
         backgroundMusicUrl: weddingFields.backgroundMusicUrl || null,
-        template: weddingFields.template || "standard",
+        template: weddingFields.template || "gardenRomance",
         primaryColor: weddingFields.primaryColor || "#D4B08C",
         accentColor: weddingFields.accentColor || "#89916B",
         uniqueUrl,

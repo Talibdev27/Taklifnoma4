@@ -12,7 +12,6 @@
 
 // Free templates available to all users without payment
 export const FREE_TEMPLATES = [
-  'standard',
   'bohoChic',
   'classicTradition',
   'beachBliss',
@@ -22,7 +21,6 @@ export const FREE_TEMPLATES = [
   'modern',
   'epic',
   'flower',
-  'birthday',
   'velvet',
   'pearl',
   'aurora',

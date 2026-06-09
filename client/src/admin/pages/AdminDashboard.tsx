@@ -19,7 +19,7 @@ import type { Wedding, User, Guest, Photo } from "@shared/schema";
 import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
 import { GuestManagerAssignment } from '@/admin/components/guest-manager-assignment';
 import { AdminGuestBookManager } from '@/admin/components/admin-guest-book-manager';
-import { TEMPLATE_REGISTRY, EVENT_TYPES } from '@/lib/templates';
+import { TEMPLATE_REGISTRY, EVENT_TYPES, getTemplatesForEvent } from '@/lib/templates';
 import { useTranslation } from 'react-i18next';
 
 export default function AdminDashboard() {
@@ -41,7 +41,7 @@ export default function AdminDashboard() {
     weddingTime: '18:00', // Will be used as "Party Time" for birthday template
     venue: '', // Will be used as "Party Venue" for birthday template
     venueAddress: '', // Will be used as "Party Location Address" for birthday template
-    template: 'standard',
+    template: 'modern',
     story: '', // Will be used as "About [Name]" for birthday template
     dearGuestMessage: '', // Will be used as "Party Details" for birthday template
     couplePhotoUrl: '',
@@ -328,7 +328,7 @@ export default function AdminDashboard() {
         venue: '',
         venueAddress: '',
         dressCode: '',
-        template: 'standard',
+        template: 'modern',
         story: '',
         dearGuestMessage: '',
         couplePhotoUrl: '',
@@ -600,7 +600,7 @@ export default function AdminDashboard() {
       venue: '',
       venueAddress: '',
       dressCode: '',
-      template: 'standard',
+      template: 'modern',
       story: '',
       dearGuestMessage: '',
       couplePhotoUrl: '',
@@ -1483,7 +1483,7 @@ export default function AdminDashboard() {
                         onChange={(e) => {
                           handleFormChange('eventType', e.target.value);
                           // Reset template to first available for new event type
-                          const firstTemplate = TEMPLATE_REGISTRY[e.target.value as keyof typeof TEMPLATE_REGISTRY][0].value;
+                          const firstTemplate = getTemplatesForEvent(e.target.value)[0].value;
                           handleFormChange('template', firstTemplate);
                         }}
                       >
@@ -1502,7 +1502,7 @@ export default function AdminDashboard() {
                         value={newWedding.template}
                         onChange={(e) => handleFormChange('template', e.target.value)}
                       >
-                        {TEMPLATE_REGISTRY[newWedding.eventType as keyof typeof TEMPLATE_REGISTRY].map(template => (
+                        {getTemplatesForEvent(newWedding.eventType).map(template => (
                           <option key={template.value} value={template.value}>
                             {template.label}
                           </option>
