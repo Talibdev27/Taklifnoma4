@@ -142,9 +142,7 @@ const FREE_TEMPLATES = [
 
 const PREMIUM_TEMPLATES = [
   'epic',
-  'anime_1',
   'flower',
-  'gul',
   'birthday'
 ] as const;
 

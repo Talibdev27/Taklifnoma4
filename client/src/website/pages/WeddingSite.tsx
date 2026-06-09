@@ -17,10 +17,7 @@ import { EnhancedSocialShare } from '@/website/components/enhanced-social-share'
 import { WeddingPageLoading } from '@/components/ui/loading';
 import { EpicTemplate } from '@/website/components/templates/epic-template';
 import { BirthdayTemplate } from '@/website/components/templates/birthday-template';
-import { Anime1Template } from '@/website/components/templates/anime-1-template';
 import { FlowerTemplate } from '@/website/components/templates/flower-template';
-import { GulTemplate } from '@/website/components/templates/gul-template';
-import { Customer1Template } from '@/website/components/templates/ccostumer-1-template';
 import { AzamatTemplate } from '@/website/components/templates/azamat-template';
 import { VelvetTemplate } from '@/website/components/templates/velvet-template';
 import { PearlTemplate } from '@/website/components/templates/pearl-template';
@@ -246,28 +243,10 @@ export default function WeddingSite() {
     return <BirthdayTemplate wedding={wedding} />;
   }
 
-  // Check for Anime1 template
-  if (wedding?.template === 'anime_1') {
-    console.log('Rendering Anime1 template for wedding:', wedding);
-    return <Anime1Template wedding={wedding as any} guests={[]} photos={photos} guestBookEntries={guestBookEntries} />;
-  }
-
   // Check for Flower template
   if (wedding?.template === 'flower') {
     console.log('Rendering Flower template for wedding:', wedding);
     return <FlowerTemplate wedding={wedding} />;
-  }
-
-  // Check for Gul template
-  if (wedding?.template === 'gul') {
-    console.log('Rendering Gul template for wedding:', wedding);
-    return <GulTemplate wedding={wedding} />;
-  }
-
-  // Check for Customer 1 template
-  if (wedding?.template === 'ccostumer_1') {
-    console.log('Rendering Customer 1 template for wedding:', wedding);
-    return <Customer1Template wedding={wedding} />;
   }
 
   // Check for Modern template
