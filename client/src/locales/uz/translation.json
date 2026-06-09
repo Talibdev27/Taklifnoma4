@@ -1869,5 +1869,7 @@
   "wedding.ceremonyBegins": "Marosim boshlanadi",
   "wedding.dressCode": "Kiyim kodi",
   "wedding.noPhotosYet": "Hali rasmlar yo'q",
-  "wedding.venueAddress": "Joylashuv manzili"
+  "wedding.venueAddress": "Joylashuv manzili",
+  "rsvp.pleaseSelectStatus": "Iltimos, javobingizni tanlang",
+  "rsvp.selectStatusDescription": "Iltimos, kela olishingizni bildiring."
 }

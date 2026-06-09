@@ -1869,5 +1869,7 @@
   "wedding.ceremonyBegins": "Церемония начинается",
   "wedding.dressCode": "Дресс-код",
   "wedding.noPhotosYet": "Фотографий пока нет",
-  "wedding.venueAddress": "Адрес места проведения"
+  "wedding.venueAddress": "Адрес места проведения",
+  "rsvp.pleaseSelectStatus": "Пожалуйста, выберите ответ",
+  "rsvp.selectStatusDescription": "Сообщите нам, сможете ли вы прийти."
 }

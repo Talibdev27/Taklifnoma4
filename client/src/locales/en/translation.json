@@ -1869,5 +1869,7 @@
   "wedding.ceremonyBegins": "The ceremony begins",
   "wedding.dressCode": "Dress Code",
   "wedding.noPhotosYet": "No photos yet",
-  "wedding.venueAddress": "Venue Address"
+  "wedding.venueAddress": "Venue Address",
+  "rsvp.pleaseSelectStatus": "Please select your response",
+  "rsvp.selectStatusDescription": "Let us know whether you can attend."
 }

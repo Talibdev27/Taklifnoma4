@@ -157,6 +157,16 @@ export function EpicRSVPForm({ wedding, primaryColor = '#1976d2', accentColor = 
   });
 
   const onSubmit = (data: RSVPFormData) => {
+    // Require an actual attendance choice — otherwise the default 'pending' is
+    // submitted and the guest sees "thank you" while nothing is really recorded.
+    if (!data.rsvpStatus || data.rsvpStatus === 'pending') {
+      toast({
+        title: t('rsvp.pleaseSelectStatus'),
+        description: t('rsvp.selectStatusDescription'),
+        variant: 'destructive',
+      });
+      return;
+    }
     submitRSVP.mutate(data);
   };
 
@@ -173,6 +183,14 @@ export function EpicRSVPForm({ wedding, primaryColor = '#1976d2', accentColor = 
     }
 
     const formData = form.getValues();
+    if (!formData.rsvpStatus || formData.rsvpStatus === 'pending') {
+      toast({
+        title: t('rsvp.pleaseSelectStatus'),
+        description: t('rsvp.selectStatusDescription'),
+        variant: 'destructive',
+      });
+      return;
+    }
     const finalRsvpStatus = formData.rsvpStatus === 'confirmed_with_guest' ? 'confirmed' : formData.rsvpStatus;
     const plusOne = formData.rsvpStatus === 'confirmed_with_guest';
     

@@ -379,48 +379,24 @@ export function Customer1Template({ wedding }: Customer1TemplateProps) {
         </section>
       )}
 
-      {/* Contact/Help Section */}
+      {/* Guest Book Section — lets guests leave a message that the couple
+          actually receives (the old contact form silently dropped input). */}
       <section className="bg-white py-16 px-4">
-        <div className="max-w-md mx-auto text-center">
-          <p className="text-lg font-semibold text-gray-800 mb-6">
-            {t('customer1.needHelp') || 'Do you need help?'}
+        <div className="max-w-md mx-auto">
+          <p className="text-lg font-semibold text-gray-800 mb-6 text-center">
+            {t('guestBook.leaveMessage') || 'Leave a Message'}
           </p>
-          <form onSubmit={handleContactSubmit} className="space-y-4">
-            <input 
-              type="text" 
-              placeholder={t('customer1.fullName') || 'Full name'} 
-              value={contactName}
-              onChange={(e) => setContactName(e.target.value)}
-              className="w-full border-2 border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:border-[#5a7d6f]"
-            />
-            <input
-              type="email"
-              placeholder={t('customer1.email')}
-              value={contactEmail}
-              onChange={(e) => setContactEmail(e.target.value)}
-              className="w-full border-2 border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:border-[#5a7d6f]"
-            />
-            <input 
-              type="tel" 
-              placeholder={t('customer1.phone') || 'Phone'} 
-              value={contactPhone}
-              onChange={(e) => setContactPhone(e.target.value)}
-              className="w-full border-2 border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:border-[#5a7d6f]"
-            />
-            <textarea 
-              placeholder={t('customer1.message') || 'Message'} 
-              rows={4}
-              value={contactMessage}
-              onChange={(e) => setContactMessage(e.target.value)}
-              className="w-full border-2 border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:border-[#5a7d6f]"
-            />
-            <button 
-              type="submit" 
-              className="w-full bg-[#5a7d6f] text-white py-3 rounded-lg font-semibold hover:bg-[#4a6d5f] transition-colors"
-            >
-              {t('customer1.submit') || 'Submit'}
-            </button>
-          </form>
+          <GuestBookForm weddingId={wedding.id} />
+          {guestBookEntries.length > 0 && (
+            <div className="mt-8 space-y-4">
+              {guestBookEntries.map((entry) => (
+                <div key={entry.id} className="border-2 border-gray-200 rounded-lg py-3 px-4 text-left">
+                  <p className="font-semibold text-gray-800">{entry.guestName}</p>
+                  <p className="text-gray-600 mt-1 whitespace-pre-line">{entry.message}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

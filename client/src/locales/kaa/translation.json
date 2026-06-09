@@ -1869,5 +1869,7 @@
   "wedding.ceremonyBegins": "Той рәсими басланады",
   "wedding.dressCode": "Кийим үлгиси",
   "wedding.noPhotosYet": "Ҳәзирге фотолар жоқ",
-  "wedding.venueAddress": "Орын мәкан-жайы"
+  "wedding.venueAddress": "Орын мәкан-жайы",
+  "rsvp.pleaseSelectStatus": "Жуўабыңызды таңлаң",
+  "rsvp.selectStatusDescription": "Келе алатуғыныңызды хабарлаң."
 }
