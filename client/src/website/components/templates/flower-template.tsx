@@ -593,7 +593,8 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg">
               <h3 className="text-xl sm:text-2xl font-semibold mb-6">{t('guestBook.leaveMessage')}</h3>
-              <GuestBookForm 
+              <GuestBookForm
+                surface="light"
                 weddingId={wedding.id}
                 primaryColor={primaryColor}
                 accentColor={accentColor}

@@ -539,7 +539,8 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
                 style={{ borderColor: `${primaryColor}20` }}
               >
                 <h3 className="text-xl font-semibold mb-6 text-gray-800">{t('guestBook.leaveMessage')}</h3>
-                <GuestBookForm 
+                <GuestBookForm
+                  surface="light"
                   weddingId={wedding.id}
                   primaryColor={primaryColor}
                   accentColor={accentColor}

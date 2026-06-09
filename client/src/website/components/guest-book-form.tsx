@@ -10,6 +10,9 @@ interface GuestBookFormProps {
   primaryColor?: string;
   accentColor?: string;
   showSuccessToast?: boolean;
+  /** 'dark' (default) = white text for dark sections; 'light' = dark text for
+   *  light/white sections (otherwise typed text is invisible). */
+  surface?: 'light' | 'dark';
 }
 
 export function GuestBookForm({
@@ -17,6 +20,7 @@ export function GuestBookForm({
   primaryColor = '#c9a96e',
   accentColor = '#a07840',
   showSuccessToast = true,
+  surface = 'dark',
 }: GuestBookFormProps) {
   const { t } = useTranslation();
   const [guestName, setGuestName] = useState('');
@@ -24,6 +28,14 @@ export function GuestBookForm({
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Surface-aware colours so typed text is readable on light AND dark sections.
+  const isLight = surface === 'light';
+  const inputTextClass = isLight ? 'text-gray-900' : 'text-white';
+  const placeholderClass = isLight ? 'placeholder:text-gray-500' : 'placeholder:text-white/40';
+  const idleInputBg = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(0,0,0,0.2)';
+  const idleBorder = isLight ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.1)';
+  const idleIconColor = isLight ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.5)';
 
   const createEntryMutation = useMutation({
     mutationFn: async (data: { guestName: string; message: string }) => {
@@ -74,9 +86,9 @@ export function GuestBookForm({
       <div className="relative group">
         <div 
           className="absolute left-4 top-1/2 -translate-y-1/2 transition-all duration-300 z-10"
-          style={{ 
+          style={{
             opacity: focusedField === 'name' ? 1 : 0.4,
-            color: focusedField === 'name' ? primaryColor : 'rgba(255,255,255,0.5)'
+            color: focusedField === 'name' ? primaryColor : idleIconColor
           }}
         >
           <User className="w-5 h-5" />
@@ -89,12 +101,12 @@ export function GuestBookForm({
           onFocus={() => setFocusedField('name')}
           onBlur={() => setFocusedField(null)}
           required
-          className="w-full h-14 pl-14 pr-5 rounded-2xl text-base font-light text-white placeholder:text-white/40 transition-all duration-300 outline-none"
+          className={`w-full h-14 pl-14 pr-5 rounded-2xl text-base font-light ${inputTextClass} ${placeholderClass} transition-all duration-300 outline-none`}
           style={{
-            background: focusedField === 'name' 
+            background: focusedField === 'name'
               ? `linear-gradient(135deg, ${primaryColor}12, ${primaryColor}08)`
-              : 'rgba(0,0,0,0.2)',
-            border: `1px solid ${focusedField === 'name' ? `${primaryColor}50` : 'rgba(255,255,255,0.1)'}`,
+              : idleInputBg,
+            border: `1px solid ${focusedField === 'name' ? `${primaryColor}50` : idleBorder}`,
             boxShadow: focusedField === 'name' ? `0 8px 24px ${primaryColor}15` : 'none',
           }}
         />
@@ -104,9 +116,9 @@ export function GuestBookForm({
       <div className="relative group">
         <div 
           className="absolute left-4 top-5 transition-all duration-300 z-10"
-          style={{ 
+          style={{
             opacity: focusedField === 'message' ? 1 : 0.4,
-            color: focusedField === 'message' ? primaryColor : 'rgba(255,255,255,0.5)'
+            color: focusedField === 'message' ? primaryColor : idleIconColor
           }}
         >
           <MessageSquare className="w-5 h-5" />
@@ -119,12 +131,12 @@ export function GuestBookForm({
           onBlur={() => setFocusedField(null)}
           rows={5}
           required
-          className="w-full min-h-[140px] pl-14 pr-5 py-5 rounded-2xl text-base font-light text-white placeholder:text-white/40 transition-all duration-300 outline-none resize-none"
+          className={`w-full min-h-[140px] pl-14 pr-5 py-5 rounded-2xl text-base font-light ${inputTextClass} ${placeholderClass} transition-all duration-300 outline-none resize-none`}
           style={{
-            background: focusedField === 'message' 
+            background: focusedField === 'message'
               ? `linear-gradient(135deg, ${primaryColor}12, ${primaryColor}08)`
-              : 'rgba(0,0,0,0.2)',
-            border: `1px solid ${focusedField === 'message' ? `${primaryColor}50` : 'rgba(255,255,255,0.1)'}`,
+              : idleInputBg,
+            border: `1px solid ${focusedField === 'message' ? `${primaryColor}50` : idleBorder}`,
             boxShadow: focusedField === 'message' ? `0 8px 24px ${primaryColor}15` : 'none',
             fontFamily: '"Playfair Display", Georgia, serif',
           }}

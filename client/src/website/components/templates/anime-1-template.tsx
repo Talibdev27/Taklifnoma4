@@ -1030,7 +1030,7 @@ export function Anime1Template({ wedding, guests, photos, guestBookEntries = [] 
       {showGuestBook && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md mx-4">
-            <GuestBookForm weddingId={wedding.id} />
+            <GuestBookForm surface="light" weddingId={wedding.id} />
             <button 
               onClick={() => setShowGuestBook(false)}
               className="mt-4 w-full bg-gray-200 text-gray-800 py-2 rounded"

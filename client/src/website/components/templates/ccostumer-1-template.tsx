@@ -386,7 +386,7 @@ export function Customer1Template({ wedding }: Customer1TemplateProps) {
           <p className="text-lg font-semibold text-gray-800 mb-6 text-center">
             {t('guestBook.leaveMessage') || 'Leave a Message'}
           </p>
-          <GuestBookForm weddingId={wedding.id} />
+          <GuestBookForm surface="light" weddingId={wedding.id} />
           {guestBookEntries.length > 0 && (
             <div className="mt-8 space-y-4">
               {guestBookEntries.map((entry) => (

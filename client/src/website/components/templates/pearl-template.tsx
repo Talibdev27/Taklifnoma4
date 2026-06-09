@@ -784,7 +784,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
             <div className="hair-line w-32 mx-auto mt-5" />
           </motion.div>
           <motion.div variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <GuestBookForm weddingId={wedding.id} primaryColor="#1a1a1a" accentColor="#4a4a4a" />
+            <GuestBookForm surface="light" weddingId={wedding.id} primaryColor="#1a1a1a" accentColor="#4a4a4a" />
           </motion.div>
 
           {guestBookEntries.length > 0 && (
