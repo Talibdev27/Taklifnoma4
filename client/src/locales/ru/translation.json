@@ -1871,5 +1871,9 @@
   "wedding.noPhotosYet": "Фотографий пока нет",
   "wedding.venueAddress": "Адрес места проведения",
   "rsvp.pleaseSelectStatus": "Пожалуйста, выберите ответ",
-  "rsvp.selectStatusDescription": "Сообщите нам, сможете ли вы прийти."
+  "rsvp.selectStatusDescription": "Сообщите нам, сможете ли вы прийти.",
+  "templates.epic": "Epic",
+  "templates.epicDesc": "Смелый кинематографичный дизайн с эффектными визуальными элементами.",
+  "templates.flower": "Gul",
+  "templates.flowerDesc": "Романтичный цветочный дизайн с нежными декоративными цветами."
 }

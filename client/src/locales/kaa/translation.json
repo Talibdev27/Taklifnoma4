@@ -1871,5 +1871,9 @@
   "wedding.noPhotosYet": "Ҳәзирге фотолар жоқ",
   "wedding.venueAddress": "Орын мәкан-жайы",
   "rsvp.pleaseSelectStatus": "Жуўабыңызды таңлаң",
-  "rsvp.selectStatusDescription": "Келе алатуғыныңызды хабарлаң."
+  "rsvp.selectStatusDescription": "Келе алатуғыныңызды хабарлаң.",
+  "templates.epic": "Epic",
+  "templates.epicDesc": "Батыл, кинематографиялық дизайн — тәсирли һәм салтанатлы көринис.",
+  "templates.flower": "Gul",
+  "templates.flowerDesc": "Романтикалық гүлли дизайн — нәзик һәм безекли гүллер менен."
 }

@@ -1871,5 +1871,9 @@
   "wedding.noPhotosYet": "Hali rasmlar yo'q",
   "wedding.venueAddress": "Joylashuv manzili",
   "rsvp.pleaseSelectStatus": "Iltimos, javobingizni tanlang",
-  "rsvp.selectStatusDescription": "Iltimos, kela olishingizni bildiring."
+  "rsvp.selectStatusDescription": "Iltimos, kela olishingizni bildiring.",
+  "templates.epic": "Epic",
+  "templates.epicDesc": "Dadil, kinematografik dizayn — ta'sirchan va salobatli ko'rinish.",
+  "templates.flower": "Gul",
+  "templates.flowerDesc": "Romantik gulli dizayn — nozik va bezakli gullar bilan."
 }

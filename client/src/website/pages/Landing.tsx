@@ -80,6 +80,16 @@ export default function Landing() {
       descriptionKey: 'templates.modernDesc',
     },
     {
+      nameKey: 'templates.epic',
+      image: '/luxury-wedding-venue-garden-elegant.jpg',
+      descriptionKey: 'templates.epicDesc',
+    },
+    {
+      nameKey: 'templates.flower',
+      image: '/elegant-venue-garden-wedding-hall.jpg',
+      descriptionKey: 'templates.flowerDesc',
+    },
+    {
       nameKey: 'templates.velvet',
       image: '/new2.jpg',
       descriptionKey: 'templates.velvetDesc',
