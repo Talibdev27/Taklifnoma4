@@ -97,8 +97,13 @@ export function Customer1Template({ wedding }: Customer1TemplateProps) {
         body: JSON.stringify({
           weddingId: wedding.id,
           name: rsvpName,
-          rsvpStatus: rsvpAttending === 'yes' ? 'confirmed' : rsvpAttending === 'no' ? 'declined' : 'pending',
-          additionalGuests: parseInt(rsvpGuests) || 0,
+          // 'with-partner' is an attending choice — it must record as confirmed
+          // (with plusOne), not fall through to 'pending' and lose the RSVP.
+          rsvpStatus: rsvpAttending === 'no' ? 'declined'
+            : (rsvpAttending === 'yes' || rsvpAttending === 'with-partner') ? 'confirmed'
+            : 'pending',
+          plusOne: rsvpAttending === 'with-partner',
+          additionalGuests: rsvpGuests === '5-6' ? 6 : rsvpGuests === '3-4' ? 4 : rsvpGuests === '1-2' ? 2 : 0,
         }),
       });
 

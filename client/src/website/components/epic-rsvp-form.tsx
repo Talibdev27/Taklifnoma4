@@ -24,6 +24,9 @@ import { Search, User, CheckCircle } from 'lucide-react';
 import type { Wedding, Guest } from '@shared/schema';
 
 const rsvpFormSchema = insertGuestSchema.extend({
+  // The base schema allows an empty string for the not-null name column, which
+  // lets a guest submit a blank RSVP and create a junk guest row. Require a name.
+  name: z.string().trim().min(1, 'Name is required'),
   email: z.string().email().optional().or(z.literal('')),
 });
 

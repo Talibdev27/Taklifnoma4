@@ -40,7 +40,7 @@ interface Anime1TemplateProps {
   guestBookEntries: any[];
 }
 
-export function Anime1Template({ wedding, guests, photos, guestBookEntries }: Anime1TemplateProps) {
+export function Anime1Template({ wedding, guests, photos, guestBookEntries = [] }: Anime1TemplateProps) {
   const { t, i18n } = useTranslation();
   const [currentLanguage, setCurrentLanguage] = useState(wedding.defaultLanguage || 'en');
   const [showRSVP, setShowRSVP] = useState(false);
