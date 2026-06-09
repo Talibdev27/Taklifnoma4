@@ -1885,5 +1885,15 @@
   "pearl.chapter3": "Chapter 03",
   "pearl.chapter4": "Chapter 04",
   "pearl.countingDown": "Counting Down",
-  "pearl.footerLine": "— Pearl Edition · Volume I —"
+  "pearl.footerLine": "— Pearl Edition · Volume I —",
+  "music.clickToStart": "Click to start background music for this wedding",
+  "music.startMusic": "Start Music",
+  "music.pauseMusic": "Pause music",
+  "music.playMusic": "Play music",
+  "music.volume": "Volume",
+  "music.playing": "Playing",
+  "music.paused": "Paused",
+  "carousel.imageCarousel": "Image carousel",
+  "carousel.previousSlide": "Previous slide",
+  "carousel.nextSlide": "Next slide"
 }

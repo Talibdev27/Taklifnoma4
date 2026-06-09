@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Play, Pause, Volume2, VolumeX, Music, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -27,6 +28,7 @@ export function BackgroundMusicPlayer({
   triggerPlay = false,
   theme,
 }: BackgroundMusicPlayerProps) {
+  const { t } = useTranslation();
   const accent = theme?.primary ?? '#f59e0b';        // amber-500
   const accentDark = theme?.accent ?? '#d97706';     // amber-600
   const iconColor = theme?.iconColor ?? '#ffffff';
@@ -339,10 +341,10 @@ export function BackgroundMusicPlayer({
         <div className="absolute bottom-16 right-0 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-4 min-w-[250px]">
           <div className="flex items-center gap-2 mb-3">
             <AlertCircle className="w-4 h-4" style={{ color: accent }} />
-            <span className="text-sm font-medium text-gray-700">Background Music</span>
+            <span className="text-sm font-medium text-gray-700">{t('music.backgroundMusic')}</span>
           </div>
           <p className="text-xs text-gray-600 mb-3">
-            Click to start background music for this wedding
+            {t('music.clickToStart')}
           </p>
           <Button
             onClick={handleStartMusic}
@@ -355,7 +357,7 @@ export function BackgroundMusicPlayer({
             }}
           >
             <Play className="w-3 h-3 mr-1" />
-            Start Music
+            {t('music.startMusic')}
           </Button>
         </div>
       )}
@@ -373,7 +375,7 @@ export function BackgroundMusicPlayer({
                 : 'hover:bg-gray-100'
               }`}
             disabled={isLoading || hasError}
-            title={hasError ? errorMessage : (isPlaying ? 'Pause music' : 'Play music')}
+            title={hasError ? errorMessage : (isPlaying ? t('music.pauseMusic') : t('music.playMusic'))}
           >
             {hasError ? (
               <div className="w-4 h-4 text-red-500" title={errorMessage}>⚠️</div>
@@ -454,10 +456,10 @@ export function BackgroundMusicPlayer({
         onMouseEnter={() => setShowControls(true)}
         onMouseLeave={() => setShowControls(false)}
       >
-        <div className="text-xs text-gray-600 mb-2">Background Music</div>
+        <div className="text-xs text-gray-600 mb-2">{t('music.backgroundMusic')}</div>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500">Volume</span>
+            <span className="text-xs text-gray-500">{t('music.volume')}</span>
             <span className="text-xs text-gray-500">{Math.round((isMuted ? 0 : volume) * 100)}%</span>
           </div>
           <input
@@ -470,7 +472,7 @@ export function BackgroundMusicPlayer({
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           />
           <div className="text-xs text-gray-400">
-            {isPlaying ? 'Playing' : 'Paused'}
+            {isPlaying ? t('music.playing') : t('music.paused')}
           </div>
         </div>
       </div>

@@ -1885,5 +1885,15 @@
   "pearl.chapter3": "03-бап",
   "pearl.chapter4": "04-бап",
   "pearl.countingDown": "Кери санақ",
-  "pearl.footerLine": "— Pearl басылымы · I том —"
+  "pearl.footerLine": "— Pearl басылымы · I том —",
+  "music.clickToStart": "Фон музыкасын қосыў ушын басың",
+  "music.startMusic": "Музыканы қосыў",
+  "music.pauseMusic": "Музыканы тоқтатыў",
+  "music.playMusic": "Музыканы ойнатыў",
+  "music.volume": "Даўыс дәрежеси",
+  "music.playing": "Ойнап тур",
+  "music.paused": "Тоқтатылды",
+  "carousel.imageCarousel": "Сүўретлер каруseli",
+  "carousel.previousSlide": "Алдынғы слайд",
+  "carousel.nextSlide": "Кейинги слайд"
 }

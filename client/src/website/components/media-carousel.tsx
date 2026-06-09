@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export interface MediaCarouselSlide {
@@ -59,6 +60,7 @@ export function MediaCarousel({
   theme,
   bleed = false,
 }: MediaCarouselProps) {
+  const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -164,7 +166,7 @@ export function MediaCarousel({
       tabIndex={0}
       role="region"
       aria-roledescription="carousel"
-      aria-label="Image carousel"
+      aria-label={t('carousel.imageCarousel')}
       className={`relative overflow-hidden focus:outline-none ${bleed ? '' : ''} ${aspectClass} ${className}`}
       onMouseEnter={pauseOnHover ? () => setIsPaused(true) : undefined}
       onMouseLeave={pauseOnHover ? () => setIsPaused(false) : undefined}
@@ -226,7 +228,7 @@ export function MediaCarousel({
             onClick={prev}
             className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 backdrop-blur-md z-10 opacity-80 hover:opacity-100"
             style={{ background: surface, color: iconColor }}
-            aria-label="Previous slide"
+            aria-label={t('carousel.previousSlide')}
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -235,7 +237,7 @@ export function MediaCarousel({
             onClick={next}
             className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 backdrop-blur-md z-10 opacity-80 hover:opacity-100"
             style={{ background: surface, color: iconColor }}
-            aria-label="Next slide"
+            aria-label={t('carousel.nextSlide')}
           >
             <ChevronRight className="w-5 h-5" />
           </button>

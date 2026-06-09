@@ -1885,5 +1885,15 @@
   "pearl.chapter3": "Глава 03",
   "pearl.chapter4": "Глава 04",
   "pearl.countingDown": "Обратный отсчёт",
-  "pearl.footerLine": "— Выпуск Pearl · Том I —"
+  "pearl.footerLine": "— Выпуск Pearl · Том I —",
+  "music.clickToStart": "Нажмите, чтобы включить фоновую музыку",
+  "music.startMusic": "Включить музыку",
+  "music.pauseMusic": "Пауза",
+  "music.playMusic": "Воспроизвести музыку",
+  "music.volume": "Громкость",
+  "music.playing": "Воспроизводится",
+  "music.paused": "Пауза",
+  "carousel.imageCarousel": "Карусель изображений",
+  "carousel.previousSlide": "Предыдущий слайд",
+  "carousel.nextSlide": "Следующий слайд"
 }

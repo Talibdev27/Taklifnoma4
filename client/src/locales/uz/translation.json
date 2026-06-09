@@ -1885,5 +1885,15 @@
   "pearl.chapter3": "03-bob",
   "pearl.chapter4": "04-bob",
   "pearl.countingDown": "Vaqt sanog'i",
-  "pearl.footerLine": "— Pearl nashri · 1-son —"
+  "pearl.footerLine": "— Pearl nashri · 1-son —",
+  "music.clickToStart": "Fon musiqasini yoqish uchun bosing",
+  "music.startMusic": "Musiqani boshlash",
+  "music.pauseMusic": "Musiqani to'xtatish",
+  "music.playMusic": "Musiqani ijro etish",
+  "music.volume": "Ovoz balandligi",
+  "music.playing": "Ijro etilmoqda",
+  "music.paused": "To'xtatildi",
+  "carousel.imageCarousel": "Rasmlar karuseli",
+  "carousel.previousSlide": "Oldingi slayd",
+  "carousel.nextSlide": "Keyingi slayd"
 }

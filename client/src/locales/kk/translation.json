@@ -1885,5 +1885,15 @@
   "pearl.chapter3": "03-тарау",
   "pearl.chapter4": "04-тарау",
   "pearl.countingDown": "Кері санақ",
-  "pearl.footerLine": "— Pearl басылымы · I том —"
+  "pearl.footerLine": "— Pearl басылымы · I том —",
+  "music.clickToStart": "Фондық музыканы қосу үшін басыңыз",
+  "music.startMusic": "Музыканы қосу",
+  "music.pauseMusic": "Музыканы тоқтату",
+  "music.playMusic": "Музыканы ойнату",
+  "music.volume": "Дыбыс деңгейі",
+  "music.playing": "Ойнап тұр",
+  "music.paused": "Тоқтатылды",
+  "carousel.imageCarousel": "Суреттер каруселі",
+  "carousel.previousSlide": "Алдыңғы слайд",
+  "carousel.nextSlide": "Келесі слайд"
 }
