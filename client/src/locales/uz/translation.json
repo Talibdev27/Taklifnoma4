@@ -1875,5 +1875,15 @@
   "templates.epic": "Epic",
   "templates.epicDesc": "Dadil, kinematografik dizayn — ta'sirchan va salobatli ko'rinish.",
   "templates.flower": "Gul",
-  "templates.flowerDesc": "Romantik gulli dizayn — nozik va bezakli gullar bilan."
+  "templates.flowerDesc": "Romantik gulli dizayn — nozik va bezakli gullar bilan.",
+  "aurora.discover": "Ko'rish",
+  "pearl.volumeIssue": "1-son · To'y nashri",
+  "pearl.edition": "Pearl nashri",
+  "pearl.continueReading": "Davom etish",
+  "pearl.chapter1": "01-bob",
+  "pearl.chapter2": "02-bob",
+  "pearl.chapter3": "03-bob",
+  "pearl.chapter4": "04-bob",
+  "pearl.countingDown": "Vaqt sanog'i",
+  "pearl.footerLine": "— Pearl nashri · 1-son —"
 }

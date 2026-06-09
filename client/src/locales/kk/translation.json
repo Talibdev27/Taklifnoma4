@@ -1875,5 +1875,15 @@
   "templates.epic": "Epic",
   "templates.epicDesc": "Батыл, кинематографиялық дизайн — әсерлі әрі салтанатты көрініс.",
   "templates.flower": "Gul",
-  "templates.flowerDesc": "Романтикалық гүлді дизайн — нәзік әрі әшекейлі гүлдермен."
+  "templates.flowerDesc": "Романтикалық гүлді дизайн — нәзік әрі әшекейлі гүлдермен.",
+  "aurora.discover": "Қарау",
+  "pearl.volumeIssue": "I том · Үйлену саны",
+  "pearl.edition": "Pearl басылымы",
+  "pearl.continueReading": "Жалғастыру",
+  "pearl.chapter1": "01-тарау",
+  "pearl.chapter2": "02-тарау",
+  "pearl.chapter3": "03-тарау",
+  "pearl.chapter4": "04-тарау",
+  "pearl.countingDown": "Кері санақ",
+  "pearl.footerLine": "— Pearl басылымы · I том —"
 }

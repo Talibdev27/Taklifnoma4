@@ -1875,5 +1875,15 @@
   "templates.epic": "Epic",
   "templates.epicDesc": "Смелый кинематографичный дизайн с эффектными визуальными элементами.",
   "templates.flower": "Gul",
-  "templates.flowerDesc": "Романтичный цветочный дизайн с нежными декоративными цветами."
+  "templates.flowerDesc": "Романтичный цветочный дизайн с нежными декоративными цветами.",
+  "aurora.discover": "Смотреть",
+  "pearl.volumeIssue": "Том I · Свадебный выпуск",
+  "pearl.edition": "Выпуск Pearl",
+  "pearl.continueReading": "Читать далее",
+  "pearl.chapter1": "Глава 01",
+  "pearl.chapter2": "Глава 02",
+  "pearl.chapter3": "Глава 03",
+  "pearl.chapter4": "Глава 04",
+  "pearl.countingDown": "Обратный отсчёт",
+  "pearl.footerLine": "— Выпуск Pearl · Том I —"
 }

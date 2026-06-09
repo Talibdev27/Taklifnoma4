@@ -402,9 +402,9 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
       <section id="home" className="relative min-h-screen flex flex-col px-6 sm:px-12 pt-24 pb-12 z-10">
         {/* Magazine-style header strip */}
         <div className="hidden sm:flex justify-between items-center text-[10px] uppercase tracking-[0.4em] text-[#1a1a1a]/55 mb-12 border-b border-[#1a1a1a]/15 pb-4">
-          <span>Volume I &nbsp;·&nbsp; The Wedding Issue</span>
+          <span>{t('pearl.volumeIssue')}</span>
           <span>{dateParts ? `${dateParts.day}.${dateParts.month}.${dateParts.year}` : ''}</span>
-          <span>Pearl Edition</span>
+          <span>{t('pearl.edition')}</span>
         </div>
 
         {/* Asymmetric grid */}
@@ -528,7 +528,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
           onClick={() => scrollTo('details')}
           className="hidden sm:flex absolute bottom-6 left-1/2 -translate-x-1/2 flex-col items-center gap-1.5 text-[#1a1a1a]/50 hover:text-[#1a1a1a] transition-colors"
         >
-          <span className="text-[10px] uppercase tracking-[0.45em]">Continue Reading</span>
+          <span className="text-[10px] uppercase tracking-[0.45em]">{t('pearl.continueReading')}</span>
           <ArrowDown className="w-4 h-4 animate-bounce" />
         </motion.button>
       </section>
@@ -559,7 +559,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
               variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
               className="sm:col-span-3"
             >
-              <p className="text-[10px] uppercase tracking-[0.5em] text-[#1a1a1a]/55 mb-2">Chapter 01</p>
+              <p className="text-[10px] uppercase tracking-[0.5em] text-[#1a1a1a]/55 mb-2">{t('pearl.chapter1')}</p>
               <h2 className="text-3xl sm:text-4xl leading-tight"
                   style={{ fontFamily: '"Playfair Display", serif', fontWeight: 500, fontStyle: 'italic' }}>
                 {t('wedding.dearGuests')}
@@ -610,7 +610,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
             variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <p className="text-[10px] uppercase tracking-[0.55em] text-[#f8f5f0]/55 mb-2">Counting Down</p>
+            <p className="text-[10px] uppercase tracking-[0.55em] text-[#f8f5f0]/55 mb-2">{t('pearl.countingDown')}</p>
             <h3 className="text-3xl sm:text-4xl"
                 style={{ fontFamily: '"Playfair Display", serif', fontWeight: 500, fontStyle: 'italic' }}>
               {t('countdown.timeRemaining')}
@@ -652,7 +652,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
             variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="text-center mb-14"
           >
-            <p className="text-[10px] uppercase tracking-[0.55em] text-[#1a1a1a]/55 mb-3">Chapter 02</p>
+            <p className="text-[10px] uppercase tracking-[0.55em] text-[#1a1a1a]/55 mb-3">{t('pearl.chapter2')}</p>
             <h2 className="text-4xl sm:text-5xl"
                 style={{ fontFamily: '"Playfair Display", serif', fontWeight: 500, fontStyle: 'italic' }}>
               {t('details.when')} &amp; {t('details.where')}
@@ -756,7 +756,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
       <section id="rsvp" className="relative z-10 py-20 sm:py-28 px-6 sm:px-12">
         <div className="max-w-2xl mx-auto">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
-            <p className="text-[10px] uppercase tracking-[0.55em] text-[#1a1a1a]/55 mb-3">Chapter 03</p>
+            <p className="text-[10px] uppercase tracking-[0.55em] text-[#1a1a1a]/55 mb-3">{t('pearl.chapter3')}</p>
             <h2 className="text-4xl sm:text-5xl"
                 style={{ fontFamily: '"Playfair Display", serif', fontStyle: 'italic', fontWeight: 500 }}>
               {t('rsvp.title')}
@@ -776,7 +776,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
       <section id="guestbook" className="relative z-10 py-20 sm:py-28 px-6 sm:px-12 bg-[#f0e8df]">
         <div className="max-w-3xl mx-auto">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
-            <p className="text-[10px] uppercase tracking-[0.55em] text-[#1a1a1a]/55 mb-3">Chapter 04</p>
+            <p className="text-[10px] uppercase tracking-[0.55em] text-[#1a1a1a]/55 mb-3">{t('pearl.chapter4')}</p>
             <h2 className="text-4xl sm:text-5xl"
                 style={{ fontFamily: '"Playfair Display", serif', fontStyle: 'italic', fontWeight: 500 }}>
               {t('guestbook.title')}
@@ -820,7 +820,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
           <div className="hair-line w-32 mx-auto opacity-50 mb-5" style={{ background: 'linear-gradient(90deg, transparent, #f8f5f0 50%, transparent)' }} />
           <p className="text-[10px] uppercase tracking-[0.5em] text-[#f8f5f0]/55">{t('footer.withLove')}</p>
           <p className="text-[10px] uppercase tracking-[0.5em] text-[#f8f5f0]/40 mt-2">{t('footer.thanksForCelebrating')}</p>
-          <p className="text-[10px] tracking-[0.4em] text-[#f8f5f0]/30 mt-8 uppercase">— Pearl Edition · Volume I —</p>
+          <p className="text-[10px] tracking-[0.4em] text-[#f8f5f0]/30 mt-8 uppercase">{t('pearl.footerLine')}</p>
         </div>
       </footer>
 

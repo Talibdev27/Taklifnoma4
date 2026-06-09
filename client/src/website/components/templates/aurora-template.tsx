@@ -624,7 +624,7 @@ export function AuroraTemplate({ wedding, photos = [] }: AuroraTemplateProps) {
             onClick={() => scrollTo('details')}
             className="mt-12 flex flex-col items-center gap-2 text-white/55 hover:text-white transition-colors"
           >
-            <span className="text-[10px] uppercase tracking-[0.4em]">Discover</span>
+            <span className="text-[10px] uppercase tracking-[0.4em]">{t('aurora.discover')}</span>
             <ChevronDown className="w-5 h-5 animate-bounce" />
           </motion.button>
         </div>

@@ -1875,5 +1875,15 @@
   "templates.epic": "Epic",
   "templates.epicDesc": "A bold, cinematic design with dramatic visuals and a grand feel.",
   "templates.flower": "Gul",
-  "templates.flowerDesc": "A romantic floral design with soft, decorative blooms."
+  "templates.flowerDesc": "A romantic floral design with soft, decorative blooms.",
+  "aurora.discover": "Discover",
+  "pearl.volumeIssue": "Volume I · The Wedding Issue",
+  "pearl.edition": "Pearl Edition",
+  "pearl.continueReading": "Continue Reading",
+  "pearl.chapter1": "Chapter 01",
+  "pearl.chapter2": "Chapter 02",
+  "pearl.chapter3": "Chapter 03",
+  "pearl.chapter4": "Chapter 04",
+  "pearl.countingDown": "Counting Down",
+  "pearl.footerLine": "— Pearl Edition · Volume I —"
 }

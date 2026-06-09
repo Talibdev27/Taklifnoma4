@@ -100,7 +100,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
   }, [wedding?.weddingDate, wedding?.weddingTime, wedding?.timezone]);
 
   if (!wedding) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center">{t('common.loading')}</div>;
   }
 
   const scrollToSection = (sectionId: string) => {
