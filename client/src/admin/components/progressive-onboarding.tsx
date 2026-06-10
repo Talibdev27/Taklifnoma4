@@ -265,6 +265,18 @@ export function ProgressiveOnboarding() {
       image: '/modern_wedding_im.jpg',
     },
     {
+      id: 'epic',
+      name: t('templates.epic'),
+      description: t('templates.epicDesc'),
+      image: '/luxury-wedding-venue-garden-elegant.jpg',
+    },
+    {
+      id: 'flower',
+      name: t('templates.flower'),
+      description: t('templates.flowerDesc'),
+      image: '/elegant-venue-garden-wedding-hall.jpg',
+    },
+    {
       id: 'velvet',
       name: t('templates.velvet'),
       description: t('templates.velvetDesc'),

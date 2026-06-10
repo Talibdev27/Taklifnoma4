@@ -181,7 +181,7 @@ export function SidebarLayout({
       {/* Bottom helper / version */}
       <div className="px-5 py-4 border-t border-slate-200 shrink-0">
         <a
-          href="https://t.me/takliflink"
+          href="https://t.me/taklif_link_admin"
           target="_blank"
           rel="noreferrer"
           className="flex items-center gap-2 text-xs text-slate-500 hover:text-slate-700 transition-colors"

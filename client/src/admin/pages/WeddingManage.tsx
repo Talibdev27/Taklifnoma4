@@ -900,6 +900,8 @@ export default function WeddingManage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="modern">{t('manage.templateModernLabel', 'Azamat (Modern) ⭐')}</SelectItem>
+                      <SelectItem value="epic">{t('templates.epic', 'Epic')}</SelectItem>
+                      <SelectItem value="flower">{t('templates.flower', 'Gul')}</SelectItem>
                       <SelectItem value="velvet">{t('templates.velvet', 'Velvet')}</SelectItem>
                       <SelectItem value="pearl">{t('templates.pearl', 'Pearl')}</SelectItem>
                       <SelectItem value="aurora">{t('templates.aurora', 'Aurora')}</SelectItem>
@@ -908,12 +910,6 @@ export default function WeddingManage() {
                          render an empty value. New users can't switch *into*
                          these from this dropdown; we want them to migrate to
                          one of the four supported templates above. */}
-                      {value('template') === 'epic' && (
-                        <SelectItem value="epic">{t('manage.templateEpicLegacy', 'Epic (legacy)')}</SelectItem>
-                      )}
-                      {value('template') === 'flower' && (
-                        <SelectItem value="flower">{t('manage.templateFlowerLegacy', 'Gul (legacy)')}</SelectItem>
-                      )}
                       {value('template') === 'gardenRomance' && (
                         <SelectItem value="gardenRomance">{t('manage.templateGardenRomanceLegacy', 'Garden Romance (legacy)')}</SelectItem>
                       )}

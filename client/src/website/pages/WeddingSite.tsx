@@ -145,7 +145,7 @@ export default function WeddingSite() {
               <div className="space-y-3">
                 {/* Phone */}
                 <a 
-                  href="tel:+998901234567" 
+                  href="tel:+998935833222"
                   className="flex items-center gap-3 p-4 bg-white rounded-xl hover:shadow-md transition-shadow border border-taklif-gold/20 hover:border-taklif-gold"
                 >
                   <div className="w-10 h-10 rounded-full bg-taklif-gold/20 flex items-center justify-center flex-shrink-0">
@@ -155,14 +155,14 @@ export default function WeddingSite() {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-taklif-navy">{t('wedding.callUs')}</p>
-                    <p className="text-xs text-taklif-navy/60">+998 90 123 45 67</p>
+                    <p className="text-xs text-taklif-navy/60">+998 93 583 32 22</p>
                   </div>
                   <ExternalLink className="w-4 h-4 text-taklif-gold" />
                 </a>
 
                 {/* Telegram */}
                 <a 
-                  href="https://t.me/takliflink" 
+                  href="https://t.me/taklif_link_admin"
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-4 bg-white rounded-xl hover:shadow-md transition-shadow border border-taklif-gold/20 hover:border-taklif-gold"
@@ -172,14 +172,14 @@ export default function WeddingSite() {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-taklif-navy">{t('wedding.telegramUs')}</p>
-                    <p className="text-xs text-taklif-navy/60">@takliflink</p>
+                    <p className="text-xs text-taklif-navy/60">@taklif_link_admin</p>
                   </div>
                   <ExternalLink className="w-4 h-4 text-taklif-gold" />
                 </a>
 
                 {/* Instagram */}
                 <a 
-                  href="https://instagram.com/takliflink" 
+                  href="https://instagram.com/taklif_link"
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-4 bg-white rounded-xl hover:shadow-md transition-shadow border border-taklif-gold/20 hover:border-taklif-gold"
@@ -191,7 +191,7 @@ export default function WeddingSite() {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-taklif-navy">{t('wedding.instagramUs')}</p>
-                    <p className="text-xs text-taklif-navy/60">@takliflink</p>
+                    <p className="text-xs text-taklif-navy/60">@taklif_link</p>
                   </div>
                   <ExternalLink className="w-4 h-4 text-taklif-gold" />
                 </a>

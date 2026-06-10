@@ -53,6 +53,18 @@ const templateOptions = [
     image: "/modern_wedding_im.jpg",
   },
   {
+    id: "epic",
+    nameKey: "templates.epic",
+    descriptionKey: "templates.epicDesc",
+    image: "/luxury-wedding-venue-garden-elegant.jpg",
+  },
+  {
+    id: "flower",
+    nameKey: "templates.flower",
+    descriptionKey: "templates.flowerDesc",
+    image: "/elegant-venue-garden-wedding-hall.jpg",
+  },
+  {
     id: "velvet",
     nameKey: "templates.velvet",
     descriptionKey: "templates.velvetDesc",

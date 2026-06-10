@@ -312,7 +312,7 @@ export default function UserDashboard() {
             }
             secondaryAction={
               <a
-                href="https://t.me/takliflink"
+                href="https://t.me/taklif_link_admin"
                 target="_blank"
                 rel="noreferrer"
               >
