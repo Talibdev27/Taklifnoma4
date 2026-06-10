@@ -73,36 +73,43 @@ export default function Landing() {
   // classicTradition / bohoChic ids still render correctly for any
   // existing weddings (renderers + tier list keep them) but we've
   // retired them from the public picker.
+  // Each card's "Preview" opens a real, approved demo wedding for that template.
   const templates = [
     {
       nameKey: 'templates.modern',
       image: '/modern_wedding_im.jpg',
       descriptionKey: 'templates.modernDesc',
+      demoUrl: '/wedding/mqwXL2xgtB', // Azamat — SARVAR & SURAYYO
     },
     {
       nameKey: 'templates.epic',
       image: '/luxury-wedding-venue-garden-elegant.jpg',
       descriptionKey: 'templates.epicDesc',
+      demoUrl: '/wedding/vyfEGQzyHi', // Epic — TEMUR & LOLA
     },
     {
       nameKey: 'templates.flower',
       image: '/elegant-venue-garden-wedding-hall.jpg',
       descriptionKey: 'templates.flowerDesc',
+      demoUrl: '/wedding/gUUvUtebKB', // Gul/Flower — FARHOD & SHIRIN
     },
     {
       nameKey: 'templates.velvet',
       image: '/new2.jpg',
       descriptionKey: 'templates.velvetDesc',
+      demoUrl: '/wedding/Nw73fncVo2', // Velvet — OYBEK & NIGORA
     },
     {
       nameKey: 'templates.pearl',
       image: '/new3.jpg',
       descriptionKey: 'templates.pearlDesc',
+      demoUrl: '/wedding/HSJC7d3FUE', // Pearl — MADINA & BEKZOD
     },
     {
       nameKey: 'templates.aurora',
       image: '/new4.jpg',
       descriptionKey: 'templates.auroraDesc',
+      demoUrl: '/wedding/rmhFfjtPuT', // Aurora — ALI & AZIZA
     },
   ];
 
@@ -443,7 +450,7 @@ export default function Landing() {
                       <p className="text-sm text-white/90 mb-4 line-clamp-2">
                         {t(template.descriptionKey)}
                       </p>
-                      <Link href={`/demo?template=${templateId}`}>
+                      <Link href={template.demoUrl}>
                         <Button className="w-full bg-white/90 hover:bg-white text-taklif-navy font-semibold rounded-lg backdrop-blur-sm transition-all duration-300 flex items-center justify-center gap-2 group">
                           <Sparkles className="h-4 w-4 group-hover:rotate-12 transition-transform" />
                           {t('templates.previewTemplate')}
@@ -554,7 +561,7 @@ export default function Landing() {
                       <p className="text-sm text-white/90 mb-4 line-clamp-2">
                         {t(template.descriptionKey)}
                       </p>
-                      <Link href={`/demo?template=${templateId}`}>
+                      <Link href={template.demoUrl}>
                         <Button className="w-full bg-white/90 hover:bg-white text-taklif-navy font-semibold rounded-lg backdrop-blur-sm transition-all duration-300 flex items-center justify-center gap-2 group">
                           <Sparkles className="h-4 w-4 group-hover:rotate-12 transition-transform" />
                           {t('templates.previewTemplate')}
