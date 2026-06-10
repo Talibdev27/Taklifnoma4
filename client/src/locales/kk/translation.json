@@ -1895,5 +1895,6 @@
   "music.paused": "Тоқтатылды",
   "carousel.imageCarousel": "Суреттер каруселі",
   "carousel.previousSlide": "Алдыңғы слайд",
-  "carousel.nextSlide": "Келесі слайд"
+  "carousel.nextSlide": "Келесі слайд",
+  "manage.linkHiddenUntilApproved": "Сайт сілтемесі әкімші мақұлдағаннан кейін осы жерде пайда болады."
 }

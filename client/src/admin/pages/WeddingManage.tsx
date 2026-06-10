@@ -620,8 +620,10 @@ export default function WeddingManage() {
                 }
               >
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                  <div className={`flex-1 min-w-0 px-3 py-2.5 rounded-md bg-slate-50 border border-slate-200 text-sm font-mono truncate ${wedding.isApproved ? 'text-slate-700' : 'text-slate-400'}`}>
-                    {window.location.origin}/wedding/{wedding.uniqueUrl}
+                  <div className={`flex-1 min-w-0 px-3 py-2.5 rounded-md bg-slate-50 border border-slate-200 text-sm truncate ${wedding.isApproved ? 'text-slate-700 font-mono' : 'text-slate-400 italic'}`}>
+                    {wedding.isApproved
+                      ? `${window.location.origin}/wedding/${wedding.uniqueUrl}`
+                      : t('manage.linkHiddenUntilApproved', 'Your site link will appear here once an admin approves it.')}
                   </div>
                   <div className="flex gap-2">
                     <Button

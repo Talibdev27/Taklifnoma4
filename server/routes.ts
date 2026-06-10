@@ -2047,22 +2047,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Wedding not found" });
       }
 
-      // Check if wedding is approved or if user is the owner or admin
+      // Approval gate. Admins may always view (to review for approval). The
+      // owner may fetch their own wedding for the management page, but must NOT
+      // be able to view the PUBLIC site (?view=public) until it is approved.
+      // Guests never see an unapproved site.
       const token = req.headers.authorization?.split(' ')[1];
-      let isOwnerOrAdmin = false;
+      let isAdmin = false;
+      let isOwner = false;
 
       if (token) {
         try {
           const decoded = jwt.verify(token, JWT_SECRET) as any;
-          isOwnerOrAdmin = decoded.isAdmin || decoded.userId === wedding.userId;
+          isAdmin = !!decoded.isAdmin;
+          isOwner = decoded.userId === wedding.userId;
         } catch (err) {
           // Invalid token, treat as guest
         }
       }
 
-      // If wedding is not approved and user is not owner/admin, return 403
-      if (!wedding.isApproved && !isOwnerOrAdmin) {
-        return res.status(403).json({ 
+      const isPublicView = req.query.view === 'public';
+      const canView = wedding.isApproved || isAdmin || (isOwner && !isPublicView);
+      if (!canView) {
+        return res.status(403).json({
           message: "This wedding website is pending admin approval. Please contact the administrator.",
           pendingApproval: true
         });

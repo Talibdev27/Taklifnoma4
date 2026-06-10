@@ -1895,5 +1895,6 @@
   "music.paused": "To'xtatildi",
   "carousel.imageCarousel": "Rasmlar karuseli",
   "carousel.previousSlide": "Oldingi slayd",
-  "carousel.nextSlide": "Keyingi slayd"
+  "carousel.nextSlide": "Keyingi slayd",
+  "manage.linkHiddenUntilApproved": "Sayt havolasi administrator tasdiqlagandan so'ng shu yerda paydo bo'ladi."
 }

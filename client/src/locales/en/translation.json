@@ -1895,5 +1895,6 @@
   "music.paused": "Paused",
   "carousel.imageCarousel": "Image carousel",
   "carousel.previousSlide": "Previous slide",
-  "carousel.nextSlide": "Next slide"
+  "carousel.nextSlide": "Next slide",
+  "manage.linkHiddenUntilApproved": "Your site link will appear here once an admin approves it."
 }

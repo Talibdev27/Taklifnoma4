@@ -64,15 +64,17 @@ export default function WeddingSite() {
   };
 
   const { data: wedding, isLoading, error } = useQuery<Wedding>({
-    queryKey: [`/api/weddings/url/${uniqueUrl}`],
+    queryKey: [`/api/weddings/url/${uniqueUrl}?view=public`],
     queryFn: async () => {
-      const token = localStorage.getItem('token');
+      // Send the user token if present; also the admin token so admins can
+      // preview a not-yet-approved site. Owners are still blocked on ?view=public.
+      const token = localStorage.getItem('token') || localStorage.getItem('adminToken');
       const headers: HeadersInit = {};
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch(`/api/weddings/url/${uniqueUrl}`, { headers });
+      const response = await fetch(`/api/weddings/url/${uniqueUrl}?view=public`, { headers });
       
       if (!response.ok) {
         const errorData = await response.json();
