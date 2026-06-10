@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { EpicRSVPForm } from '@/website/components/epic-rsvp-form';
+import { OrderInvitationCTA } from '@/website/components/order-invitation-cta';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
 import { MediaCarousel } from '@/website/components/media-carousel';
@@ -890,6 +891,7 @@ export function AuroraTemplate({ wedding, photos = [] }: AuroraTemplateProps) {
 
       {/* ════════════ FOOTER ════════════ */}
       <footer className="relative z-10 py-14 px-6 border-t border-white/10 text-center">
+        <OrderInvitationCTA accent="#c9b6e3" surface="dark" className="mb-12" />
         <div className="flex items-center justify-center gap-3 mb-5">
           <span className="h-px w-12" style={{ background: 'linear-gradient(90deg, transparent, #ffb6d2)' }} />
           <Sparkles className="w-4 h-4 text-[#c9b6e3]" />

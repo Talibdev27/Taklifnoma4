@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EpicRSVPForm } from '@/website/components/epic-rsvp-form';
+import { OrderInvitationCTA } from '@/website/components/order-invitation-cta';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { EnhancedSocialShare } from '@/website/components/enhanced-social-share';
 import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
@@ -877,6 +878,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
 
       {/* ════════════ FOOTER ════════════ */}
       <footer className="relative z-10 py-20 px-6 border-t border-white/[0.04] text-center pb-24 sm:pb-20">
+        <OrderInvitationCTA accent="#c9a96e" surface="dark" className="mb-12" />
         {/* @ts-ignore Framer Motion className typing issue */}
         <motion.p
           initial={{ opacity: 0 }}

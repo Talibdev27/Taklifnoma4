@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { EpicRSVPForm } from '@/website/components/epic-rsvp-form';
+import { OrderInvitationCTA } from '@/website/components/order-invitation-cta';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
 import { MediaCarousel } from '@/website/components/media-carousel';
@@ -813,6 +814,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
       {/* ════════════ FOOTER ════════════ */}
       <footer className="relative z-10 bg-[#1a1a1a] text-[#f8f5f0] py-16 px-6 sm:px-12">
         <div className="max-w-5xl mx-auto text-center">
+          <OrderInvitationCTA accent="#c9a96e" surface="dark" className="mb-12" />
           <p className="text-2xl sm:text-3xl mb-4"
              style={{ fontFamily: '"Playfair Display", serif', fontStyle: 'italic', fontWeight: 500 }}>
             {wedding.groom} <span className="opacity-50">&amp;</span> {wedding.bride}

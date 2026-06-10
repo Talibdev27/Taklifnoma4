@@ -613,7 +613,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             </p>
             <div className="flex justify-center space-x-4">
               <a 
-                href="https://t.me/link_taklif" 
+                href="https://t.me/taklif_link_admin" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="px-6 py-3 rounded-full transition-colors flex items-center space-x-2 text-white"

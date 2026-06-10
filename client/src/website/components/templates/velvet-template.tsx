@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { EpicRSVPForm } from '@/website/components/epic-rsvp-form';
+import { OrderInvitationCTA } from '@/website/components/order-invitation-cta';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
 import { MediaCarousel } from '@/website/components/media-carousel';
@@ -854,6 +855,7 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
 
       {/* ════════════ FOOTER ════════════ */}
       <footer className="relative z-10 py-14 px-6 border-t border-[#d4a87c]/15 text-center">
+        <OrderInvitationCTA accent="#d4a87c" surface="dark" className="mb-12" />
         <div className="gold-divider w-32 mx-auto mb-5">
           <span className="line" /><span className="ornament" /><span className="line" />
         </div>
