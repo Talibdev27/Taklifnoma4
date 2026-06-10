@@ -34,6 +34,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
   
   // Filter couple photos
   const couplePhotos = photos.filter((photo: any) => photo.photoType === 'couple');
+  const memoryPhotos = photos.filter((photo: any) => photo.photoType === 'memory');
 
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [activeNav, setActiveNav] = useState('home');
@@ -697,6 +698,35 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
                 <div className="h-px flex-1 bg-white/8" />
               </div>
             </motion.div>
+          </div>
+        </section>
+      )}
+
+      {/* ════════════ GALLERY ════════════ */}
+      {memoryPhotos.length > 0 && (
+        <section id="gallery" className="relative z-10 py-20 px-6">
+          <div className="max-w-4xl mx-auto">
+            {/* @ts-ignore Framer Motion className typing issue */}
+            <motion.div
+              variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="text-center mb-10"
+            >
+              <p className="text-[10px] uppercase tracking-[0.5em] text-[#c9a96e]/70 mb-3">{t('wedding.photos')}</p>
+              <h2 className="gold-gradient-text text-3xl font-extralight" style={{ fontFamily: '"Playfair Display", Georgia, serif' }}>
+                {t('wedding.ourJourney')}
+              </h2>
+            </motion.div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {memoryPhotos.map((photo: any, i: number) => (
+                <motion.div
+                  key={i}
+                  variants={fadeUp} custom={i % 3} initial="hidden" whileInView="visible" viewport={{ once: true }}
+                  className="aspect-square overflow-hidden rounded-2xl border border-[#c9a96e]/15"
+                >
+                  <img src={photo.url} alt={photo.caption || ''} loading="lazy" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
       )}

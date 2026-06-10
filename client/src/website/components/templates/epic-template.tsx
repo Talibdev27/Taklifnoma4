@@ -20,7 +20,7 @@ interface EpicTemplateProps {
 export function EpicTemplate({ wedding }: EpicTemplateProps) {
   const { t, i18n } = useTranslation();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  
+
   // Welcome overlay state
   const [showWelcomeOverlay, setShowWelcomeOverlay] = useState(false);
   const [triggerMusicPlay, setTriggerMusicPlay] = useState(false);
@@ -72,6 +72,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
     queryFn: () => fetch(`/api/photos/wedding/${wedding?.id}`).then(res => res.json()),
     enabled: !!wedding?.id,
   });
+  const memoryPhotos = photos.filter((p: any) => p.photoType === 'memory');
 
   const { data: guestBookEntries = [] } = useQuery<GuestBookEntry[]>({
     queryKey: ['/api/guest-book/wedding', wedding?.id],
@@ -350,6 +351,24 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
                   {wedding.story}
                 </p>
               </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Photo Gallery — couple's uploaded memory photos (hidden if none) */}
+      {memoryPhotos.length > 0 && (
+        <section className="py-12 sm:py-16 lg:py-20">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-light mb-6 sm:mb-8" style={{ color: primaryColor }}>
+              {t('wedding.photos')}
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 max-w-5xl mx-auto">
+              {memoryPhotos.map((photo: any, i: number) => (
+                <div key={i} className="aspect-square overflow-hidden rounded-2xl shadow-lg border" style={{ borderColor: `${primaryColor}20` }}>
+                  <img src={photo.url} alt={photo.caption || ''} loading="lazy" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                </div>
+              ))}
             </div>
           </div>
         </section>
