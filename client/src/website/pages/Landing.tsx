@@ -194,13 +194,13 @@ export default function Landing() {
               {/* Right Side Items */}
               <div className="flex items-center space-x-4">
                 {/* Contact Button */}
-                <a href="tel:+998935833222" className={`flex items-center gap-2 backdrop-blur-sm px-4 py-2 rounded-full transition-all border shadow-lg ${
+                <a href="tel:+998948777758" className={`flex items-center gap-2 backdrop-blur-sm px-4 py-2 rounded-full transition-all border shadow-lg ${
                   isScrolled
                     ? 'bg-gray-100 hover:bg-gray-200 text-taklif-navy border-gray-300'
                     : 'bg-white/15 hover:bg-white/25 text-white border-white/20'
                 }`}>
                   <Phone className="h-4 w-4 text-taklif-gold" />
-                  <span className="text-sm font-medium">+998 93 583 32 22</span>
+                  <span className="text-sm font-medium">+998 94 877 77 58</span>
                 </a>
 
                 {/* Language Toggle */}

@@ -16,6 +16,11 @@ import {
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
 
+/** Tasteful default shown in the Our Story carousel when a wedding has no
+ *  uploaded photos at all, so the section never renders empty. */
+const STORY_FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1000&q=80';
+
 interface PearlTemplateProps {
   wedding: Wedding;
   photos?: any[];
@@ -40,15 +45,16 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
     return list.filter((s) => (seen.has(s.url) ? false : (seen.add(s.url), true)));
   })();
 
+  /** Story carousel — memory photos first, then couple photos, then any hero
+   *  photos, then the saved couple photo URL, and finally a tasteful default,
+   *  so the Our Story section always shows imagery. */
   const storySlides = (() => {
     const list: { url: string; alt?: string }[] = [];
     memoryPhotos.forEach((p: any) => list.push({ url: p.url, alt: p.caption ?? '' }));
-    if (list.length === 0) {
-      couplePhotos.forEach((p: any) => list.push({ url: p.url, alt: p.caption ?? '' }));
-      if (list.length === 0 && wedding.couplePhotoUrl) {
-        list.push({ url: wedding.couplePhotoUrl, alt: '' });
-      }
-    }
+    if (list.length === 0) couplePhotos.forEach((p: any) => list.push({ url: p.url, alt: p.caption ?? '' }));
+    if (list.length === 0) heroDesignated.forEach((p: any) => list.push({ url: p.url, alt: p.caption ?? '' }));
+    if (list.length === 0 && wedding.couplePhotoUrl) list.push({ url: wedding.couplePhotoUrl, alt: '' });
+    if (list.length === 0) list.push({ url: STORY_FALLBACK_IMAGE, alt: '' });
     const seen = new Set<string>();
     return list.filter((s) => (seen.has(s.url) ? false : (seen.add(s.url), true)));
   })();
