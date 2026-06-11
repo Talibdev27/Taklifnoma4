@@ -45,15 +45,16 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
     return list.filter((s) => (seen.has(s.url) ? false : (seen.add(s.url), true)));
   })();
 
-  /** Story carousel — memory photos first, then couple photos, then any hero
-   *  photos, then the saved couple photo URL, and finally a tasteful default,
-   *  so the Our Story section always shows imagery. */
+  /** Story-section portrait — the couple's hero/couple photo. Memory photos get
+   *  their own "Our Memories" gallery below, so the story stays a portrait:
+   *  couple photo → hero photo → saved couple photo URL → any memory photo →
+   *  a tasteful default, so the section always shows imagery. */
   const storySlides = (() => {
     const list: { url: string; alt?: string }[] = [];
-    memoryPhotos.forEach((p: any) => list.push({ url: p.url, alt: p.caption ?? '' }));
-    if (list.length === 0) couplePhotos.forEach((p: any) => list.push({ url: p.url, alt: p.caption ?? '' }));
+    couplePhotos.forEach((p: any) => list.push({ url: p.url, alt: p.caption ?? '' }));
     if (list.length === 0) heroDesignated.forEach((p: any) => list.push({ url: p.url, alt: p.caption ?? '' }));
     if (list.length === 0 && wedding.couplePhotoUrl) list.push({ url: wedding.couplePhotoUrl, alt: '' });
+    if (list.length === 0) memoryPhotos.forEach((p: any) => list.push({ url: p.url, alt: p.caption ?? '' }));
     if (list.length === 0) list.push({ url: STORY_FALLBACK_IMAGE, alt: '' });
     const seen = new Set<string>();
     return list.filter((s) => (seen.has(s.url) ? false : (seen.add(s.url), true)));
@@ -651,6 +652,42 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
           </motion.div>
         </div>
       </section>
+
+      {/* ════════════ OUR MEMORIES — editorial plates ════════════ */}
+      {memoryPhotos.length > 0 && (
+        <section id="memories" className="relative z-10 py-20 sm:py-28 px-6 sm:px-12 pearl-grain">
+          <div className="max-w-5xl mx-auto">
+            <motion.div
+              variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="mb-10 sm:mb-14"
+            >
+              <p className="text-[10px] uppercase tracking-[0.55em] text-[#1a1a1a]/55 mb-4">
+                {t('wedding.photos') || 'Our Memories'}
+              </p>
+              <h3 className="text-3xl sm:text-5xl text-[#1a1a1a]"
+                  style={{ fontFamily: '"Playfair Display", serif', fontWeight: 500 }}>
+                {t('wedding.memoryPhotos') || 'Memory Gallery'}
+              </h3>
+            </motion.div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+              {memoryPhotos.map((photo: any, i: number) => (
+                <motion.div
+                  key={i}
+                  variants={fadeUp} custom={i % 3} initial="hidden" whileInView="visible" viewport={{ once: true }}
+                  className="aspect-[4/5] overflow-hidden bg-[#1a1a1a]/5 ring-1 ring-[#1a1a1a]/10"
+                >
+                  <img
+                    src={photo.url}
+                    alt={photo.caption || ''}
+                    loading="lazy"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ════════════ EVENT DETAILS — split layout ════════════ */}
       <section id="details" className="relative z-10 py-20 sm:py-28 px-6 sm:px-12">
