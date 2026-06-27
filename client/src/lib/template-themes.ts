@@ -38,6 +38,12 @@ export const TEMPLATE_THEMES: Record<string, TemplateTheme> = {
     iconColor: '#1a1530',
     glow: 'rgba(201,182,227,0.55)',
   },
+  imperial: {
+    primary: '#c9a96e',
+    accent: '#9c7b34',
+    iconColor: '#241a08',
+    glow: 'rgba(201,169,110,0.5)',
+  },
 
   // ── Other premium templates ────────────────────────────────────────────
   modern: {

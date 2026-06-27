@@ -111,6 +111,12 @@ export default function Landing() {
       descriptionKey: 'templates.auroraDesc',
       demoUrl: '/wedding/rmhFfjtPuT', // Aurora — ALI & AZIZA
     },
+    {
+      nameKey: 'templates.imperial',
+      image: 'https://images.pexels.com/photos/27865567/pexels-photo-27865567.jpeg?auto=compress&cs=tinysrgb&w=800',
+      descriptionKey: 'templates.imperialDesc',
+      demoUrl: '/demo?template=imperial', // Imperial — gold-on-ivory ceremonial
+    },
   ];
 
   const invitationComparisonItems = [

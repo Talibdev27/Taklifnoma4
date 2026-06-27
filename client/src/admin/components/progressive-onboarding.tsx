@@ -294,6 +294,12 @@ export function ProgressiveOnboarding() {
       description: t('templates.auroraDesc'),
       image: '/new4.jpg',
     },
+    {
+      id: 'imperial',
+      name: t('templates.imperial'),
+      description: t('templates.imperialDesc'),
+      image: 'https://images.pexels.com/photos/27865567/pexels-photo-27865567.jpeg?auto=compress&cs=tinysrgb&w=800',
+    },
   ];
 
   const features = [

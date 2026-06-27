@@ -82,6 +82,12 @@ const templateOptions = [
     descriptionKey: "templates.auroraDesc",
     image: "/new4.jpg",
   },
+  {
+    id: "imperial",
+    nameKey: "templates.imperial",
+    descriptionKey: "templates.imperialDesc",
+    image: "https://images.pexels.com/photos/27865567/pexels-photo-27865567.jpeg?auto=compress&cs=tinysrgb&w=800",
+  },
 ];
 
 export default function CreateWedding() {

@@ -10,6 +10,7 @@ export const TEMPLATE_REGISTRY = {
     { value: 'velvet', label: 'Velvet' },
     { value: 'pearl', label: 'Pearl' },
     { value: 'aurora', label: 'Aurora' },
+    { value: 'imperial', label: 'Imperial 👑' },
   ],
 };
 

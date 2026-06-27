@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;500;700&family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&family=My+Soul&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Namdhinggo:wght@400;500;600;700&display=swap');
+/* Imperial template — refined Roman caps + classic wedding script */
+@import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Cinzel:wght@400;500;600&family=Great+Vibes&display=swap');
+/* Imperial (Noir) — cinematic serif + sans + Arabic for the momento-style clone */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Amiri:ital@0;1&display=swap');
 
 @tailwind base;
 @tailwind components;
