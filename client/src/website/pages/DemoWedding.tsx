@@ -65,7 +65,7 @@ const IMPERIAL_DEMO = {
   weddingTime: '18:00',
   venue: 'Restaurant «Baxtiyor»',
   venueAddress: 'Toshkent Region, Qibray District, Olmazor Street, 72',
-  venueCoordinates: null,
+  venueCoordinates: { lat: 41.3486, lng: 69.392 },
   story: null,
   template: 'imperial',
   defaultLanguage: 'uz',

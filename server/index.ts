@@ -36,6 +36,8 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://replit.com"],
       connectSrc: ["'self'", "wss:", "ws:", "https:", "wss://*.replit.dev", "ws://*.replit.dev"],
       mediaSrc: ["'self'", "https://res.cloudinary.com"],
+      // Allow embedding Google Maps ("Embed a map" iframe) in invitations.
+      frameSrc: ["'self'", "https://www.google.com", "https://maps.google.com", "https://*.google.com"],
     },
   },
 }));

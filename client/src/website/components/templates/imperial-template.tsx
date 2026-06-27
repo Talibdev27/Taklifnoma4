@@ -9,7 +9,7 @@ import { EpicRSVPForm } from '@/website/components/epic-rsvp-form';
 import { OrderInvitationCTA } from '@/website/components/order-invitation-cta';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
-import { MapPin, Lock, ArrowRight, Heart, Navigation } from 'lucide-react';
+import { MapPin, Lock, ArrowRight, Heart } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
 
@@ -69,6 +69,67 @@ const IconRings = (p: any) => (<svg viewBox="0 0 24 24" {...p}><circle {...strok
 const IconCloche = (p: any) => (<svg viewBox="0 0 24 24" {...p}><path {...stroke} d="M3 17h18M4.5 17a7.5 7.5 0 0115 0M12 6.5V4.5M3 21h18" /></svg>);
 const IconSpark = (p: any) => (<svg viewBox="0 0 24 24" {...p}><path {...stroke} d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18" /><circle {...stroke} cx="12" cy="12" r="1.6" /></svg>);
 
+/* Slide-to-unlock control — drag the lock knob left→right to open the invitation. */
+function SlideToUnlock({ label, onUnlock }: { label: string; onUnlock: () => void }) {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const xRef = useRef(0);
+  const [x, setX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [done, setDone] = useState(false);
+  const KNOB = 56, PAD = 5;
+
+  const maxX = () => Math.max(0, (trackRef.current?.offsetWidth || 300) - KNOB - PAD * 2);
+  const setFromClientX = (clientX: number) => {
+    const rect = trackRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const nx = Math.max(0, Math.min(clientX - rect.left - PAD - KNOB / 2, maxX()));
+    xRef.current = nx; setX(nx);
+  };
+  const onDown = (e: React.PointerEvent) => {
+    if (done) return;
+    setDragging(true);
+    try { (e.target as Element).setPointerCapture?.(e.pointerId); } catch {}
+  };
+  const onMove = (e: React.PointerEvent) => { if (dragging) setFromClientX(e.clientX); };
+  const finish = () => {
+    if (!dragging) return;
+    setDragging(false);
+    if (xRef.current >= maxX() * 0.8) { xRef.current = maxX(); setX(maxX()); setDone(true); onUnlock(); }
+    else { xRef.current = 0; setX(0); }
+  };
+  const pct = maxX() ? x / maxX() : 0;
+
+  return (
+    <div
+      ref={trackRef}
+      className="imp-pulse relative w-[min(86vw,320px)] h-16 rounded-full select-none touch-none"
+      style={{ background: 'rgba(0,0,0,0.45)', border: '1px solid rgba(201,169,110,0.55)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)', touchAction: 'none' }}
+      onPointerMove={onMove}
+      onPointerUp={finish}
+      onPointerCancel={finish}
+    >
+      {/* gold fill trailing the knob */}
+      <div className="absolute inset-y-[5px] left-[5px] rounded-full pointer-events-none"
+        style={{ width: x + KNOB, background: 'linear-gradient(100deg,#c9a96e,#e0c172)', opacity: 0.92, transition: dragging ? 'none' : 'width .35s ease' }} />
+      {/* hint label */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <span className="imp-label text-[11px] font-semibold flex items-center gap-2"
+          style={{ color: '#e8d9b5', opacity: Math.max(0, 1 - pct * 1.4) }}>
+          {label} <ArrowRight className="w-4 h-4" />
+        </span>
+      </div>
+      {/* draggable lock knob */}
+      <div
+        onPointerDown={onDown}
+        className="absolute top-[5px] rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing"
+        style={{ left: 5 + x, width: KNOB, height: 'calc(100% - 10px)', background: 'linear-gradient(135deg,#fff3cf,#c9a96e)', boxShadow: '0 4px 14px rgba(0,0,0,0.45)', transition: dragging ? 'none' : 'left .35s ease', touchAction: 'none' }}
+      >
+        <Lock className="w-5 h-5 text-[#241a08]" />
+      </div>
+    </div>
+  );
+}
+
 export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps) {
   const { t, i18n } = useTranslation();
 
@@ -76,15 +137,21 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
   const memoryPhotos = photos.filter((p: any) => p.photoType === 'memory');
   const heroDesignated = photos.filter((p: any) => p.photoType === 'hero' || p.isHero);
 
-  const pick = (...lists: any[][]) => {
-    for (const l of lists) if (l.length) return l[0].url || l[0];
-    return null;
-  };
-  const heroPhoto = pick(heroDesignated, couplePhotos) || wedding.couplePhotoUrl || IMG.hero;
-  const introPhoto = pick(couplePhotos, heroDesignated) || wedding.couplePhotoUrl || IMG.introParallax;
-  const closingPhoto = wedding.couplePhotoUrl || pick(couplePhotos, heroDesignated) || IMG.closingParallax;
+  // Cinematic parallax BACKGROUNDS always come from the curated set — never the
+  // admin's uploads. (Admin photos are shown in the venue/location image slots.)
+  const heroPhoto = IMG.hero;
+  const introPhoto = IMG.introParallax;
+  const closingPhoto = IMG.closingParallax;
+  // Venue/location image slots show the photos the admin uploaded (memory →
+  // hero → couple → couple-photo URL), falling back to curated venue shots.
   const venuePhotos = (() => {
-    const list = memoryPhotos.slice(0, 2).map((p: any) => p.url);
+    const uploaded = [
+      ...memoryPhotos.map((p: any) => p.url),
+      ...heroDesignated.map((p: any) => p.url),
+      ...couplePhotos.map((p: any) => p.url),
+      ...(wedding.couplePhotoUrl ? [wedding.couplePhotoUrl] : []),
+    ].filter(Boolean);
+    const list = Array.from(new Set(uploaded)).slice(0, 2);
     while (list.length < 2) list.push(IMG.venue[list.length] || IMG.venue[0]);
     return list;
   })();
@@ -162,22 +229,32 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
     { Icon: IconSpark, key: 'end', off: 300 },
   ].map(s => ({ ...s, time: fmtMinutes(baseMin + s.off), label: t(`imperial.schedule.${s.key}`) }));
 
-  const mapTarget = wedding.mapPinUrl || wedding.venueAddress || wedding.venue || '';
   const coords = wedding.venueCoordinates as { lat: number; lng: number } | null;
-  const mapQuery = coords ? `${coords.lat},${coords.lng}` : mapTarget;
-  const openMap = (provider: 'google' | 'yandex') => {
+  const isUrl = (s?: string | null) => !!s && /^https?:\/\//i.test(s.trim());
+  // A Google "Embed a map" URL (https://www.google.com/maps/embed?pb=… or any
+  // …output=embed) is the ONLY link that can be iframed. A normal share link
+  // (maps.app.goo.gl/…) can OPEN a map but cannot be embedded.
+  const isGoogleEmbed = (s?: string | null) => isUrl(s) && /(\/maps\/embed\?|[?&]output=embed)/i.test(s!.trim());
+  const mapPin = (wedding.mapPinUrl || '').trim();
+  // Build a search query only from coords or NON-URL address/venue text.
+  const addressText = !isUrl(wedding.venueAddress) ? (wedding.venueAddress || '') : '';
+  const venueText = !isUrl(wedding.venue) ? (wedding.venue || '') : '';
+  const cleanName = venueText.replace(/[«»""„"]/g, '').trim();
+  const placeQuery = coords ? `${coords.lat},${coords.lng}` : (addressText || cleanName || '');
+  // The iframe src: a pasted Google embed URL wins; otherwise build a Google
+  // embed from coordinates / address text. (A share link is not embeddable.)
+  const embedSrc = isGoogleEmbed(mapPin)
+    ? mapPin
+    : (placeQuery ? `https://www.google.com/maps?q=${encodeURIComponent(placeQuery)}&z=16&output=embed` : '');
+  // "Open in Google Maps": use the exact share/pin link if provided, else search.
+  const openMap = () => {
     let url = '';
-    if (provider === 'google') {
-      url = (wedding.mapPinUrl && wedding.mapPinUrl.startsWith('http'))
-        ? wedding.mapPinUrl
-        : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
-    } else {
-      url = `https://yandex.com/maps/?text=${encodeURIComponent(mapQuery)}&z=16`;
-    }
+    if (isUrl(mapPin) && !isGoogleEmbed(mapPin)) url = mapPin;
+    else if (placeQuery) url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeQuery)}`;
+    else if (embedSrc) url = embedSrc;
     if (url) window.open(url, '_blank', 'noopener,noreferrer');
   };
-  const hasMap = !!mapTarget;
-  const embedSrc = `https://www.google.com/maps?q=${encodeURIComponent(mapQuery || 'Tashkent')}&z=15&output=embed`;
+  const hasMap = !!(embedSrc || mapPin || placeQuery);
 
   /* Language switcher — the wedding's languages, always offering uz/ru/en. */
   const langCodes = Array.from(new Set([...(wedding.availableLanguages || []), 'uz', 'ru', 'en']))
@@ -213,6 +290,11 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
         .imp-label { font-family: ${sans}; text-transform: uppercase; letter-spacing: 0.32em; }
         .imp-gold-text {
           background: linear-gradient(100deg,#a9842f,#e7cd86 30%,#fff3cf 46%,#c9a96e 60%,#9c7b34 80%,#e0c172 100%);
+          -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+        }
+        /* Readable gold for LIGHT backgrounds — no near-white stop that washes text out. */
+        .imp-gold-text-d {
+          background: linear-gradient(100deg,#7d5f22,#b8923f 50%,#7d5f22);
           -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
         }
         /* parallax cinematic photo */
@@ -272,12 +354,7 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
             <p className="text-white/80 italic text-base sm:text-lg" style={{ fontFamily: serif }}>“{t('imperial.blessing.translation')}”</p>
             <p className="text-white/45 text-xs mt-1 mb-7" style={{ fontFamily: serif }}>{t('imperial.blessing.source')}</p>
             <Heart className="w-5 h-5 mb-8 imp-gold imp-float" strokeWidth={1.2} />
-            <button onClick={handleUnlock}
-              className="imp-pulse group relative flex items-center gap-3 pl-5 pr-7 py-4 rounded-full imp-pill-solid">
-              <span className="w-9 h-9 -ml-1 rounded-full bg-white/25 flex items-center justify-center"><Lock className="w-4 h-4" /></span>
-              <span className="imp-label text-xs font-semibold flex-1">{t('imperial.gate.unlock')}</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
+            <SlideToUnlock label={t('imperial.gate.unlock')} onUnlock={handleUnlock} />
           </motion.div>
         </div>
       )}
@@ -305,7 +382,7 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
           className="imp-card-light max-w-2xl mx-auto rounded-[22px] px-7 sm:px-12 py-12 text-center">
           <p className="imp-label text-[11px] text-[#9b8347] mb-5">{t('imperial.date.label')}</p>
-          <p className="imp-serif imp-gold-text text-5xl sm:text-7xl font-medium tracking-wide">{bigDate}</p>
+          <p className="imp-serif imp-gold-text-d text-5xl sm:text-7xl font-medium tracking-wide">{bigDate}</p>
           <Diamond className="my-6" />
           <p className="imp-label text-[10px] sm:text-[11px] text-[#6f6f6f] mb-6">{t('countdown.timeRemaining')}</p>
           <div className="grid grid-cols-4 gap-2 sm:gap-4 max-w-md mx-auto">
@@ -376,13 +453,13 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
             ))}
           </div>
           <p className="imp-script imp-gold-text text-4xl sm:text-5xl mb-5">{wedding.venue || t('details.venueTBD')}</p>
-          {wedding.venueAddress && (
+          {addressText && (
             <p className="flex items-center justify-center gap-2 text-white/80 text-sm mb-8">
-              <MapPin className="w-4 h-4 imp-gold" /> {wedding.venueAddress}
+              <MapPin className="w-4 h-4 imp-gold" /> {addressText}
             </p>
           )}
           {hasMap && (
-            <button onClick={() => openMap('google')} className="imp-pill inline-flex items-center gap-2 px-7 py-3.5 rounded-full imp-label text-xs">
+            <button onClick={openMap} className="imp-pill inline-flex items-center gap-2 px-7 py-3.5 rounded-full imp-label text-xs">
               <MapPin className="w-4 h-4" /> {t('imperial.venue.openMap')} <ArrowRight className="w-4 h-4" />
             </button>
           )}
@@ -400,34 +477,40 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
           className="imp-glass relative z-10 max-w-4xl mx-auto rounded-[24px] px-6 sm:px-10 py-12">
           <div className="text-center mb-10">
-            <span className="imp-gold imp-label text-[11px] px-5 py-1.5 rounded-full border border-[#c9a96e]/50">✦ {t('imperial.location.label')} ✦</span>
-            <h2 className="imp-serif text-4xl sm:text-5xl mt-6 tracking-[0.18em]">{t('imperial.venue.heading')}</h2>
+            <span className="imp-gold imp-label text-[11px] px-5 py-1.5 rounded-full border border-[#c9a96e]/50 tracking-[0.5em]">✦ ❖ ✦</span>
+            <h2 className="imp-serif text-4xl sm:text-5xl mt-6 tracking-[0.18em]">{t('imperial.location.label')}</h2>
             <p className="imp-label text-[10px] text-white/55 mt-3">{t('imperial.location.subtitle')}</p>
             <Diamond className="mt-5" />
           </div>
           <div className="grid lg:grid-cols-2 gap-5 items-stretch">
             <div className="rounded-2xl overflow-hidden border border-[#c9a96e]/30 min-h-[300px] bg-black/40 flex flex-col">
-              <iframe title="map" src={embedSrc} className="w-full flex-1 min-h-[250px]" style={{ border: 0, filter: 'grayscale(0.2) contrast(1.05)' }} loading="lazy" />
-              <button onClick={() => openMap('google')} className="flex items-center justify-center gap-2 py-3.5 imp-gold imp-label text-[11px] hover:bg-white/5 transition-colors">
-                <MapPin className="w-4 h-4" /> {t('imperial.location.googleMaps')}
-              </button>
+              {embedSrc ? (
+                <iframe title="map" src={embedSrc} className="w-full flex-1 min-h-[250px]"
+                  style={{ border: 0, filter: 'grayscale(0.12) contrast(1.04)' }}
+                  loading="lazy" allowFullScreen referrerPolicy="no-referrer-when-downgrade" />
+              ) : (
+                <div className="flex-1 min-h-[250px] flex flex-col items-center justify-center gap-3 text-white/50">
+                  <MapPin className="w-8 h-8 imp-gold" />
+                  <span className="text-sm">{wedding.venue || t('details.venueTBD')}</span>
+                </div>
+              )}
+              {hasMap && (
+                <button onClick={openMap} className="flex items-center justify-center gap-2 py-3.5 imp-gold imp-label text-[11px] hover:bg-white/5 transition-colors">
+                  <MapPin className="w-4 h-4" /> {t('imperial.location.googleMaps')}
+                </button>
+              )}
             </div>
             <div className="imp-glass rounded-2xl p-8 flex flex-col text-center">
               <p className="imp-script imp-gold-text text-3xl sm:text-4xl mb-6 leading-tight">{wedding.venue || t('details.venueTBD')}</p>
-              {wedding.venueAddress && (
+              {addressText && (
                 <p className="flex items-start justify-center gap-2 text-white/80 text-sm mb-7 pb-7 border-b border-white/15">
-                  <MapPin className="w-4 h-4 imp-gold mt-0.5 shrink-0" /> {wedding.venueAddress}
+                  <MapPin className="w-4 h-4 imp-gold mt-0.5 shrink-0" /> {addressText}
                 </p>
               )}
               {hasMap && (
-                <div className="flex flex-col gap-3">
-                  <button onClick={() => openMap('google')} className="imp-pill inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full imp-label text-xs">
-                    <MapPin className="w-4 h-4" /> {t('imperial.location.googleRoute')}
-                  </button>
-                  <button onClick={() => openMap('yandex')} className="imp-pill inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full imp-label text-xs">
-                    <Navigation className="w-4 h-4" /> {t('imperial.location.yandexRoute')}
-                  </button>
-                </div>
+                <button onClick={openMap} className="imp-pill inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full imp-label text-xs">
+                  <MapPin className="w-4 h-4" /> {t('imperial.location.googleRoute')}
+                </button>
               )}
               <p className="imp-gold text-sm mt-7 tracking-[0.3em]">♡ {t('imperial.location.welcome')} ♡</p>
             </div>
@@ -440,7 +523,7 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
         <div className="max-w-2xl mx-auto">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-10">
             <span className="imp-label text-[11px] text-[#9b8347]">✦ {t('imperial.rsvp.label')} ✦</span>
-            <h2 className="imp-serif imp-gold-text text-4xl sm:text-5xl mt-4">{t('imperial.rsvp.title')}</h2>
+            <h2 className="imp-serif imp-gold-text-d text-4xl sm:text-5xl mt-4">{t('imperial.rsvp.title')}</h2>
             <p className="imp-label text-[10px] text-[#8a8a8a] mt-3">{t('imperial.rsvp.beWithUs')}</p>
             <div className="flex justify-center mt-5"><Heart className="w-5 h-5" style={{ color: GOLD }} strokeWidth={1.2} /></div>
           </motion.div>
@@ -456,11 +539,11 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
         <div className="max-w-3xl mx-auto">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-8">
             <span className="imp-label text-[11px] text-[#9b8347]">✦ {t('sections.guestbook')} ✦</span>
-            <h2 className="imp-serif imp-gold-text text-3xl sm:text-4xl mt-3">{t('guestbook.title')}</h2>
+            <h2 className="imp-serif imp-gold-text-d text-3xl sm:text-4xl mt-3">{t('guestbook.title')}</h2>
           </motion.div>
           <motion.div variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="imp-card-light rounded-[22px] p-6 sm:p-9">
-            <GuestBookForm weddingId={wedding.id} primaryColor="#b08f4d" accentColor={GOLD} />
+            <GuestBookForm weddingId={wedding.id} primaryColor="#b08f4d" accentColor={GOLD} surface="light" />
           </motion.div>
           {guestBookEntries.length > 0 && (
             <div className="mt-8 grid sm:grid-cols-2 gap-4">
