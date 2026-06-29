@@ -45,6 +45,16 @@ export const weddings = pgTable("weddings", {
   isApproved: boolean("is_approved").notNull().default(false),
   availableLanguages: json("available_languages").$type<string[]>().notNull().default(['en']),
   defaultLanguage: varchar("default_language", { length: 10 }).notNull().default("en"),
+  // Per-section visibility toggles (used by the Imperial template). Absent/true = shown.
+  sections: json("sections").$type<{
+    blessing?: boolean;
+    countdown?: boolean;
+    schedule?: boolean;
+    venue?: boolean;
+    location?: boolean;
+    rsvp?: boolean;
+    guestBook?: boolean;
+  }>().notNull().default({ blessing: true, countdown: true, schedule: true, venue: true, location: true, rsvp: true, guestBook: true }),
   // Birthday-specific fields
   age: varchar("age", { length: 50 }),
   partyTheme: text("party_theme"),

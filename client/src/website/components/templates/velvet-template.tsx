@@ -38,6 +38,9 @@ interface VelvetTemplateProps {
 export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
   const { t, i18n } = useTranslation();
 
+  // Per-section visibility (admin toggles). Shown unless explicitly turned off.
+  const show = (key: string) => ((wedding?.sections as any) || {})[key] !== false;
+
   const couplePhotos = photos.filter((p: any) => p.photoType === 'couple');
   const memoryPhotos = photos.filter((p: any) => p.photoType === 'memory');
   const heroDesignated = photos.filter((p: any) => p.photoType === 'hero' || p.isHero);
@@ -587,7 +590,7 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
       </section>
 
       {/* ════════════ DEAR GUESTS ════════════ */}
-      <section className="relative z-10 py-24 sm:py-32 px-6">
+      <section className={`relative z-10 py-24 sm:py-32 px-6 ${show('dearGuests') ? '' : 'hidden'}`}>
         <div className="max-w-2xl mx-auto text-center">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <p className="text-[10px] uppercase tracking-[0.5em] text-[#d4a87c]/75 mb-5">{t('sections.dearGuests')}</p>
@@ -636,7 +639,7 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
       </section>
 
       {/* ════════════ COUNTDOWN ════════════ */}
-      <section className="relative z-10 py-24 px-6">
+      <section className={`relative z-10 py-24 px-6 ${show('countdown') ? '' : 'hidden'}`}>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_80%_at_50%_50%,rgba(212,168,124,0.06),transparent)]" />
         <div className="max-w-3xl mx-auto text-center relative z-10">
           <motion.p
@@ -689,7 +692,7 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
 
       {/* ════════════ OUR MEMORIES ════════════ */}
       {memoryPhotos.length > 0 && (
-        <section id="memories" className="relative z-10 py-24 px-6 border-t border-[#d4a87c]/10">
+        <section id="memories" className={`relative z-10 py-24 px-6 border-t border-[#d4a87c]/10 ${show('gallery') ? '' : 'hidden'}`}>
           <div className="max-w-5xl mx-auto">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
@@ -724,7 +727,7 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
       )}
 
       {/* ════════════ EVENT DETAILS ════════════ */}
-      <section id="details" className="relative z-10 py-24 px-6 border-t border-[#d4a87c]/10">
+      <section id="details" className={`relative z-10 py-24 px-6 border-t border-[#d4a87c]/10 ${show('details') ? '' : 'hidden'}`}>
         <div className="max-w-4xl mx-auto">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
@@ -834,7 +837,7 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
       </section>
 
       {/* ════════════ RSVP ════════════ */}
-      <section id="rsvp" className="relative z-10 py-24 px-6 border-t border-[#d4a87c]/10">
+      <section id="rsvp" className={`relative z-10 py-24 px-6 border-t border-[#d4a87c]/10 ${show('rsvp') ? '' : 'hidden'}`}>
         <div className="max-w-2xl mx-auto">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
             <p className="text-[10px] uppercase tracking-[0.55em] text-[#d4a87c]/75 mb-3">{t('sections.rsvp')}</p>
@@ -858,7 +861,7 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
       </section>
 
       {/* ════════════ GUEST BOOK ════════════ */}
-      <section id="guestbook" className="relative z-10 py-24 px-6 border-t border-[#d4a87c]/10">
+      <section id="guestbook" className={`relative z-10 py-24 px-6 border-t border-[#d4a87c]/10 ${show('guestbook') ? '' : 'hidden'}`}>
         <div className="max-w-3xl mx-auto">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
             <p className="text-[10px] uppercase tracking-[0.55em] text-[#d4a87c]/75 mb-3">{t('sections.guestbook')}</p>

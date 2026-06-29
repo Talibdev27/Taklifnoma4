@@ -21,6 +21,8 @@ interface FlowerTemplateProps {
 
 export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
   const { t, i18n } = useTranslation();
+  // Per-section visibility (admin toggles). Shown unless explicitly turned off.
+  const show = (key: string) => ((wedding?.sections as any) || {})[key] !== false;
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   
   // Welcome overlay state
@@ -468,8 +470,8 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
 
       {/* RSVP Section */}
       <section 
-        id="rsvp" 
-        className="py-16 px-4"
+        id="rsvp"
+        className={`py-16 px-4 ${show('rsvp') ? '' : 'hidden'}`}
         style={{ backgroundColor: `${primaryColor}10` }}
       >
         <div className="max-w-2xl mx-auto">
@@ -499,7 +501,7 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
       </section>
 
       {/* Wedding Details Section */}
-      <section id="details" className="py-16 px-4 bg-white">
+      <section id="details" className={`py-16 px-4 bg-white ${show('details') ? '' : 'hidden'}`}>
         <div className="max-w-4xl mx-auto">
           <h2 
             className="text-3xl sm:text-4xl font-serif text-center mb-12"
@@ -570,8 +572,8 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
 
       {/* Guest Book Section */}
       <section 
-        id="guestbook" 
-        className="py-16 px-4"
+        id="guestbook"
+        className={`py-16 px-4 ${show('guestbook') ? '' : 'hidden'}`}
         style={{ backgroundColor: `${primaryColor}10` }}
       >
         <div className="max-w-6xl mx-auto">

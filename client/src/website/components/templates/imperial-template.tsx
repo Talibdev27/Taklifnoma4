@@ -156,6 +156,10 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
     return list;
   })();
 
+  // Per-section visibility (admin toggles). Absent / true = shown; only `false` hides.
+  const sectionFlags = (wedding.sections || {}) as Record<string, boolean>;
+  const show = (key: string) => sectionFlags[key] !== false;
+
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [locked, setLocked] = useState(true);
   const [unlocking, setUnlocking] = useState(false);
@@ -348,11 +352,15 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
               {wedding.groom} <span className="imp-gold">&amp;</span> {wedding.bride}
             </h1>
             <p className="imp-gold imp-label text-sm sm:text-base mb-6">{dotsDate}</p>
-            <p dir="rtl" lang="ar" className="imp-gold-text text-2xl sm:text-3xl mb-3" style={{ fontFamily: '"Amiri", serif' }}>
-              {t('imperial.blessing.arabic')}
-            </p>
-            <p className="text-white/80 italic text-base sm:text-lg" style={{ fontFamily: serif }}>“{t('imperial.blessing.translation')}”</p>
-            <p className="text-white/45 text-xs mt-1 mb-7" style={{ fontFamily: serif }}>{t('imperial.blessing.source')}</p>
+            {show('blessing') && (
+              <>
+                <p dir="rtl" lang="ar" className="imp-gold-text text-2xl sm:text-3xl mb-3" style={{ fontFamily: '"Amiri", serif' }}>
+                  {t('imperial.blessing.arabic')}
+                </p>
+                <p className="text-white/80 italic text-base sm:text-lg" style={{ fontFamily: serif }}>“{t('imperial.blessing.translation')}”</p>
+                <p className="text-white/45 text-xs mt-1 mb-7" style={{ fontFamily: serif }}>{t('imperial.blessing.source')}</p>
+              </>
+            )}
             <Heart className="w-5 h-5 mb-8 imp-gold imp-float" strokeWidth={1.2} />
             <SlideToUnlock label={t('imperial.gate.unlock')} onUnlock={handleUnlock} />
           </motion.div>
@@ -378,6 +386,7 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
       </section>
 
       {/* ════════════ DATE + COUNTDOWN + CALENDAR (light) ════════════ */}
+      {show('countdown') && (
       <section id="details" className="imp-light py-20 sm:py-28 px-6">
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
           className="imp-card-light max-w-2xl mx-auto rounded-[22px] px-7 sm:px-12 py-12 text-center">
@@ -415,8 +424,10 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
           </p>
         </motion.div>
       </section>
+      )}
 
       {/* ════════════ SCHEDULE (light) ════════════ */}
+      {show('schedule') && (
       <section className="imp-light px-6 pb-24">
         <div className="max-w-md mx-auto">
           <motion.p variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
@@ -435,8 +446,10 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
           <div className="flex justify-center mt-6"><Heart className="w-5 h-5" style={{ color: GOLD }} strokeWidth={1.2} /></div>
         </div>
       </section>
+      )}
 
       {/* ════════════ VENUE (glass over couple photo) ════════════ */}
+      {show('venue') && (
       <section className="imp-parallax py-24 px-6" style={{ backgroundImage: `url(${closingPhoto})` }}>
         <div className="absolute inset-0 imp-mono" style={{ backgroundImage: `url(${closingPhoto})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0 bg-black/70" />
@@ -469,8 +482,10 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
           </div>
         </motion.div>
       </section>
+      )}
 
       {/* ════════════ LOCATION (glass + map + routes) ════════════ */}
+      {show('location') && (
       <section className="imp-parallax py-24 px-6" style={{ backgroundImage: `url(${introPhoto})` }}>
         <div className="absolute inset-0 imp-mono" style={{ backgroundImage: `url(${introPhoto})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0 bg-black/75" />
@@ -517,8 +532,10 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
           </div>
         </motion.div>
       </section>
+      )}
 
       {/* ════════════ RSVP (light) ════════════ */}
+      {show('rsvp') && (
       <section id="rsvp" className="imp-light py-24 px-6">
         <div className="max-w-2xl mx-auto">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-10">
@@ -533,8 +550,10 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* ════════════ GUEST BOOK (light, optional) ════════════ */}
+      {show('guestBook') && (
       <section id="guestbook" className="imp-light px-6 pb-24">
         <div className="max-w-3xl mx-auto">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-8">
@@ -557,6 +576,7 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
           )}
         </div>
       </section>
+      )}
 
       {/* ════════════ CLOSING PARALLAX ════════════ */}
       <section className="imp-parallax min-h-screen flex items-center justify-center text-center px-6"

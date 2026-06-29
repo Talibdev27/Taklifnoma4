@@ -1942,5 +1942,18 @@
   "imperial.rsvp.beWithUs": "Будьте с нами",
   "imperial.closing.presence": "Ваше присутствие —",
   "imperial.closing.gift": "самый важный подарок",
-  "imperial.closing.forUs": "для нас!"
+  "imperial.closing.forUs": "для нас!",
+  "createWedding.sections.title": "Показывать разделы",
+  "createWedding.sections.description": "Включайте или отключайте отдельные разделы приглашения.",
+  "createWedding.sections.blessing": "Священное благословение (аят)",
+  "createWedding.sections.countdown": "Дата и обратный отсчёт",
+  "createWedding.sections.schedule": "Программа",
+  "createWedding.sections.venue": "Место проведения",
+  "createWedding.sections.location": "Локация (карта)",
+  "createWedding.sections.rsvp": "Подтверждение",
+  "createWedding.sections.guestBook": "Гостевая книга",
+  "createWedding.sections.dearGuests": "Приветствие (дорогие гости)",
+  "createWedding.sections.details": "Детали события",
+  "createWedding.sections.story": "Наша история",
+  "createWedding.sections.gallery": "Фотогалерея"
 }

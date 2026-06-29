@@ -1942,5 +1942,18 @@
   "imperial.rsvp.beWithUs": "Be with us",
   "imperial.closing.presence": "Your presence",
   "imperial.closing.gift": "The most important gift",
-  "imperial.closing.forUs": "for us!"
+  "imperial.closing.forUs": "for us!",
+  "createWedding.sections.title": "Sections to show",
+  "createWedding.sections.description": "Turn individual sections of the invitation on or off.",
+  "createWedding.sections.blessing": "Sacred blessing (Quran verse)",
+  "createWedding.sections.countdown": "Date & countdown",
+  "createWedding.sections.schedule": "Schedule",
+  "createWedding.sections.venue": "Venue",
+  "createWedding.sections.location": "Location (map)",
+  "createWedding.sections.rsvp": "RSVP",
+  "createWedding.sections.guestBook": "Guest book",
+  "createWedding.sections.dearGuests": "Greeting (dear guests)",
+  "createWedding.sections.details": "Event details",
+  "createWedding.sections.story": "Our story",
+  "createWedding.sections.gallery": "Photo gallery"
 }

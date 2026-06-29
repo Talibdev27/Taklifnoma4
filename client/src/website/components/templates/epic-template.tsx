@@ -19,6 +19,8 @@ interface EpicTemplateProps {
 
 export function EpicTemplate({ wedding }: EpicTemplateProps) {
   const { t, i18n } = useTranslation();
+  // Per-section visibility (admin toggles). Shown unless explicitly turned off.
+  const show = (key: string) => ((wedding?.sections as any) || {})[key] !== false;
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   // Welcome overlay state
@@ -405,8 +407,8 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
 
       {/* RSVP Section */}
       <section 
-        id="rsvp" 
-        className="py-12 sm:py-16 lg:py-20"
+        id="rsvp"
+        className={`py-12 sm:py-16 lg:py-20 ${show('rsvp') ? '' : 'hidden'}`}
         style={{ background: `linear-gradient(135deg, ${primaryColor}08, ${accentColor}15)` }}
       >
         <div className="container mx-auto px-4">
@@ -444,7 +446,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       </section>
 
       {/* Wedding Details Section */}
-      <section id="details" className="py-12 sm:py-16 lg:py-20 bg-white">
+      <section id="details" className={`py-12 sm:py-16 lg:py-20 bg-white ${show('details') ? '' : 'hidden'}`}>
         <div className="container mx-auto px-4">
           <h2 
             className="text-2xl sm:text-3xl md:text-4xl font-light text-center mb-10 sm:mb-12 lg:mb-16"
@@ -528,8 +530,8 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
 
       {/* Guest Book Section */}
       <section 
-        id="guestbook" 
-        className="py-20"
+        id="guestbook"
+        className={`py-20 ${show('guestbook') ? '' : 'hidden'}`}
         style={{ background: `linear-gradient(135deg, ${primaryColor}08, ${accentColor}15)` }}
       >
         <div className="container mx-auto px-4">

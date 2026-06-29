@@ -70,6 +70,7 @@ const IMPERIAL_DEMO = {
   template: 'imperial',
   defaultLanguage: 'uz',
   availableLanguages: ['uz', 'ru', 'en'],
+  sections: { blessing: true, countdown: true, schedule: true, venue: true, location: true, rsvp: true, guestBook: true },
 };
 
 const templateConfigs = {

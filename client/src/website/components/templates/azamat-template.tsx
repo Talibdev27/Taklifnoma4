@@ -32,6 +32,9 @@ interface AzamatTemplateProps {
 
 export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
   const { t, i18n } = useTranslation();
+
+  // Per-section visibility (admin toggles). Shown unless explicitly turned off.
+  const show = (key: string) => ((wedding?.sections as any) || {})[key] !== false;
   
   // Filter couple photos
   const couplePhotos = photos.filter((photo: any) => photo.photoType === 'couple');
@@ -490,7 +493,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
       </section>
 
       {/* ════════════ INVITATION / DEAR GUESTS ════════════ */}
-      <section className="relative z-10 py-24 px-6">
+      <section className={`relative z-10 py-24 px-6 ${show('dearGuests') ? '' : 'hidden'}`}>
         <div className="max-w-2xl mx-auto text-center">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <p className="text-[10px] uppercase tracking-[0.5em] text-[#c9a96e]/70 mb-6">{t('sections.dearGuests')}</p>
@@ -532,7 +535,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
       </section>
 
       {/* ════════════ COUNTDOWN ════════════ */}
-      <section className="relative z-10 py-24 px-6">
+      <section className={`relative z-10 py-24 px-6 ${show('countdown') ? '' : 'hidden'}`}>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_80%_at_50%_50%,rgba(201,169,110,0.04),transparent)]" />
         <div className="max-w-3xl mx-auto text-center relative z-10">
           {/* @ts-ignore Framer Motion className typing issue */}
@@ -578,7 +581,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
       </section>
 
       {/* ════════════ EVENT DETAILS ════════════ */}
-      <section id="details" ref={null} className="relative z-10 py-20 px-6 border-t border-white/[0.04]">
+      <section id="details" ref={null} className={`relative z-10 py-20 px-6 border-t border-white/[0.04] ${show('details') ? '' : 'hidden'}`}>
         <div className="max-w-4xl mx-auto">
           {/* @ts-ignore Framer Motion className typing issue */}
           <motion.div
@@ -648,7 +651,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
       </section>
 
       {/* ════════════ LOVE STORY ════════════ */}
-      {wedding.story && (
+      {wedding.story && show('story') && (
         <section className="relative z-10 py-24 px-6">
           <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-16 items-center">
             {/* @ts-ignore Framer Motion className typing issue */}
@@ -705,7 +708,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
 
       {/* ════════════ GALLERY ════════════ */}
       {memoryPhotos.length > 0 && (
-        <section id="gallery" className="relative z-10 py-20 px-6">
+        <section id="gallery" className={`relative z-10 py-20 px-6 ${show('gallery') ? '' : 'hidden'}`}>
           <div className="max-w-4xl mx-auto">
             {/* @ts-ignore Framer Motion className typing issue */}
             <motion.div
@@ -733,7 +736,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
       )}
 
       {/* ════════════ RSVP ════════════ */}
-      <section id="rsvp" className="relative z-10 py-24 px-6 pb-28 sm:pb-24">
+      <section id="rsvp" className={`relative z-10 py-24 px-6 pb-28 sm:pb-24 ${show('rsvp') ? '' : 'hidden'}`}>
         <div className="max-w-md mx-auto">
           {/* @ts-ignore Framer Motion className typing issue */}
           <motion.div
@@ -756,7 +759,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
       </section>
 
       {/* ════════════ GUEST BOOK ════════════ */}
-      <section id="guestbook" className="relative z-10 py-20 px-6 pb-28 sm:pb-20">
+      <section id="guestbook" className={`relative z-10 py-20 px-6 pb-28 sm:pb-20 ${show('guestbook') ? '' : 'hidden'}`}>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(201,169,110,0.03),transparent)]" />
         <div className="max-w-4xl mx-auto relative z-10">
           {/* @ts-ignore Framer Motion className typing issue */}

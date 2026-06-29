@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { 
   Users, Calendar, Camera, MessageSquare, Settings,
   TrendingUp, Heart, MapPin, Mail, Shield, Search,
@@ -20,6 +21,7 @@ import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
 import { GuestManagerAssignment } from '@/admin/components/guest-manager-assignment';
 import { AdminGuestBookManager } from '@/admin/components/admin-guest-book-manager';
 import { TEMPLATE_REGISTRY, EVENT_TYPES, getTemplatesForEvent } from '@/lib/templates';
+import { getTemplateSections, DEFAULT_SECTIONS } from '@/lib/template-sections';
 import { useTranslation } from 'react-i18next';
 
 export default function AdminDashboard() {
@@ -42,6 +44,7 @@ export default function AdminDashboard() {
     venue: '', // Will be used as "Party Venue" for birthday template
     venueAddress: '', // Will be used as "Party Location Address" for birthday template
     template: 'modern',
+    sections: { ...DEFAULT_SECTIONS } as Record<string, boolean>,
     story: '', // Will be used as "About [Name]" for birthday template
     dearGuestMessage: '', // Will be used as "Party Details" for birthday template
     couplePhotoUrl: '',
@@ -329,6 +332,7 @@ export default function AdminDashboard() {
         venueAddress: '',
         dressCode: '',
         template: 'modern',
+        sections: { ...DEFAULT_SECTIONS } as Record<string, boolean>,
         story: '',
         dearGuestMessage: '',
         couplePhotoUrl: '',
@@ -1509,6 +1513,40 @@ export default function AdminDashboard() {
                         ))}
                       </select>
                     </div>
+
+                    {/* Show/hide individual sections (templates that support it) */}
+                    {getTemplateSections(newWedding.template).length > 0 && (
+                      <div className="rounded-lg border border-gray-200 p-4">
+                        <div className="mb-3">
+                          <h4 className="text-sm font-semibold text-[#2C3338]">
+                            {t('createWedding.sections.title')}
+                          </h4>
+                          <p className="text-xs text-gray-500">
+                            {t('createWedding.sections.description')}
+                          </p>
+                        </div>
+                        {getTemplateSections(newWedding.template).map(({ key, labelKey }) => {
+                          const current = (newWedding.sections as Record<string, boolean>) || DEFAULT_SECTIONS;
+                          return (
+                            <div key={key} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                              <span className="text-sm text-[#2C3338]">{t(labelKey)}</span>
+                              <Switch
+                                checked={current[key] !== false}
+                                onCheckedChange={(v) =>
+                                  setNewWedding((prev) => ({
+                                    ...prev,
+                                    sections: {
+                                      ...((prev.sections as Record<string, boolean>) || DEFAULT_SECTIONS),
+                                      [key]: v,
+                                    },
+                                  }))
+                                }
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">

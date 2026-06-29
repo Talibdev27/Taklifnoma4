@@ -696,6 +696,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         giftRegistryInfo: giftRegistryInfo?.trim() || null,
         contactPerson: contactPerson?.trim() || null,
         specialInstructions: specialInstructions?.trim() || null,
+        sections: req.body.sections || undefined,
         isPublic: true
       };
 
@@ -1653,6 +1654,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         availableLanguages: weddingFields.availableLanguages || ["en"],
         dressCode: weddingFields.dressCode || null,
         rsvpMode: weddingFields.rsvpMode || 'both',
+        // Per-section visibility toggles (undefined → DB default = all shown).
+        sections: weddingFields.sections || undefined,
         isPublic: true
       };
 

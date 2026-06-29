@@ -1942,5 +1942,18 @@
   "imperial.rsvp.beWithUs": "Biz bilan boʻling",
   "imperial.closing.presence": "Sizning ishtirokingiz —",
   "imperial.closing.gift": "biz uchun eng qimmatli sovgʻa",
-  "imperial.closing.forUs": "!"
+  "imperial.closing.forUs": "!",
+  "createWedding.sections.title": "Koʻrsatiladigan boʻlimlar",
+  "createWedding.sections.description": "Taklifnomaning ayrim boʻlimlarini yoqing yoki oʻchiring.",
+  "createWedding.sections.blessing": "Muqaddas duo (oyat)",
+  "createWedding.sections.countdown": "Sana va sanoq",
+  "createWedding.sections.schedule": "Kun tartibi",
+  "createWedding.sections.venue": "Toʻyxona",
+  "createWedding.sections.location": "Joylashuv (xarita)",
+  "createWedding.sections.rsvp": "Tashrifni tasdiqlash",
+  "createWedding.sections.guestBook": "Mehmonlar kitobi",
+  "createWedding.sections.dearGuests": "Murojaat (aziz mehmonlar)",
+  "createWedding.sections.details": "Tadbir tafsilotlari",
+  "createWedding.sections.story": "Bizning hikoyamiz",
+  "createWedding.sections.gallery": "Suratlar galereyasi"
 }

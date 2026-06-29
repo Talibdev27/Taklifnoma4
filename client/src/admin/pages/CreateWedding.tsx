@@ -19,6 +19,7 @@ import { formatDateForInput } from "@/lib/utils";
 import { Heart, Calendar, MapPin, Camera, Music, Palette, ChevronLeft, ChevronRight, Sparkles, Star } from "lucide-react";
 import { CreateWeddingLoading } from "@/components/ui/loading";
 import { isFreeTemplate, isPremiumTemplate } from "@/lib/template-tiers";
+import { getTemplateSections, DEFAULT_SECTIONS } from "@/lib/template-sections";
 import { z } from "zod";
 
 const createWeddingSchema = insertWeddingSchema.extend({
@@ -90,6 +91,7 @@ const templateOptions = [
   },
 ];
 
+
 export default function CreateWedding() {
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
@@ -115,6 +117,7 @@ export default function CreateWedding() {
       story: "",
       backgroundMusicUrl: "",
       isPublic: true,
+      sections: { blessing: true, countdown: true, schedule: true, venue: true, location: true, rsvp: true, guestBook: true },
     },
   });
 
@@ -167,6 +170,7 @@ export default function CreateWedding() {
           accentColor: data.accentColor,
           isPublic: data.isPublic,
           backgroundMusicUrl: data.backgroundMusicUrl || "",
+          sections: data.sections || DEFAULT_SECTIONS,
         };
         
         console.log('Sending wedding data:', weddingData);
@@ -764,6 +768,37 @@ export default function CreateWedding() {
                       </FormItem>
                     )}
                   />
+
+                  {/* Show/hide individual sections (templates that support it) */}
+                  {getTemplateSections(form.watch('template')).length > 0 && (
+                    <div className="rounded-lg border border-taklif-gold/20 p-4 sm:p-5">
+                      <div className="mb-3">
+                        <h4 className="text-sm sm:text-base font-semibold text-taklif-navy">
+                          {t('createWedding.sections.title')}
+                        </h4>
+                        <p className="text-xs sm:text-sm text-taklif-navy/70">
+                          {t('createWedding.sections.description')}
+                        </p>
+                      </div>
+                      {getTemplateSections(form.watch('template')).map(({ key, labelKey }) => {
+                        const current = (form.watch('sections') as Record<string, boolean>) || DEFAULT_SECTIONS;
+                        return (
+                          <div key={key} className="flex items-center justify-between py-2.5 border-b border-taklif-gold/10 last:border-0">
+                            <span className="text-sm text-taklif-navy">{t(labelKey)}</span>
+                            <Switch
+                              checked={current[key] !== false}
+                              onCheckedChange={(v) =>
+                                form.setValue('sections', {
+                                  ...((form.watch('sections') as Record<string, boolean>) || DEFAULT_SECTIONS),
+                                  [key]: v,
+                                } as any)
+                              }
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
 
                   <div className="grid sm:grid-cols-2 gap-6">
                     <FormField
