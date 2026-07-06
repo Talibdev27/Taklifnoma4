@@ -644,7 +644,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Admin wedding creation request:", req.body);
 
-      const { userId, eventType, rsvpMode, bride, groom, weddingDate, venue, venueAddress, template, story, dearGuestMessage, couplePhotoUrl, primaryColor, accentColor, age, partyTheme, rsvpDeadline, giftRegistryInfo, contactPerson, specialInstructions } = req.body;
+      const { userId, eventType, rsvpMode, bride, groom, isTwinWedding, bride2, groom2, weddingDate, venue, venueAddress, template, story, dearGuestMessage, couplePhotoUrl, primaryColor, accentColor, age, partyTheme, rsvpDeadline, giftRegistryInfo, contactPerson, specialInstructions } = req.body;
 
       // Validate required fields
       const missingFields = [];
@@ -673,6 +673,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         rsvpMode: rsvpMode || "both", // NEW FIELD
         bride: bride.trim(),
         groom: groom?.trim() || (template === 'birthday' ? 'Birthday Celebration' : ''), // Default value for birthday template
+        isTwinWedding: isTwinWedding === true || isTwinWedding === 'true',
+        bride2: bride2?.trim() || null,
+        groom2: groom2?.trim() || null,
         weddingDate: new Date(weddingDate),
         venue: venue?.trim() || "",
         venueAddress: venueAddress?.trim() || "",
@@ -1637,6 +1640,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const weddingData = {
         bride: weddingFields.bride,
         groom: weddingFields.groom,
+        isTwinWedding: weddingFields.isTwinWedding === true || weddingFields.isTwinWedding === 'true',
+        bride2: weddingFields.bride2?.trim() || null,
+        groom2: weddingFields.groom2?.trim() || null,
         weddingDate: new Date(weddingFields.weddingDate),
         venue: weddingFields.venue || "",
         venueAddress: weddingFields.venueAddress || "",

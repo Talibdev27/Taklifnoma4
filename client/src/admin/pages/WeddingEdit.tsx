@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { 
   ArrowLeft,
   Edit,
@@ -418,6 +419,65 @@ export default function AdminWeddingEdit() {
                         <p className="p-3 bg-gray-50 rounded-lg">{wedding.groom}</p>
                       )}
                     </div>
+
+                    {/* Twin / double-wedding: two couples celebrating together */}
+                    {wedding?.template !== 'birthday' && (
+                      <div className="space-y-4 rounded-lg border border-[#D4B08C]/30 bg-[#D4B08C]/5 p-4">
+                        <div className="flex items-center justify-between gap-4">
+                          <div>
+                            <p className="text-sm font-medium text-[#2C3338]">{t('weddingEdit.twinWedding')}</p>
+                            <p className="text-xs text-gray-500">{t('weddingEdit.twinWeddingDescription')}</p>
+                          </div>
+                          {editMode ? (
+                            <Switch
+                              checked={!!weddingData?.isTwinWedding}
+                              onCheckedChange={(checked) =>
+                                setWeddingData(prev => prev ? { ...prev, isTwinWedding: checked } : null)
+                              }
+                            />
+                          ) : (
+                            <Badge variant={wedding.isTwinWedding ? 'default' : 'secondary'}>
+                              {wedding.isTwinWedding ? t('common.on') : t('common.off')}
+                            </Badge>
+                          )}
+                        </div>
+
+                        {(editMode ? weddingData?.isTwinWedding : wedding.isTwinWedding) && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-[#D4B08C]/20">
+                            <div>
+                              <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                                {t('weddingEdit.brideName2')}
+                              </label>
+                              {editMode ? (
+                                <Input
+                                  value={weddingData?.bride2 || ''}
+                                  onChange={(e) => handleInputChange('bride2', e.target.value)}
+                                  className="wedding-input"
+                                  placeholder={t('weddingEdit.enterBrideName')}
+                                />
+                              ) : (
+                                <p className="p-3 bg-gray-50 rounded-lg">{wedding.bride2 || '—'}</p>
+                              )}
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                                {t('weddingEdit.groomName2')}
+                              </label>
+                              {editMode ? (
+                                <Input
+                                  value={weddingData?.groom2 || ''}
+                                  onChange={(e) => handleInputChange('groom2', e.target.value)}
+                                  className="wedding-input"
+                                  placeholder={t('weddingEdit.enterGroomName')}
+                                />
+                              ) : (
+                                <p className="p-3 bg-gray-50 rounded-lg">{wedding.groom2 || '—'}</p>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">

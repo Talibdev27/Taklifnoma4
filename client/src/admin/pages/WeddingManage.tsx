@@ -51,6 +51,7 @@ import { MobileGuestManager } from '@/admin/components/mobile-guest-manager';
 import { GuestBookManager } from '@/website/components/guest-book-manager';
 import { CouplePhotoUpload } from '@/admin/components/couple-photo-upload';
 import { MemoryPhotosManager } from '@/admin/components/saas/memory-photos-manager';
+import { ToyxonaPhotosManager } from '@/admin/components/saas/toyxona-photos-manager';
 
 import type { Wedding, Photo, Guest } from '@shared/schema';
 
@@ -1144,6 +1145,20 @@ export default function WeddingManage() {
                 )}
               >
                 <MemoryPhotosManager
+                  weddingId={wedding.id}
+                  photos={photos}
+                  t={t as any}
+                />
+              </SectionCard>
+
+              <SectionCard
+                title={t('manage.toyxonaGallery', "To'yxona photos")}
+                description={t(
+                  'manage.toyxonaGalleryDesc',
+                  "Photos of the wedding hall (to'yxona). These appear in the venue section of your wedding site — separate from the Our Memories gallery.",
+                )}
+              >
+                <ToyxonaPhotosManager
                   weddingId={wedding.id}
                   photos={photos}
                   t={t as any}

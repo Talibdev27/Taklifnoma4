@@ -14,6 +14,7 @@ import {
   MapPin, Heart, MessageSquare, Calendar, Users, ChevronDown, ChevronUp, Sparkles,
 } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
+import { isTwinWedding, coupleNames, weddingTitleParams } from '@/lib/couples';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
 
 // ── Pre-computed particles (stable across renders) ──────────────────────────
@@ -146,6 +147,9 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
   const formattedDate = wedding.weddingDate
     ? format(new Date(wedding.weddingDate), 'd MMMM yyyy', { locale: getDateLocale() })
     : t('details.dateTBD');
+
+  // Twin / double-wedding: two couples celebrating together (only names differ).
+  const twin = isTwinWedding(wedding);
 
   const navItems = [
     { id: 'home',      label: t('nav.home'),      Icon: Heart },
@@ -303,13 +307,13 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
                 }}
               >
                 <p className="text-[11px] uppercase tracking-[0.32em] text-[#8b6045]/70 mb-3">
-                  {t('welcome.weddingTitle', { bride: wedding.groom, groom: wedding.bride })}
+                  {t('welcome.weddingTitle', weddingTitleParams(wedding))}
                 </p>
                 <p
                   className="text-2xl sm:text-3xl leading-tight"
                   style={{ fontFamily: '"Playfair Display","Georgia",serif', color: '#6f4c33' }}
                 >
-                  {wedding.groom} &amp; {wedding.bride}
+                  {coupleNames(wedding)}
                 </p>
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-[65%]">
@@ -359,7 +363,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
       <nav className="hidden sm:flex fixed top-0 inset-x-0 z-50 bg-black/50 backdrop-blur-2xl border-b border-white/[0.06]">
         <div className="max-w-5xl mx-auto w-full flex items-center justify-between px-8 py-3.5">
           <span className="gold-gradient-text text-xl font-light select-none" style={{ fontFamily: '"Playfair Display", Georgia, serif' }}>
-            {wedding.groom} &amp; {wedding.bride}
+            {coupleNames(wedding)}
           </span>
           <div className="flex gap-1">
             {navItems.map(({ id, label }) => (
@@ -456,6 +460,56 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
             {wedding.bride}
           </motion.h1>
 
+          {/* Twin / double-wedding: second couple, mirrored below a small divider */}
+          {twin && (
+            <>
+              {/* @ts-ignore Framer Motion className typing issue */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.7 }}
+                className="text-[#c9a96e]/70 text-2xl font-extralight mb-4 select-none"
+                style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
+                aria-hidden
+              >
+                &amp;
+              </motion.div>
+
+              {/* @ts-ignore Framer Motion className typing issue */}
+              <motion.h1
+                initial={{ opacity: 0, y: 44, filter: 'blur(12px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 1.3, delay: 0.85, ease: [0.22, 1, 0.36, 1] as any }}
+                className="gold-gradient-text text-[clamp(3rem,12vw,7.5rem)] font-extralight leading-none mb-2"
+                style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
+              >
+                {wedding.groom2}
+              </motion.h1>
+
+              {/* @ts-ignore Framer Motion className typing issue */}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 1.05 }}
+                className="text-white/50 text-lg font-light tracking-[0.3em] mb-2"
+                style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
+              >
+                {t('wedding.and')}
+              </motion.p>
+
+              {/* @ts-ignore Framer Motion className typing issue */}
+              <motion.h1
+                initial={{ opacity: 0, y: 44, filter: 'blur(12px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 1.3, delay: 1.2, ease: [0.22, 1, 0.36, 1] as any }}
+                className="gold-gradient-text text-[clamp(3rem,12vw,7.5rem)] font-extralight leading-none mb-6"
+                style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
+              >
+                {wedding.bride2}
+              </motion.h1>
+            </>
+          )}
+
           {/* @ts-ignore Framer Motion className typing issue */}
           <motion.div
             initial={{ scaleX: 0, opacity: 0 }}
@@ -529,6 +583,14 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
               >
                 {wedding.groom} {t('wedding.and')} {wedding.bride}
               </p>
+              {twin && (
+                <p
+                  className="gold-gradient-text text-2xl sm:text-3xl font-extralight"
+                  style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
+                >
+                  {wedding.groom2} {t('wedding.and')} {wedding.bride2}
+                </p>
+              )}
             </div>
           </motion.div>
         </div>
@@ -694,6 +756,14 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
                 <em className="gold-gradient-text not-italic">{wedding.bride}</em>
                 {' '}&amp;{' '}
                 <em className="gold-gradient-text not-italic">{wedding.groom}</em>
+                {twin && (
+                  <>
+                    <span className="text-white/30">{' · '}</span>
+                    <em className="gold-gradient-text not-italic">{wedding.bride2}</em>
+                    {' '}&amp;{' '}
+                    <em className="gold-gradient-text not-italic">{wedding.groom2}</em>
+                  </>
+                )}
               </h3>
               <p className="text-white/50 leading-relaxed text-sm whitespace-pre-wrap">{wedding.story}</p>
               <div className="flex items-center gap-4 mt-8">
@@ -871,7 +941,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
             <div className="h-px w-full bg-gradient-to-r from-transparent via-[#c9a96e]/30 to-transparent mb-8" />
             <EnhancedSocialShare
               weddingUrl={wedding.uniqueUrl}
-              coupleName={`${wedding.groom} & ${wedding.bride}`}
+              coupleName={coupleNames(wedding)}
               primaryColor="#c9a96e"
               accentColor="#a07840"
             />
@@ -890,7 +960,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
           className="gold-gradient-text text-3xl font-extralight mb-2"
           style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
         >
-          {wedding.groom} &amp; {wedding.bride}
+          {coupleNames(wedding)}
         </motion.p>
         {wedding.weddingDate && (
           <p className="text-white/25 text-xs tracking-widest uppercase mb-10">

@@ -12,6 +12,7 @@ import { BackgroundMusicPlayer } from '@/website/components/background-music-pla
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, Camera, Users, Gift, Cake, PartyPopper, ChevronUp } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, Photo, GuestBookEntry } from '@shared/schema';
+import { isTwinWedding, coupleNames } from '@/lib/couples';
 
 interface FlowerTemplateProps {
   wedding: Wedding & {
@@ -116,6 +117,8 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
 
   const primaryColor = wedding?.primaryColor || '#dcbfa0'; // Flower template beige
   const accentColor = wedding?.accentColor || '#8b7355'; // Darker beige
+  // Twin / double-wedding: two couples celebrating together (only names differ).
+  const twin = isTwinWedding(wedding);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f9f1e7', color: '#3b3b3b' }}>
@@ -125,6 +128,9 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
           weddingData={{
             bride: wedding.bride,
             groom: wedding.groom,
+            isTwinWedding: wedding.isTwinWedding,
+            bride2: wedding.bride2,
+            groom2: wedding.groom2,
             template: wedding.template,
             eventType: wedding.eventType
           }}
@@ -190,6 +196,27 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif mb-4" style={{ fontFamily: 'Great Vibes, cursive' }}>
             {wedding?.groom || 'Groom'}
           </h1>
+
+          {/* Twin / double-wedding: second couple, below a small divider */}
+          {twin && (
+            <>
+              <div className="flex items-center justify-center gap-3 mb-4 opacity-80">
+                <span className="w-10 h-px bg-white/60" />
+                <Heart className="w-4 h-4" />
+                <span className="w-10 h-px bg-white/60" />
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif mb-2" style={{ fontFamily: 'Great Vibes, cursive' }}>
+                {wedding?.bride2}
+              </h1>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif mb-2" style={{ fontFamily: 'Great Vibes, cursive' }}>
+                {t('wedding.and') || 'и'}
+              </h2>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif mb-4" style={{ fontFamily: 'Great Vibes, cursive' }}>
+                {wedding?.groom2}
+              </h1>
+            </>
+          )}
+
           <h3 className="text-2xl sm:text-3xl font-serif mb-6" style={{ fontFamily: 'Great Vibes, cursive' }}>
             {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'dd.MM.yyyy', { locale: getDateLocale() }) : t('details.dateTBD')}
           </h3>
@@ -234,6 +261,12 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
             <p className="text-2xl sm:text-3xl mt-8" style={{ fontFamily: 'Great Vibes, cursive' }}>
               {t('wedding.withRespect') || 'С уважением,'} <br />
               {wedding?.bride} {t('wedding.and') || 'и'} {wedding?.groom}
+              {twin && (
+                <>
+                  <br />
+                  {wedding?.bride2} {t('wedding.and') || 'и'} {wedding?.groom2}
+                </>
+              )}
             </p>
           </div>
           
@@ -561,7 +594,7 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
             <div className="max-w-lg mx-auto">
               <EnhancedSocialShare
                 weddingUrl={wedding.uniqueUrl}
-                coupleName={`${wedding.bride} & ${wedding.groom}`}
+                coupleName={coupleNames(wedding, { brideFirst: true })}
                 primaryColor={primaryColor}
                 accentColor={accentColor}
               />
@@ -634,6 +667,12 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
           <Heart className="w-8 h-8 mx-auto mb-4" style={{ color: primaryColor }} />
           <h3 className="text-2xl font-light mb-2" style={{ fontFamily: 'Great Vibes, cursive' }}>
             {wedding?.bride} {t('wedding.and') || 'и'} {wedding?.groom}
+            {twin && (
+              <>
+                <br />
+                {wedding?.bride2} {t('wedding.and') || 'и'} {wedding?.groom2}
+              </>
+            )}
           </h3>
           <p className="text-gray-300 mb-8">
             {t('wedding.thankYouGuests')}

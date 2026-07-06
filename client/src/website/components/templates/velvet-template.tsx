@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
+import { isTwinWedding, coupleNames, weddingTitleParams } from '@/lib/couples';
 
 /* ─── Pre-computed gold dust particles (stable across renders) ──────── */
 const DUST = Array.from({ length: 32 }, (_, i) => ({
@@ -152,6 +153,9 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
   const formattedDate = wedding.weddingDate
     ? format(new Date(wedding.weddingDate), 'd MMMM yyyy', { locale: getDateLocale() })
     : t('details.dateTBD');
+
+  // Twin / double-wedding: two couples celebrating together (only names differ).
+  const twin = isTwinWedding(wedding);
 
   const navItems = [
     { id: 'home', label: t('nav.home'), Icon: Heart },
@@ -358,13 +362,13 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
                   <circle cx="32" cy="4" r="1.6" fill="#f3d9a8" />
                 </svg>
                 <p className="text-[10px] uppercase tracking-[0.5em] text-[#d4a87c]/80 mb-3">
-                  {t('welcome.weddingTitle', { bride: wedding.groom, groom: wedding.bride })}
+                  {t('welcome.weddingTitle', weddingTitleParams(wedding))}
                 </p>
                 <p
                   className="gold-text text-3xl sm:text-4xl leading-tight"
                   style={{ fontFamily: '"Cormorant Garamond", "Playfair Display", serif', fontWeight: 500 }}
                 >
-                  {wedding.groom} &amp; {wedding.bride}
+                  {coupleNames(wedding)}
                 </p>
                 <div className="gold-divider mt-5 w-32"><span className="line" /><span className="ornament" /><span className="line" /></div>
               </div>
@@ -420,7 +424,7 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
             className="gold-text text-xl select-none"
             style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 500, letterSpacing: '0.04em' }}
           >
-            {wedding.groom} &amp; {wedding.bride}
+            {coupleNames(wedding)}
           </span>
           <div className="flex gap-1">
             {navItems.map(({ id, label }) => (
@@ -545,6 +549,51 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
             {wedding.bride}
           </motion.h1>
 
+          {/* Twin / double-wedding: second couple, mirrored below an ornamental divider */}
+          {twin && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.9, delay: 0.9 }}
+                className="gold-divider w-40 mb-8"
+                aria-hidden
+              >
+                <span className="line" /><span className="ornament" /><span className="line" />
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 44, filter: 'blur(12px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 1.3, delay: 1.05, ease: [0.22, 1, 0.36, 1] as any }}
+                className="gold-text text-[clamp(3rem,11vw,7rem)] leading-[0.95] mb-1"
+                style={{ fontFamily: '"Cormorant Garamond", "Playfair Display", serif', fontWeight: 400, fontStyle: 'italic' }}
+              >
+                {wedding.groom2}
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 1.55 }}
+                className="text-[#d4a87c]/70 text-sm tracking-[0.4em] my-2 uppercase"
+                style={{ fontFamily: '"Cormorant Garamond", serif' }}
+              >
+                ❦ &nbsp; {t('wedding.and')} &nbsp; ❦
+              </motion.p>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 44, filter: 'blur(12px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 1.3, delay: 1.35, ease: [0.22, 1, 0.36, 1] as any }}
+                className="gold-text text-[clamp(3rem,11vw,7rem)] leading-[0.95] mb-8"
+                style={{ fontFamily: '"Cormorant Garamond", "Playfair Display", serif', fontWeight: 400, fontStyle: 'italic' }}
+              >
+                {wedding.bride2}
+              </motion.h1>
+            </>
+          )}
+
           <motion.div
             initial={{ scaleX: 0, opacity: 0 }}
             animate={{ scaleX: 1, opacity: 1 }}
@@ -633,6 +682,14 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
               >
                 {wedding.groom} {t('wedding.and')} {wedding.bride}
               </p>
+              {twin && (
+                <p
+                  className="gold-text text-2xl sm:text-3xl"
+                  style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 500, fontStyle: 'italic' }}
+                >
+                  {wedding.groom2} {t('wedding.and')} {wedding.bride2}
+                </p>
+              )}
             </div>
           </motion.div>
         </div>
@@ -906,7 +963,7 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
         </div>
         <p className="gold-text text-2xl mb-2"
            style={{ fontFamily: '"Cormorant Garamond", serif', fontStyle: 'italic', fontWeight: 500 }}>
-          {wedding.groom} &amp; {wedding.bride}
+          {coupleNames(wedding)}
         </p>
         <p className="text-[#f5e6d3]/40 text-xs uppercase tracking-[0.4em]">{t('footer.withLove')}</p>
         <p className="text-[#d4a87c]/55 text-[11px] mt-3">{t('footer.thanksForCelebrating')}</p>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Heart, Music, Sparkles } from 'lucide-react';
+import { isTwinWedding } from '@/lib/couples';
 
 interface WelcomeOverlayProps {
   weddingData: {
@@ -9,6 +10,10 @@ interface WelcomeOverlayProps {
     groom: string;
     template: string;
     eventType?: string;
+    // Twin / double-wedding: second couple celebrating together.
+    isTwinWedding?: boolean;
+    bride2?: string | null;
+    groom2?: string | null;
   };
   hasMusic: boolean;
   onEnter: () => void;
@@ -59,9 +64,21 @@ export function WeddingWelcomeOverlay({
   if (!isVisible) return null;
 
   const isBirthday = weddingData.eventType === 'birthday' || weddingData.template === 'birthday';
-  const titleText = isBirthday 
+  // In twin mode each title slot carries a whole couple ("CoupleA va CoupleB …");
+  // otherwise keep the original name order this overlay has always used.
+  const twin = isTwinWedding({
+    isTwinWedding: !!weddingData.isTwinWedding,
+    groom2: weddingData.groom2 ?? null,
+    bride2: weddingData.bride2 ?? null,
+  });
+  const titleText = isBirthday
     ? t('welcome.birthdayTitle', { name: weddingData.bride })
-    : t('welcome.weddingTitle', { bride: weddingData.bride, groom: weddingData.groom });
+    : t('welcome.weddingTitle', twin
+        ? {
+            bride: `${weddingData.bride} & ${weddingData.groom}`,
+            groom: `${weddingData.bride2} & ${weddingData.groom2}`,
+          }
+        : { bride: weddingData.bride, groom: weddingData.groom });
 
   return (
     <div className={`fixed inset-0 z-[100] transition-all duration-500 ${

@@ -19,6 +19,12 @@ export function log(message: string, source = "express") {
 }
 
 export async function setupCustomVite(app: Express, server: Server) {
+  // On Replit the HMR websocket is proxied on a dedicated client port; running
+  // locally we instead let the HMR client derive its host/port from whatever URL
+  // the page was opened with, so hot-reload works over both localhost AND the
+  // machine's Wi-Fi/LAN IP (e.g. opening the site from a phone on the same network).
+  const isReplit = !!process.env.REPL_ID || !!process.env.REPLIT_DOMAINS;
+
   const vite = await createViteServer({
     plugins: [
       (await import("@vitejs/plugin-react")).default(),
@@ -37,7 +43,7 @@ export async function setupCustomVite(app: Express, server: Server) {
     },
     server: {
       middlewareMode: true,
-      hmr: { server, host: 'localhost', clientPort: 5001 },
+      hmr: isReplit ? { server, host: 'localhost', clientPort: 5001 } : { server },
       host: "0.0.0.0",
       allowedHosts: true,
     },

@@ -12,6 +12,7 @@ import { BackgroundMusicPlayer } from '@/website/components/background-music-pla
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, Camera, Users } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, Photo, GuestBookEntry } from '@shared/schema';
+import { coupleNames } from '@/lib/couples';
 
 interface EpicTemplateProps {
   wedding: Wedding;
@@ -124,6 +125,9 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
           weddingData={{
             bride: wedding.bride,
             groom: wedding.groom,
+            isTwinWedding: wedding.isTwinWedding,
+            bride2: wedding.bride2,
+            groom2: wedding.groom2,
             template: wedding.template,
             eventType: wedding.eventType
           }}
@@ -242,7 +246,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
                 backgroundClip: 'text'
               }}
             >
-              {wedding?.bride || 'Bride'} & {wedding?.groom || 'Groom'}
+              {coupleNames(wedding, { brideFirst: true }) || 'Bride & Groom'}
             </h1>
             
             {/* Wedding Date - Responsive */}
@@ -331,7 +335,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
                 </p>
                 <div className="mt-4 sm:mt-6 text-right">
                   <p className="font-medium text-sm sm:text-base" style={{ color: primaryColor }}>
-                    {wedding?.bride} & {wedding?.groom}
+                    {coupleNames(wedding, { brideFirst: true })}
                   </p>
                 </div>
               </div>
@@ -519,7 +523,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             <div className="max-w-lg mx-auto px-4">
               <EnhancedSocialShare
                 weddingUrl={wedding.uniqueUrl}
-                coupleName={`${wedding.bride} & ${wedding.groom}`}
+                coupleName={coupleNames(wedding, { brideFirst: true })}
                 primaryColor={primaryColor}
                 accentColor={accentColor}
               />
@@ -602,7 +606,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
         <div className="container mx-auto px-4 text-center">
           <Heart className="w-8 h-8 mx-auto mb-4" style={{ color: primaryColor }} />
           <h3 className="text-2xl font-light mb-2">
-            {wedding?.bride} & {wedding?.groom}
+            {coupleNames(wedding, { brideFirst: true })}
           </h3>
           <p className="text-gray-300 mb-8">
             {t('wedding.thankYouGuests')}

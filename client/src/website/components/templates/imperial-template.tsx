@@ -12,6 +12,7 @@ import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/compo
 import { MapPin, Lock, ArrowRight, Heart } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
+import { isTwinWedding } from '@/lib/couples';
 
 /* ─────────────────────────────────────────────────────────────────────────
  * IMPERIAL (Noir) — a dark, cinematic, gold-accented wedding invitation.
@@ -133,25 +134,33 @@ function SlideToUnlock({ label, onUnlock }: { label: string; onUnlock: () => voi
 export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps) {
   const { t, i18n } = useTranslation();
 
+  // Twin / double-wedding: two couples celebrating together (only names differ).
+  const twin = isTwinWedding(wedding);
+
   const couplePhotos = photos.filter((p: any) => p.photoType === 'couple');
   const memoryPhotos = photos.filter((p: any) => p.photoType === 'memory');
   const heroDesignated = photos.filter((p: any) => p.photoType === 'hero' || p.isHero);
+  // "To'yxona" (wedding-hall) photos — a dedicated category, uploaded separately
+  // from the "Our Memories" gallery. Shown in the venue section.
+  const toyxonaPhotos = photos.filter((p: any) => p.photoType === 'toyxona');
 
-  // Cinematic parallax BACKGROUNDS always come from the curated set — never the
-  // admin's uploads. (Admin photos are shown in the venue/location image slots.)
-  const heroPhoto = IMG.hero;
-  const introPhoto = IMG.introParallax;
-  const closingPhoto = IMG.closingParallax;
-  // Venue/location image slots show the photos the admin uploaded (memory →
-  // hero → couple → couple-photo URL), falling back to curated venue shots.
+  // The admin's uploaded EVENT photo ("Tadbir rasmi" — the hero / couple photo)
+  // now drives the cinematic parallax BACKGROUNDS. The curated cinematic shots
+  // are only a fallback for when nothing has been uploaded yet.
+  const uploadedHero =
+    wedding.couplePhotoUrl ||
+    couplePhotos[0]?.url ||
+    heroDesignated[0]?.url ||
+    null;
+  const heroPhoto = uploadedHero || IMG.hero;
+  const introPhoto = uploadedHero || IMG.introParallax;
+  const closingPhoto = uploadedHero || IMG.closingParallax;
+  // Venue image slots show the uploaded "To'yxona" photos, falling back to the
+  // curated venue shots when none have been uploaded. (Memory photos live in
+  // their own "Our Memories" gallery and are no longer reused here.)
   const venuePhotos = (() => {
-    const uploaded = [
-      ...memoryPhotos.map((p: any) => p.url),
-      ...heroDesignated.map((p: any) => p.url),
-      ...couplePhotos.map((p: any) => p.url),
-      ...(wedding.couplePhotoUrl ? [wedding.couplePhotoUrl] : []),
-    ].filter(Boolean);
-    const list = Array.from(new Set(uploaded)).slice(0, 2);
+    const uploaded = toyxonaPhotos.map((p: any) => p.url).filter(Boolean);
+    const list = Array.from(new Set(uploaded)).slice(0, 4);
     while (list.length < 2) list.push(IMG.venue[list.length] || IMG.venue[0]);
     return list;
   })();
@@ -351,6 +360,14 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
             <h1 className="imp-serif text-5xl sm:text-7xl font-medium leading-tight mb-7">
               {wedding.groom} <span className="imp-gold">&amp;</span> {wedding.bride}
             </h1>
+            {twin && (
+              <div className="flex flex-col items-center -mt-3 mb-7">
+                <Diamond className="mb-5" />
+                <div className="imp-serif text-5xl sm:text-7xl font-medium leading-tight">
+                  {wedding.groom2} <span className="imp-gold">&amp;</span> {wedding.bride2}
+                </div>
+              </div>
+            )}
             <p className="imp-gold imp-label text-sm sm:text-base mb-6">{dotsDate}</p>
             {show('blessing') && (
               <>
@@ -383,6 +400,35 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
             <Heart className="w-5 h-5 imp-gold" strokeWidth={1.2} />
           </motion.div>
         </div>
+      </section>
+
+      {/* ════════════ DEAR GUESTS (light card) ════════════ */}
+      <section className="imp-light py-20 sm:py-24 px-6">
+        <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+          className="imp-card-light max-w-2xl mx-auto rounded-[22px] px-7 sm:px-12 py-12 sm:py-14 text-center">
+          <p className="imp-label text-[11px] text-[#9b8347] mb-6">{t('wedding.dearGuests')}</p>
+          {wedding.dearGuestMessage ? (
+            <p className="text-[#3a3a3a] text-lg sm:text-xl leading-relaxed whitespace-pre-wrap" style={{ fontFamily: serif }}>
+              {wedding.dearGuestMessage}
+            </p>
+          ) : (
+            <div className="text-[#3a3a3a] text-lg sm:text-xl leading-relaxed space-y-1" style={{ fontFamily: serif }}>
+              <p>{t('wedding.foundEachOther')}</p>
+              <p>{t('wedding.filledWithWarmth')}</p>
+              <p>{t('wedding.inviteToCelebrate')}</p>
+            </div>
+          )}
+          <Diamond className="my-8" />
+          <p className="imp-label text-[10px] text-[#9b8347] mb-3">{t('wedding.withRespect')}</p>
+          <p className="imp-script imp-gold-text-d text-4xl sm:text-5xl leading-tight">
+            {wedding.groom} &amp; {wedding.bride}
+          </p>
+          {twin && (
+            <p className="imp-script imp-gold-text-d text-4xl sm:text-5xl leading-tight mt-1">
+              {wedding.groom2} &amp; {wedding.bride2}
+            </p>
+          )}
+        </motion.div>
       </section>
 
       {/* ════════════ DATE + COUNTDOWN + CALENDAR (light) ════════════ */}
@@ -444,6 +490,30 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
             </motion.div>
           ))}
           <div className="flex justify-center mt-6"><Heart className="w-5 h-5" style={{ color: GOLD }} strokeWidth={1.2} /></div>
+        </div>
+      </section>
+      )}
+
+      {/* ════════════ LOVE STORY — MEMORIES GALLERY (dark) ════════════ */}
+      {memoryPhotos.length > 0 && show('gallery') && (
+      <section id="memories" className="py-24 px-6" style={{ background: INK }}>
+        <div className="max-w-5xl mx-auto">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+            className="text-center mb-12">
+            <p className="imp-label text-[11px] text-white/55 mb-4">{t('wedding.photos')}</p>
+            <h2 className="imp-script imp-gold-text text-5xl sm:text-6xl leading-tight">{t('wedding.memoryPhotos')}</h2>
+            <Diamond className="mt-6" />
+          </motion.div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+            {memoryPhotos.map((photo: any, i: number) => (
+              <motion.div key={photo.id ?? i}
+                variants={fadeUp} custom={i % 3} initial="hidden" whileInView="visible" viewport={{ once: true }}
+                className="aspect-square overflow-hidden rounded-2xl border border-[#c9a96e]/25 bg-black/40">
+                <img src={photo.url} alt={photo.caption || ''} loading="lazy"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
       )}
@@ -601,6 +671,9 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
         <OrderInvitationCTA accent={GOLD} surface="dark" className="mb-12" />
         <Diamond className="mb-5" />
         <p className="imp-script imp-gold-text text-4xl mb-2">{wedding.groom} &amp; {wedding.bride}</p>
+        {twin && (
+          <p className="imp-script imp-gold-text text-4xl mb-2">{wedding.groom2} &amp; {wedding.bride2}</p>
+        )}
         <p className="imp-label text-[10px] text-white/45">{t('footer.withLove')}</p>
         <p className="text-white/40 text-[10px] mt-5 tracking-[0.3em] uppercase">— Imperial —</p>
       </footer>

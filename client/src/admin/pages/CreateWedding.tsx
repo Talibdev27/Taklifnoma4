@@ -107,6 +107,9 @@ export default function CreateWedding() {
     defaultValues: {
       bride: "",
       groom: "",
+      isTwinWedding: false,
+      bride2: "",
+      groom2: "",
       weddingDate: new Date(),
       weddingTime: "18:00",
       venue: "",
@@ -160,6 +163,9 @@ export default function CreateWedding() {
           userId: currentUser.id,
           bride: data.bride,
           groom: data.groom,
+          isTwinWedding: !!data.isTwinWedding,
+          bride2: data.isTwinWedding ? (data.bride2 || "") : "",
+          groom2: data.isTwinWedding ? (data.groom2 || "") : "",
           weddingDate: data.weddingDate.toISOString(),
           weddingTime: data.weddingTime || "18:00",
           venue: data.venue,
@@ -462,6 +468,76 @@ export default function CreateWedding() {
                       )}
                     />
                   </div>
+
+                  {/* Twin / double-wedding toggle — two couples celebrating together */}
+                  <FormField
+                    control={form.control}
+                    name="isTwinWedding"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border border-taklif-gold/20 p-4">
+                        <div className="space-y-0.5 flex-1 pr-4">
+                          <FormLabel className="text-sm sm:text-base font-semibold text-taklif-navy">
+                            {t('createWedding.twinWedding')}
+                          </FormLabel>
+                          <p className="text-xs sm:text-sm text-taklif-navy/70">
+                            {t('createWedding.twinWeddingDescription')}
+                          </p>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={!!field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  {form.watch("isTwinWedding") && (
+                    <div className="grid sm:grid-cols-2 gap-6 rounded-lg border border-taklif-gold/20 bg-taklif-gold/5 p-4">
+                      <FormField
+                        control={form.control}
+                        name="bride2"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-taklif-navy font-semibold">
+                              {t('createWedding.brideName2')}
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder={t('createWedding.brideNamePlaceholder')}
+                                className="wedding-input border-taklif-gold/20 focus:border-taklif-gold focus:ring-taklif-gold/30"
+                                {...field}
+                                value={field.value ?? ""}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="groom2"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-taklif-navy font-semibold">
+                              {t('createWedding.groomName2')}
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder={t('createWedding.groomNamePlaceholder')}
+                                className="wedding-input border-taklif-gold/20 focus:border-taklif-gold focus:ring-taklif-gold/30"
+                                {...field}
+                                value={field.value ?? ""}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
 
                   <FormField
                     control={form.control}

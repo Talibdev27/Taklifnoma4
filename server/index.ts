@@ -1,3 +1,4 @@
+import os from "os";
 import express, { type Request, Response, NextFunction } from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
 });
 
 // Security middleware
+const isProduction = process.env.NODE_ENV === 'production';
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -38,6 +40,11 @@ app.use(helmet({
       mediaSrc: ["'self'", "https://res.cloudinary.com"],
       // Allow embedding Google Maps ("Embed a map" iframe) in invitations.
       frameSrc: ["'self'", "https://www.google.com", "https://maps.google.com", "https://*.google.com"],
+      // In dev the app is served over plain HTTP (localhost AND the machine's
+      // LAN IP for phone testing). Helmet enables `upgrade-insecure-requests` by
+      // default, which would force every subresource to https:// and leave a
+      // white screen on non-localhost origins. Keep it only in production (https).
+      upgradeInsecureRequests: isProduction ? [] : null,
     },
   },
 }));
@@ -138,5 +145,17 @@ app.use((req, res, next) => {
   const port = parseInt(process.env.PORT || "5000", 10);
   server.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
+    // Print the machine's LAN addresses so the app can be opened from other
+    // devices on the same Wi-Fi (e.g. a phone). The server binds 0.0.0.0, so
+    // any of these will work as long as both devices share the network.
+    const addresses = [`http://localhost:${port}`];
+    for (const iface of Object.values(os.networkInterfaces())) {
+      for (const net of iface || []) {
+        const isIPv4 = net.family === "IPv4" || (net.family as any) === 4;
+        if (isIPv4 && !net.internal) addresses.push(`http://${net.address}:${port}`);
+      }
+    }
+    log(`  Local:   ${addresses[0]}`);
+    for (const url of addresses.slice(1)) log(`  Network: ${url}`);
   });
 })();

@@ -45,6 +45,9 @@ const WEDDING_COLUMNS: string[] = [
   `"special_instructions" text`,
   `"rsvp_mode" varchar(50) NOT NULL DEFAULT 'both'`,
   `"sections" json NOT NULL DEFAULT '{"blessing":true,"countdown":true,"schedule":true,"venue":true,"location":true,"rsvp":true,"guestBook":true}'`,
+  `"is_twin_wedding" boolean NOT NULL DEFAULT false`,
+  `"bride2" varchar(255)`,
+  `"groom2" varchar(255)`,
 ];
 
 export async function ensureWeddingsSchema(): Promise<void> {

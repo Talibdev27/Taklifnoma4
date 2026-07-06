@@ -24,6 +24,11 @@ export const weddings = pgTable("weddings", {
   eventType: varchar("event_type", { length: 50 }).notNull().default("wedding"),
   bride: varchar("bride", { length: 255 }).notNull(),
   groom: varchar("groom", { length: 255 }).notNull(),
+  // Twin / double-wedding mode: two couples celebrating at the same time & venue.
+  // When enabled, the second couple's names are shown alongside the first.
+  isTwinWedding: boolean("is_twin_wedding").notNull().default(false),
+  bride2: varchar("bride2", { length: 255 }),
+  groom2: varchar("groom2", { length: 255 }),
   weddingDate: timestamp("wedding_date").notNull(),
   weddingTime: varchar("wedding_time", { length: 50 }).notNull().default("4:00 PM"),
   timezone: varchar("timezone", { length: 100 }).notNull().default("Asia/Tashkent"),

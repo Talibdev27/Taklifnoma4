@@ -146,7 +146,7 @@ export default function WeddingSite() {
               <div className="space-y-3">
                 {/* Phone */}
                 <a 
-                  href="tel:+998935833222"
+                  href="tel:+998948777758"
                   className="flex items-center gap-3 p-4 bg-white rounded-xl hover:shadow-md transition-shadow border border-taklif-gold/20 hover:border-taklif-gold"
                 >
                   <div className="w-10 h-10 rounded-full bg-taklif-gold/20 flex items-center justify-center flex-shrink-0">
@@ -156,7 +156,7 @@ export default function WeddingSite() {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-taklif-navy">{t('wedding.callUs')}</p>
-                    <p className="text-xs text-taklif-navy/60">+998 93 583 32 22</p>
+                    <p className="text-xs text-taklif-navy/60">+998 94 877 77 58</p>
                   </div>
                   <ExternalLink className="w-4 h-4 text-taklif-gold" />
                 </a>

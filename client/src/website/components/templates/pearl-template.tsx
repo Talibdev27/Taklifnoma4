@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
+import { isTwinWedding, coupleNames, weddingTitleParams } from '@/lib/couples';
 
 /** Tasteful default shown in the Our Story carousel when a wedding has no
  *  uploaded photos at all, so the section never renders empty. */
@@ -146,6 +147,9 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
       year: String(d.getFullYear()),
     };
   })() : null;
+
+  // Twin / double-wedding: two couples celebrating together (only names differ).
+  const twin = isTwinWedding(wedding);
 
   const navItems = [
     { id: 'home', label: t('nav.home'), Icon: Heart },
@@ -327,9 +331,27 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
                 >
                   {wedding.bride}
                 </p>
+                {twin && (
+                  <>
+                    <p className="text-[#1a1a1a]/35 text-xs my-2 tracking-[0.5em]">◆</p>
+                    <p
+                      className="text-[#1a1a1a] text-3xl sm:text-4xl leading-tight"
+                      style={{ fontFamily: '"Playfair Display", "Cormorant Garamond", serif', fontWeight: 500 }}
+                    >
+                      {wedding.groom2}
+                    </p>
+                    <p className="text-[#1a1a1a]/45 text-xs my-2 tracking-[0.5em] uppercase">&amp;</p>
+                    <p
+                      className="text-[#1a1a1a] text-3xl sm:text-4xl leading-tight"
+                      style={{ fontFamily: '"Playfair Display", "Cormorant Garamond", serif', fontWeight: 500, fontStyle: 'italic' }}
+                    >
+                      {wedding.bride2}
+                    </p>
+                  </>
+                )}
                 <div className="hair-line w-32 mt-5" />
                 <p className="text-[10px] uppercase tracking-[0.55em] text-[#1a1a1a]/55 mt-5">
-                  {t('welcome.weddingTitle', { bride: wedding.groom, groom: wedding.bride })}
+                  {t('welcome.weddingTitle', weddingTitleParams(wedding))}
                 </p>
               </div>
 
@@ -367,7 +389,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
             className="text-base select-none tracking-[0.32em] uppercase"
             style={{ fontFamily: '"Lato", sans-serif', fontWeight: 600 }}
           >
-            {wedding.groom.charAt(0)} <span className="opacity-30">·</span> {wedding.bride.charAt(0)}
+            {wedding.groom.charAt(0)} <span className="opacity-30">·</span> {wedding.bride.charAt(0)}{twin && (<> <span className="opacity-30">·</span> {(wedding.groom2 || '').charAt(0)} <span className="opacity-30">·</span> {(wedding.bride2 || '').charAt(0)}</>)}
           </span>
           <div className="flex gap-8">
             {navItems.map(({ id, label }) => (
@@ -435,7 +457,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
               transition={{ duration: 1, ease: 'easeOut' }}
               className="text-[10px] uppercase tracking-[0.5em] text-[#1a1a1a]/55 mb-6"
             >
-              {t('welcome.weddingTitle', { bride: wedding.groom, groom: wedding.bride })}
+              {t('welcome.weddingTitle', weddingTitleParams(wedding))}
             </motion.p>
 
             <motion.h1
@@ -467,6 +489,49 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
             >
               {wedding.bride}
             </motion.h1>
+
+            {twin && (
+              <>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.7, delay: 0.65 }}
+                  className="text-lg text-[#1a1a1a]/35 my-4 tracking-[0.5em]"
+                >
+                  ◆
+                </motion.p>
+
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1.1, delay: 0.75, ease: [0.22, 1, 0.36, 1] as any }}
+                  className="text-[clamp(3.5rem,12vw,9rem)] leading-[0.85] mb-2 text-[#1a1a1a]"
+                  style={{ fontFamily: '"Playfair Display", serif', fontWeight: 500, letterSpacing: '-0.02em' }}
+                >
+                  {wedding.groom2}
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.7, delay: 0.95 }}
+                  className="text-2xl sm:text-3xl text-[#1a1a1a]/40 my-3"
+                  style={{ fontFamily: '"Playfair Display", serif', fontStyle: 'italic', fontWeight: 400 }}
+                >
+                  &amp;
+                </motion.p>
+
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1.1, delay: 1, ease: [0.22, 1, 0.36, 1] as any }}
+                  className="text-[clamp(3.5rem,12vw,9rem)] leading-[0.85] text-[#1a1a1a]"
+                  style={{ fontFamily: '"Playfair Display", serif', fontWeight: 500, fontStyle: 'italic', letterSpacing: '-0.02em' }}
+                >
+                  {wedding.bride2}
+                </motion.h1>
+              </>
+            )}
 
             <motion.div
               initial={{ scaleX: 0 }}
@@ -551,7 +616,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
             <div key={j} className="flex items-center gap-10 pr-10 shrink-0">
               {Array.from({ length: 8 }).map((_, i) => (
                 <span key={i} className="flex items-center gap-10 text-[11px] uppercase tracking-[0.5em] text-[#1a1a1a]/65 font-medium whitespace-nowrap">
-                  {wedding.groom} &amp; {wedding.bride}
+                  {coupleNames(wedding)}
                   <span className="text-[#1a1a1a]/35">◆</span>
                   {formattedDate}
                   <span className="text-[#1a1a1a]/35">◆</span>
@@ -607,7 +672,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
               </div>
               <p className="mt-6 text-2xl sm:text-3xl text-center"
                  style={{ fontFamily: '"Playfair Display", serif', fontWeight: 500, fontStyle: 'italic' }}>
-                {wedding.groom} <span className="opacity-40">&amp;</span> {wedding.bride}
+                {wedding.groom} <span className="opacity-40">&amp;</span> {wedding.bride}{twin && (<> <span className="opacity-30">·</span> {wedding.groom2} <span className="opacity-40">&amp;</span> {wedding.bride2}</>)}
               </p>
             </motion.div>
           </div>
@@ -863,7 +928,7 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
           <OrderInvitationCTA accent="#c9a96e" surface="dark" className="mb-12" />
           <p className="text-2xl sm:text-3xl mb-4"
              style={{ fontFamily: '"Playfair Display", serif', fontStyle: 'italic', fontWeight: 500 }}>
-            {wedding.groom} <span className="opacity-50">&amp;</span> {wedding.bride}
+            {wedding.groom} <span className="opacity-50">&amp;</span> {wedding.bride}{twin && (<> <span className="opacity-40">·</span> {wedding.groom2} <span className="opacity-50">&amp;</span> {wedding.bride2}</>)}
           </p>
           <div className="hair-line w-32 mx-auto opacity-50 mb-5" style={{ background: 'linear-gradient(90deg, transparent, #f8f5f0 50%, transparent)' }} />
           <p className="text-[10px] uppercase tracking-[0.5em] text-[#f8f5f0]/55">{t('footer.withLove')}</p>

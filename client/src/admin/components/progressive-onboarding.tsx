@@ -14,7 +14,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { 
+import { useAuth } from '@/hooks/useAuth';
+import {
   User, 
   Heart, 
   MapPin, 
@@ -31,12 +32,14 @@ import {
 import { formatDateForInput } from '@/lib/utils';
 
 const progressiveOnboardingSchema = z.object({
-  // Step 1: Personal Info
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Valid email is required"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string(),
-  
+  // Step 1: Personal Info — only collected for brand-new sign-ups. Optional here
+  // so that already-authenticated users (who skip this step) still pass full-form
+  // validation. The /api/get-started endpoint enforces these for new accounts.
+  name: z.string().optional(),
+  email: z.string().email("Valid email is required").optional().or(z.literal('')),
+  password: z.string().optional(),
+  confirmPassword: z.string().optional(),
+
   // Step 2: Couple Info
   bride: z.string().min(1, "Bride's name is required"),
   groom: z.string().min(1, "Groom's name is required"),
@@ -73,9 +76,18 @@ export function ProgressiveOnboarding() {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
-  const [currentStep, setCurrentStep] = useState(1);
+  // An already-authenticated user reaching /get-started is creating an invitation
+  // under their existing account — they must NOT be asked to register again, so
+  // the account step (id 1) is skipped and we begin at the couple step.
+  const { token, isAuthenticated } = useAuth();
+  const [currentStep, setCurrentStep] = useState(isAuthenticated ? 2 : 1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // If auth resolves after first render, make sure we never sit on the account step.
+  useEffect(() => {
+    if (isAuthenticated && currentStep === 1) setCurrentStep(2);
+  }, [isAuthenticated, currentStep]);
 
   const steps: OnboardingStep[] = [
     {
@@ -177,9 +189,73 @@ export function ProgressiveOnboarding() {
     },
   });
 
-  const currentStepData = steps[currentStep - 1];
-  const totalSteps = steps.length;
-  const progressPercentage = (currentStep / totalSteps) * 100;
+  // For an already-authenticated user: create the wedding under their existing
+  // account rather than registering a new one.
+  const createWeddingMutation = useMutation({
+    mutationFn: async (data: ProgressiveFormData) => {
+      const authToken = token || localStorage.getItem('authToken');
+      const response = await fetch('/api/weddings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+        },
+        body: JSON.stringify({
+          bride: data.bride,
+          groom: data.groom,
+          weddingDate: data.weddingDate.toISOString(),
+          venue: data.venue,
+          venueAddress: data.venueAddress,
+          story: data.relationshipStory || '',
+          template: data.template,
+          primaryColor: data.primaryColor,
+          accentColor: data.accentColor,
+          isPublic: data.isPublic,
+        }),
+      });
+
+      if (response.status === 403) {
+        // Premium template needs payment first — surface it and route to payment.
+        const err = await response.json().catch(() => ({}));
+        throw Object.assign(new Error(err.message || t('onboarding.errors.createFailed')), {
+          code: 'PAYMENT_REQUIRED',
+        });
+      }
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.message || t('onboarding.errors.createFailed'));
+      }
+      return response.json();
+    },
+    onSuccess: (wedding) => {
+      if (wedding?.userId) localStorage.setItem('currentUserId', wedding.userId.toString());
+      toast({
+        title: t('onboarding.success.title'),
+        description: t('onboarding.success.description'),
+      });
+      setLocation(`/wedding/${wedding.uniqueUrl}`);
+    },
+    onError: (error: any) => {
+      toast({
+        title: t('onboarding.error.title'),
+        description: error?.message,
+        variant: 'destructive',
+      });
+      setIsSubmitting(false);
+      if (error?.code === 'PAYMENT_REQUIRED') setLocation('/payment');
+    },
+  });
+
+  // The account step (id 1) is hidden entirely for authenticated users; all
+  // step navigation, indicators and progress are computed over the VISIBLE steps.
+  const visibleSteps = isAuthenticated ? steps.filter((s) => s.id !== 1) : steps;
+  const visibleIds = visibleSteps.map((s) => s.id);
+  const currentStepData = steps.find((s) => s.id === currentStep) ?? visibleSteps[0];
+  const currentPos = Math.max(0, visibleIds.indexOf(currentStep));
+  const displayStep = currentPos + 1;
+  const totalSteps = visibleSteps.length;
+  const isLastStep = currentPos === visibleIds.length - 1;
+  const progressPercentage = (displayStep / totalSteps) * 100;
 
   const validateCurrentStep = async (): Promise<boolean> => {
     const fieldsToValidate = currentStepData.fields;
@@ -194,8 +270,8 @@ export function ProgressiveOnboarding() {
 
   const handleNext = async () => {
     const isValid = await validateCurrentStep();
-    if (isValid && currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
+    if (isValid && !isLastStep) {
+      setCurrentStep(visibleIds[currentPos + 1]);
     } else if (!isValid) {
       toast({
         title: t('onboarding.errors.completeStepTitle'),
@@ -206,8 +282,8 @@ export function ProgressiveOnboarding() {
   };
 
   const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+    if (currentPos > 0) {
+      setCurrentStep(visibleIds[currentPos - 1]);
     }
   };
 
@@ -219,15 +295,16 @@ export function ProgressiveOnboarding() {
     // wedding would be created using whatever default template was selected,
     // skipping the picker entirely. If we're not on the last step yet,
     // route the action through handleNext() so the user advances instead.
-    if (currentStep < totalSteps) {
+    if (!isLastStep) {
       await handleNext();
       return;
     }
 
     setIsSubmitting(true);
 
-    // Validate all steps before submission
-    const allFieldsValid = await form.trigger();
+    // Validate only the VISIBLE steps' fields (the account step is skipped for
+    // authenticated users, so its fields must not gate submission).
+    const allFieldsValid = await form.trigger(visibleSteps.flatMap((s) => s.fields));
     if (!allFieldsValid) {
       setIsSubmitting(false);
       toast({
@@ -249,7 +326,13 @@ export function ProgressiveOnboarding() {
       return;
     }
     
-    createAccountMutation.mutate(data);
+    if (isAuthenticated) {
+      // Logged-in user: create the wedding under their existing account.
+      createWeddingMutation.mutate(data);
+    } else {
+      // Brand-new visitor: register an account and create the wedding together.
+      createAccountMutation.mutate(data);
+    }
   };
 
   // Same templates shown on the Landing page gallery, in the same order.
@@ -325,7 +408,7 @@ export function ProgressiveOnboarding() {
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-charcoal/60">
-                {t('onboarding.step')} {currentStep} {t('onboarding.of')} {totalSteps}
+                {t('onboarding.step')} {displayStep} {t('onboarding.of')} {totalSteps}
               </span>
               <span className="text-sm font-medium text-charcoal">
                 {Math.round(progressPercentage)}% {t('onboarding.complete')}
@@ -336,7 +419,7 @@ export function ProgressiveOnboarding() {
 
           {/* Step Indicators */}
           <div className="flex justify-center space-x-4 mb-8">
-            {steps.map((step) => {
+            {visibleSteps.map((step) => {
               const Icon = step.icon;
               const isCompleted = completedSteps.includes(step.id);
               const isCurrent = currentStep === step.id;
@@ -686,13 +769,13 @@ export function ProgressiveOnboarding() {
                         type="button"
                         variant="outline"
                         onClick={handlePrevious}
-                        disabled={currentStep === 1 || isSubmitting}
+                        disabled={currentPos === 0 || isSubmitting}
                       >
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         {t('onboarding.previous')}
                       </Button>
                       
-                      {currentStep < totalSteps ? (
+                      {!isLastStep ? (
                         <Button
                           type="button"
                           onClick={handleNext}
@@ -770,7 +853,7 @@ export function ProgressiveOnboarding() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {steps.map((step) => (
+                  {visibleSteps.map((step) => (
                     <div key={step.id} className="flex items-center justify-between">
                       <span className="text-sm">{step.title}</span>
                       {completedSteps.includes(step.id) ? (

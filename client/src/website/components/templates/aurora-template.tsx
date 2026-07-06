@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
+import { isTwinWedding, coupleNames, weddingTitleParams } from '@/lib/couples';
 
 /* Pre-computed sparkles */
 const SPARKLES = Array.from({ length: 36 }, (_, i) => ({
@@ -146,6 +147,9 @@ export function AuroraTemplate({ wedding, photos = [] }: AuroraTemplateProps) {
   const formattedDate = wedding.weddingDate
     ? format(new Date(wedding.weddingDate), 'd MMMM yyyy', { locale: getDateLocale() })
     : t('details.dateTBD');
+
+  // Twin / double-wedding: two couples celebrating together (only names differ).
+  const twin = isTwinWedding(wedding);
 
   const navItems = [
     { id: 'home', label: t('nav.home'), Icon: Heart },
@@ -426,13 +430,13 @@ export function AuroraTemplate({ wedding, photos = [] }: AuroraTemplateProps) {
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
                   <Sparkles className="w-6 h-6 mb-3 text-white/85" />
                   <p className="text-[10px] uppercase tracking-[0.5em] text-white/65 mb-3">
-                    {t('welcome.weddingTitle', { bride: wedding.groom, groom: wedding.bride })}
+                    {t('welcome.weddingTitle', weddingTitleParams(wedding))}
                   </p>
                   <p
                     className="aurora-text text-3xl sm:text-4xl leading-tight"
                     style={{ fontFamily: '"Cormorant Garamond", "Playfair Display", serif', fontWeight: 500, fontStyle: 'italic' }}
                   >
-                    {wedding.groom} &amp; {wedding.bride}
+                    {coupleNames(wedding)}
                   </p>
                   <div className="mt-5 h-px w-32"
                        style={{ background: 'linear-gradient(90deg, transparent, #c9b6e3 50%, transparent)' }} />
@@ -480,7 +484,7 @@ export function AuroraTemplate({ wedding, photos = [] }: AuroraTemplateProps) {
             className="aurora-text text-xl select-none"
             style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 500, fontStyle: 'italic', letterSpacing: '0.04em' }}
           >
-            {wedding.groom} &amp; {wedding.bride}
+            {coupleNames(wedding)}
           </span>
           <div className="flex gap-1">
             {navItems.map(({ id, label }) => (
@@ -600,6 +604,52 @@ export function AuroraTemplate({ wedding, photos = [] }: AuroraTemplateProps) {
             {wedding.bride}
           </motion.h1>
 
+          {/* Twin / double-wedding: second couple, mirrored below a small divider */}
+          {twin && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+                className="aurora-text text-2xl sm:text-3xl mb-6 select-none"
+                style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 500, fontStyle: 'italic' }}
+                aria-hidden
+              >
+                &amp;
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 44, filter: 'blur(12px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 1.3, delay: 0.95, ease: [0.22, 1, 0.36, 1] as any }}
+                className="aurora-text text-[clamp(3rem,12vw,7.5rem)] leading-[0.92] mb-1"
+                style={{ fontFamily: '"Cormorant Garamond", "Playfair Display", serif', fontWeight: 400, fontStyle: 'italic' }}
+              >
+                {wedding.groom2}
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 1.15 }}
+                className="text-white/55 text-base sm:text-lg my-3"
+                style={{ fontFamily: '"My Soul", "Cormorant Garamond", cursive' }}
+              >
+                and
+              </motion.p>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 44, filter: 'blur(12px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 1.3, delay: 1.25, ease: [0.22, 1, 0.36, 1] as any }}
+                className="aurora-text text-[clamp(3rem,12vw,7.5rem)] leading-[0.92] mb-8"
+                style={{ fontFamily: '"Cormorant Garamond", "Playfair Display", serif', fontWeight: 400, fontStyle: 'italic' }}
+              >
+                {wedding.bride2}
+              </motion.h1>
+            </>
+          )}
+
           <motion.div
             initial={{ scaleX: 0, opacity: 0 }}
             animate={{ scaleX: 1, opacity: 1 }}
@@ -685,6 +735,14 @@ export function AuroraTemplate({ wedding, photos = [] }: AuroraTemplateProps) {
               >
                 {wedding.groom} {t('wedding.and')} {wedding.bride}
               </p>
+              {twin && (
+                <p
+                  className="aurora-text text-2xl sm:text-3xl"
+                  style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 500, fontStyle: 'italic' }}
+                >
+                  {wedding.groom2} {t('wedding.and')} {wedding.bride2}
+                </p>
+              )}
             </div>
           </motion.div>
         </div>
@@ -945,7 +1003,7 @@ export function AuroraTemplate({ wedding, photos = [] }: AuroraTemplateProps) {
         </div>
         <p className="aurora-text text-2xl mb-2"
            style={{ fontFamily: '"Cormorant Garamond", serif', fontStyle: 'italic', fontWeight: 500 }}>
-          {wedding.groom} &amp; {wedding.bride}
+          {coupleNames(wedding)}
         </p>
         <p className="text-white/45 text-xs uppercase tracking-[0.4em]">{t('footer.withLove')}</p>
         <p className="text-white/55 text-[11px] mt-3">{t('footer.thanksForCelebrating')}</p>
