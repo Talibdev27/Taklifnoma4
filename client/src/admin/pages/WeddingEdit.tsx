@@ -2038,6 +2038,126 @@ export default function AdminWeddingEdit() {
                       </div>
                     </div>
 
+                    {/* To'yxona (venue-hall) Photos — Imperial template shows these in its venue section */}
+                    {(editMode ? weddingData?.template : wedding?.template) === 'imperial' && (
+                    <div>
+                      <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        {t('manage.toyxonaGallery')}
+                      </h3>
+
+                      {/* Upload Section for To'yxona Photos */}
+                      <div className="mb-4 p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                        <div className="text-center">
+                          <MapPin className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                          <h4 className="font-medium text-gray-700 mb-2">{t('weddingEdit.uploadToyxonaPhotos')}</h4>
+                          <p className="text-sm text-gray-500 mb-3">{t('manage.toyxonaGalleryDesc')}</p>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={async (e) => {
+                              const files = Array.from(e.target.files || []);
+                              if (files.length === 0) return;
+
+                              let successCount = 0;
+                              let errorCount = 0;
+
+                              for (const file of files) {
+                                try {
+                                  const formData = new FormData();
+                                  formData.append('photo', file);
+                                  formData.append('photoType', 'toyxona');
+                                  formData.append('weddingId', wedding?.id?.toString() || '');
+
+                                  const response = await fetch('/api/photos/upload', {
+                                    method: 'POST',
+                                    body: formData,
+                                  });
+
+                                  if (response.ok) {
+                                    successCount++;
+                                  } else {
+                                    errorCount++;
+                                  }
+                                } catch (error) {
+                                  errorCount++;
+                                }
+                              }
+
+                              if (successCount > 0) {
+                                toast({
+                                  title: t('weddingEdit.photosUploaded'),
+                                  description: errorCount > 0
+                                    ? t('weddingEdit.photosUploadedWithErrors', { count: successCount, errorCount })
+                                    : t('weddingEdit.photosUploadedSuccess', { count: successCount }),
+                                });
+                                queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                              } else {
+                                toast({
+                                  title: t('weddingEdit.uploadFailed'),
+                                  description: t('weddingEdit.photosUploadFailedDesc'),
+                                  variant: "destructive",
+                                });
+                              }
+
+                              e.target.value = '';
+                            }}
+                            className="hidden"
+                            id="toyxona-photos-upload"
+                          />
+                          <label
+                            htmlFor="toyxona-photos-upload"
+                            className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
+                          >
+                            <MapPin className="h-4 w-4 mr-2" />
+                            {t('weddingEdit.chooseToyxonaPhotos')}
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {photos && photos.filter((photo: any) => photo.photoType === 'toyxona').length > 0 ? (
+                          photos.filter((photo: any) => photo.photoType === 'toyxona').map((photo: any) => (
+                            <div key={photo.id} className="border rounded-lg p-3 space-y-2">
+                              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                                <img
+                                  src={photo.url}
+                                  alt={photo.caption || t('weddingEdit.altToyxonaPhoto')}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                {photo.caption && (
+                                  <p className="text-xs text-gray-600 truncate">{photo.caption}</p>
+                                )}
+                                <div className="flex justify-between items-center">
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(photo.uploadedAt).toLocaleDateString()}
+                                  </span>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => deletePhotoMutation.mutate(photo.id)}
+                                    disabled={deletePhotoMutation.isPending}
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="col-span-4 text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
+                            <MapPin className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                            <p>{t('weddingEdit.noToyxonaPhotosUploaded')}</p>
+                            <p className="text-sm text-gray-400 mt-1">{t('manage.toyxonaGalleryDesc')}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    )}
+
                     {/* Photo Statistics */}
                     {photos && photos.length > 0 && (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t">
