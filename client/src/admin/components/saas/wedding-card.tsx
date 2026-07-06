@@ -73,10 +73,8 @@ export function WeddingCard({
   const date = new Date(wedding.weddingDate);
   const daysUntil = differenceInCalendarDays(date, new Date());
   const isPast = daysUntil < 0;
-  const isShareable = wedding.isApproved;
 
   const handleCopy = async () => {
-    if (!isShareable) return;
     const url = `${window.location.origin}/wedding/${wedding.uniqueUrl}`;
     try {
       await navigator.clipboard.writeText(url);
@@ -137,26 +135,23 @@ export function WeddingCard({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuItem onClick={handleCopy} disabled={!isShareable}>
+            <DropdownMenuItem onClick={handleCopy}>
               <Copy className="w-4 h-4 mr-2" />
               {t('dashboard.copyLink', 'Copy public link')}
             </DropdownMenuItem>
-            <DropdownMenuItem asChild disabled={!isShareable}>
+            <DropdownMenuItem asChild>
               <a
-                href={isShareable ? `/wedding/${wedding.uniqueUrl}` : '#'}
+                href={`/wedding/${wedding.uniqueUrl}`}
                 target="_blank"
                 rel="noreferrer"
-                onClick={(e) => {
-                  if (!isShareable) e.preventDefault();
-                }}
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
                 {t('dashboard.openInNewTab', 'Open in new tab')}
               </a>
             </DropdownMenuItem>
-            {!isShareable && (
+            {!wedding.isApproved && (
               <div className="px-2 py-1.5 text-xs text-slate-500 leading-snug">
-                {t('dashboard.approvalRequiredHint', 'Available once your site is approved.')}
+                {t('dashboard.pendingViewHint', "Until it's approved, opening the link shows a 'pending approval' page.")}
               </div>
             )}
             <DropdownMenuSeparator />
@@ -214,35 +209,19 @@ export function WeddingCard({
               {t('dashboard.manage', 'Manage')}
             </Button>
           </Link>
-          {isShareable ? (
-            <Link href={`/wedding/${wedding.uniqueUrl}`} className="flex-1">
-              <Button variant="outline" size="sm" className="w-full">
-                <Eye className="w-3.5 h-3.5 mr-1.5" />
-                {t('dashboard.view', 'View')}
-              </Button>
-            </Link>
-          ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1"
-              disabled
-              title={t('dashboard.approvalRequiredHint', 'Available once your site is approved.')}
-            >
+          <Link href={`/wedding/${wedding.uniqueUrl}`} className="flex-1">
+            <Button variant="outline" size="sm" className="w-full">
               <Eye className="w-3.5 h-3.5 mr-1.5" />
               {t('dashboard.view', 'View')}
             </Button>
-          )}
+          </Link>
           <Button
             variant="outline"
             size="sm"
             className="px-2.5"
             onClick={handleCopy}
-            disabled={!isShareable}
             title={
-              !isShareable
-                ? t('dashboard.approvalRequiredHint', 'Available once your site is approved.')
-                : copied
+              copied
                 ? t('dashboard.linkCopied', 'Link copied!')
                 : t('dashboard.copyLink', 'Copy link')
             }

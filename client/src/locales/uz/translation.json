@@ -721,6 +721,7 @@
   "guestManager.noPermission": "Bu sahifaga kirish uchun ruxsatingiz yo'q.",
   "dashboard.approvalRequiredTitle": "Sayt hali tasdiqlanmagan",
   "dashboard.approvalRequiredHint": "Sayt tasdiqlangach foydalanish mumkin bo'ladi.",
+  "dashboard.pendingViewHint": "Tasdiqlanmaguncha havolani ochganda «tasdiqlash kutilmoqda» sahifasi ko'rinadi.",
   "manage.shareSiteDescPending": "Sayt admin tasdig'ini kutayotgan vaqtda ulashish bloklangan.",
   "guestManager.manageGuestBook": "Tayinlangan to'ylarning mehmonlar kitobi yozuvlarini boshqarish",
   "guestManager.viewWedding": "To'yni Ko'rish",

@@ -658,6 +658,7 @@
   "guestManager.noPermission": "Усы бетке кириўге руқсатыңыз жоқ.",
   "dashboard.approvalRequiredTitle": "Сайт еле тастыйықланбаған",
   "dashboard.approvalRequiredHint": "Сайт тастыйықланғаннан соң қол жеткизе алады.",
+  "dashboard.pendingViewHint": "Тастыйықланғанша силтемени ашқанда «тастыйықлаўды күтпекте» бети көрсетиледи.",
   "manage.shareSiteDescPending": "Сайт басқарыўшы тастыйықлаўын күтип турған ўақтында бөлисиў бөгеленген.",
   "guestManager.manageGuestBook": "Тағайындалған тойлардың қонақ кітабы жазбаларын басқару",
   "guestManager.viewWedding": "Тойды көру",

@@ -754,6 +754,7 @@
   "guestManager.noPermission": "Бұл бетке қол жеткізуге рұқсатыңыз жоқ.",
   "dashboard.approvalRequiredTitle": "Сайт әлі мақұлданбаған",
   "dashboard.approvalRequiredHint": "Сайт мақұлданғаннан кейін қол жетімді.",
+  "dashboard.pendingViewHint": "Расталғанға дейін сілтемені ашқанда «растауды күтуде» беті көрсетіледі.",
   "manage.shareSiteDescPending": "Сайт әкімшінің мақұлдауын күтіп тұрған кезде бөлісу бұғатталған.",
   "guestManager.manageGuestBook": "Тағайындалған үйлену тоқтарының қонақтар кітабы жазбаларын басқару",
   "guestManager.viewWedding": "Үйлену Тоғын Көру",

@@ -730,6 +730,7 @@
   "guestManager.noPermission": "You don't have permission to access this page.",
   "dashboard.approvalRequiredTitle": "Site not yet approved",
   "dashboard.approvalRequiredHint": "Available once your site is approved.",
+  "dashboard.pendingViewHint": "Until it's approved, opening the link shows a 'pending approval' page.",
   "manage.shareSiteDescPending": "Sharing is locked while your site is awaiting admin approval.",
   "guestManager.manageGuestBook": "Manage guest book entries for assigned weddings",
   "guestManager.viewWedding": "View Wedding",

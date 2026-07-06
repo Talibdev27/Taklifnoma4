@@ -718,6 +718,7 @@
   "guestManager.noPermission": "У вас нет прав доступа к этой странице.",
   "dashboard.approvalRequiredTitle": "Сайт ещё не одобрен",
   "dashboard.approvalRequiredHint": "Будет доступно после одобрения сайта.",
+  "dashboard.pendingViewHint": "До подтверждения при открытии ссылки показывается страница «ожидает подтверждения».",
   "manage.shareSiteDescPending": "Поделиться нельзя, пока сайт ожидает одобрения администратора.",
   "guestManager.manageGuestBook": "Управление записями гостевой книги для назначенных свадеб",
   "guestManager.viewWedding": "Посмотреть свадьбу",
