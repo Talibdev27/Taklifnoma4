@@ -951,7 +951,7 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
 
       {/* ════════════ FOOTER ════════════ */}
       <footer className="relative z-10 py-20 px-6 border-t border-white/[0.04] text-center pb-24 sm:pb-20">
-        <OrderInvitationCTA accent="#c9a96e" surface="dark" className="mb-12" />
+        {show('orderCta') && <OrderInvitationCTA accent="#c9a96e" surface="dark" className="mb-12" />}
         {/* @ts-ignore Framer Motion className typing issue */}
         <motion.p
           initial={{ opacity: 0 }}

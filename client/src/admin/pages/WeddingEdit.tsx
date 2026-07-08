@@ -33,6 +33,7 @@ import type { User, Wedding, Guest, Photo, insertGuestSchema } from "@shared/sch
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { TEMPLATE_REGISTRY, EVENT_TYPES, getTemplatesForEvent } from '@/lib/templates';
+import { getTemplateSections, DEFAULT_SECTIONS, sectionShown } from '@/lib/template-sections';
 import { useTranslation } from 'react-i18next';
 
 export default function AdminWeddingEdit() {
@@ -476,6 +477,44 @@ export default function AdminWeddingEdit() {
                             </div>
                           </div>
                         )}
+                      </div>
+                    )}
+
+                    {/* Show/hide individual sections (templates that support it) */}
+                    {getTemplateSections(wedding?.template).length > 0 && (
+                      <div className="space-y-1 rounded-lg border border-[#D4B08C]/30 bg-[#D4B08C]/5 p-4">
+                        <div className="mb-2">
+                          <p className="text-sm font-medium text-[#2C3338]">
+                            {t('createWedding.sections.title', 'Displayed sections')}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {t('createWedding.sections.description', 'Turn individual sections of the invitation on or off.')}
+                          </p>
+                        </div>
+                        {getTemplateSections(wedding?.template).map(({ key, labelKey }) => (
+                          <div
+                            key={key}
+                            className="flex items-center justify-between py-2 border-b border-[#D4B08C]/15 last:border-0"
+                          >
+                            <span className="text-sm text-[#2C3338]">{t(labelKey)}</span>
+                            {editMode ? (
+                              <Switch
+                                checked={sectionShown(weddingData?.sections, key)}
+                                onCheckedChange={(checked) =>
+                                  setWeddingData(prev =>
+                                    prev
+                                      ? { ...prev, sections: { ...(prev.sections || DEFAULT_SECTIONS), [key]: checked } }
+                                      : null
+                                  )
+                                }
+                              />
+                            ) : (
+                              <Badge variant={sectionShown(wedding.sections, key) ? 'default' : 'secondary'}>
+                                {sectionShown(wedding.sections, key) ? t('common.on') : t('common.off')}
+                              </Badge>
+                            )}
+                          </div>
+                        ))}
                       </div>
                     )}
 

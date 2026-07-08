@@ -59,6 +59,13 @@ export const weddings = pgTable("weddings", {
     location?: boolean;
     rsvp?: boolean;
     guestBook?: boolean;
+    // Additional per-template sections (see client/src/lib/template-sections.ts)
+    dearGuests?: boolean;
+    details?: boolean;
+    story?: boolean;
+    gallery?: boolean;
+    guestbook?: boolean;
+    orderCta?: boolean;
   }>().notNull().default({ blessing: true, countdown: true, schedule: true, venue: true, location: true, rsvp: true, guestBook: true }),
   // Birthday-specific fields
   age: varchar("age", { length: 50 }),

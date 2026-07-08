@@ -957,7 +957,7 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
 
       {/* ════════════ FOOTER ════════════ */}
       <footer className="relative z-10 py-14 px-6 border-t border-[#d4a87c]/15 text-center">
-        <OrderInvitationCTA accent="#d4a87c" surface="dark" className="mb-12" />
+        {show('orderCta') && <OrderInvitationCTA accent="#d4a87c" surface="dark" className="mb-12" />}
         <div className="gold-divider w-32 mx-auto mb-5">
           <span className="line" /><span className="ornament" /><span className="line" />
         </div>

@@ -39,6 +39,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { getTemplateSections, DEFAULT_SECTIONS, sectionShown } from '@/lib/template-sections';
 
 import { SidebarLayout } from '@/admin/components/saas/sidebar-layout';
 import { PageHeader } from '@/admin/components/saas/page-header';
@@ -934,6 +935,37 @@ export default function WeddingManage() {
                   </Select>
                 </div>
               </SectionCard>
+
+              {/* Show/hide individual sections (templates that support it) */}
+              {getTemplateSections(value('template') as string).length > 0 && (
+                <SectionCard
+                  title={t('createWedding.sections.title', 'Displayed sections')}
+                  description={t(
+                    'createWedding.sections.description',
+                    'Turn individual sections of the invitation on or off.',
+                  )}
+                >
+                  <div className="max-w-md">
+                    {getTemplateSections(value('template') as string).map(({ key, labelKey }) => (
+                      <div
+                        key={key}
+                        className="flex items-center justify-between py-2.5 border-b border-slate-100 last:border-0"
+                      >
+                        <span className="text-sm text-slate-700">{t(labelKey)}</span>
+                        <Switch
+                          checked={sectionShown(value('sections', DEFAULT_SECTIONS), key)}
+                          onCheckedChange={(checked) =>
+                            setField('sections', {
+                              ...(value('sections', DEFAULT_SECTIONS) as Record<string, boolean>),
+                              [key]: checked,
+                            } as any)
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </SectionCard>
+              )}
 
               <SectionCard
                 title={t('manage.languageSettings', 'Language')}

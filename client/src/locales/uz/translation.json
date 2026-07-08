@@ -1980,5 +1980,6 @@
   "createWedding.sections.dearGuests": "Murojaat (aziz mehmonlar)",
   "createWedding.sections.details": "Tadbir tafsilotlari",
   "createWedding.sections.story": "Bizning hikoyamiz",
-  "createWedding.sections.gallery": "Suratlar galereyasi"
+  "createWedding.sections.gallery": "Suratlar galereyasi",
+  "createWedding.sections.orderCta": "Reklama (kompaniya taklifnomasi)"
 }

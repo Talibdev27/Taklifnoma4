@@ -668,7 +668,7 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
 
       {/* ════════════ FOOTER ════════════ */}
       <footer className="py-14 px-6 text-center" style={{ background: INK }}>
-        <OrderInvitationCTA accent={GOLD} surface="dark" className="mb-12" />
+        {show('orderCta') && <OrderInvitationCTA accent={GOLD} surface="dark" className="mb-12" />}
         <Diamond className="mb-5" />
         <p className="imp-script imp-gold-text text-4xl mb-2">{wedding.groom} &amp; {wedding.bride}</p>
         {twin && (

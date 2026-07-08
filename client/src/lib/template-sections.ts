@@ -21,6 +21,8 @@ const STORY: SectionDef = { key: 'story', labelKey: L('story') };
 const GALLERY: SectionDef = { key: 'gallery', labelKey: L('gallery') };
 const RSVP: SectionDef = { key: 'rsvp', labelKey: L('rsvp') };
 const GUESTBOOK: SectionDef = { key: 'guestbook', labelKey: L('guestBook') };
+// Our company promo CTA rendered at the very end of every template's footer.
+const ORDER_CTA: SectionDef = { key: 'orderCta', labelKey: L('orderCta') };
 
 export const TEMPLATE_SECTIONS: Record<string, SectionDef[]> = {
   imperial: [
@@ -31,20 +33,21 @@ export const TEMPLATE_SECTIONS: Record<string, SectionDef[]> = {
     { key: 'location', labelKey: L('location') },
     RSVP,
     { key: 'guestBook', labelKey: L('guestBook') },
+    ORDER_CTA,
   ],
-  modern: [DEAR_GUESTS, COUNTDOWN, DETAILS, STORY, GALLERY, RSVP, GUESTBOOK],
-  aurora: [DEAR_GUESTS, COUNTDOWN, GALLERY, DETAILS, RSVP, GUESTBOOK],
-  velvet: [DEAR_GUESTS, COUNTDOWN, GALLERY, DETAILS, RSVP, GUESTBOOK],
-  pearl: [DEAR_GUESTS, COUNTDOWN, GALLERY, DETAILS, RSVP, GUESTBOOK],
-  epic: [DETAILS, RSVP, GUESTBOOK],
-  flower: [DETAILS, RSVP, GUESTBOOK],
+  modern: [DEAR_GUESTS, COUNTDOWN, DETAILS, STORY, GALLERY, RSVP, GUESTBOOK, ORDER_CTA],
+  aurora: [DEAR_GUESTS, COUNTDOWN, GALLERY, DETAILS, RSVP, GUESTBOOK, ORDER_CTA],
+  velvet: [DEAR_GUESTS, COUNTDOWN, GALLERY, DETAILS, RSVP, GUESTBOOK, ORDER_CTA],
+  pearl: [DEAR_GUESTS, COUNTDOWN, GALLERY, DETAILS, RSVP, GUESTBOOK, ORDER_CTA],
+  epic: [DETAILS, RSVP, GUESTBOOK, ORDER_CTA],
+  flower: [DETAILS, RSVP, GUESTBOOK, ORDER_CTA],
 };
 
 /** Every section key across all templates, defaulted to ON (for form state). */
 export const DEFAULT_SECTIONS: Record<string, boolean> = {
   blessing: true, countdown: true, schedule: true, venue: true, location: true,
   rsvp: true, guestBook: true, dearGuests: true, details: true, story: true,
-  gallery: true, guestbook: true,
+  gallery: true, guestbook: true, orderCta: true,
 };
 
 export function getTemplateSections(template?: string | null): SectionDef[] {

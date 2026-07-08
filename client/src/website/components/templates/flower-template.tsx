@@ -678,6 +678,7 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
             {t('wedding.thankYouGuests')}
           </p>
           
+          {show('orderCta') && (
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 max-w-md mx-auto mb-8">
             <h4 className="text-lg font-medium mb-4">{t('ad.orderInvitation')}</h4>
             <p className="text-gray-300 mb-4 text-sm">
@@ -715,6 +716,7 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
               </a>
             </div>
           </div>
+          )}
 
           <div className="flex items-center justify-center text-gray-400 text-sm">
             <span>{t('footer.poweredBy')}</span>

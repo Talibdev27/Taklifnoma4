@@ -865,8 +865,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Wedding owner update route - with authorization
-  app.put("/api/weddings/:id", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
+  // Wedding owner update route - with authorization.
+  // Registered for both PUT and PATCH: the manage UI sends PATCH for partial
+  // settings updates (template, sections, visibility, ...).
+  const updateOwnWedding = async (req: any, res: any) => {
     try {
       const weddingId = parseInt(req.params.id);
       const updates = req.body;
@@ -887,7 +889,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Update wedding error:', error);
       res.status(400).json({ message: "Failed to update wedding" });
     }
-  });
+  };
+  app.put("/api/weddings/:id", authenticateToken, verifyWeddingOwnership, updateOwnWedding);
+  app.patch("/api/weddings/:id", authenticateToken, verifyWeddingOwnership, updateOwnWedding);
 
   // Get wedding language settings
   app.get("/api/weddings/:id/languages", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
