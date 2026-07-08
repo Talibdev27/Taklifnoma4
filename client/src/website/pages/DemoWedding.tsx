@@ -1055,9 +1055,8 @@ export default function DemoWedding() {
               <div className="grid md:grid-cols-2 gap-4">
                 <select className="w-full p-3 border border-[#D4B08C]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4B08C]">
                   <option>{t('rsvp.willYouAttend')}</option>
-                  <option>{t('rsvp.yesAttending')}</option>
-                  <option>{t('rsvp.notAttending')}</option>
-                  <option>{t('rsvp.maybe')}</option>
+                  <option>{t('rsvp.confirmed')}</option>
+                  <option>{t('rsvp.declined')}</option>
                 </select>
                 <input
                   type="number"

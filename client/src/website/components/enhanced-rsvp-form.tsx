@@ -24,7 +24,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
-  const [rsvpStatus, setRsvpStatus] = useState<'confirmed' | 'confirmed_with_guest' | 'declined' | 'maybe'>('confirmed');
+  const [rsvpStatus, setRsvpStatus] = useState<'confirmed' | 'declined'>('confirmed');
   const [responseText, setResponseText] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -92,16 +92,12 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
       return;
     }
 
-    // Convert confirmed_with_guest to confirmed for database storage
-    const finalRsvpStatus = rsvpStatus === 'confirmed_with_guest' ? 'confirmed' : rsvpStatus;
-    const plusOne = rsvpStatus === 'confirmed_with_guest';
-    
     updateRSVP.mutate({
       guestId: selectedGuest.id,
-      rsvpStatus: finalRsvpStatus,
+      rsvpStatus,
       responseText,
       message,
-      plusOne,
+      plusOne: false,
     });
   };
 
@@ -200,17 +196,13 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
                 <Label className="text-lg font-semibold text-gray-700">{t('rsvp.willYouAttend')}</Label>
                 <RadioGroup
                   value={rsvpStatus}
-                  onValueChange={(value: 'confirmed' | 'confirmed_with_guest' | 'declined' | 'maybe') => {
+                  onValueChange={(value: 'confirmed' | 'declined') => {
                     setRsvpStatus(value);
                     // Set the response text based on the selected option
                     if (value === 'confirmed') {
-                      setResponseText(t('rsvp.confirmedEmoji'));
-                    } else if (value === 'confirmed_with_guest') {
-                      setResponseText(t('rsvp.confirmedWithGuestEmoji'));
+                      setResponseText(t('rsvp.confirmed'));
                     } else if (value === 'declined') {
-                      setResponseText(t('rsvp.declinedEmoji'));
-                    } else if (value === 'maybe') {
-                      setResponseText(t('rsvp.maybeEmoji'));
+                      setResponseText(t('rsvp.declined'));
                     }
                   }}
                   className="flex flex-col space-y-3"
@@ -218,25 +210,13 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
                   <div className="flex items-center space-x-3">
                     <RadioGroupItem value="confirmed" id="confirmed" />
                     <Label htmlFor="confirmed" className="text-base font-medium text-gray-700">
-                      {t('rsvp.confirmedEmoji')}
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="confirmed_with_guest" id="confirmed_with_guest" />
-                    <Label htmlFor="confirmed_with_guest" className="text-base font-medium text-gray-700">
-                      {t('rsvp.confirmedWithGuestEmoji')}
+                      {t('rsvp.confirmed')}
                     </Label>
                   </div>
                   <div className="flex items-center space-x-3">
                     <RadioGroupItem value="declined" id="declined" />
                     <Label htmlFor="declined" className="text-base font-medium text-gray-700">
-                      {t('rsvp.declinedEmoji')}
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="maybe" id="maybe" />
-                    <Label htmlFor="maybe" className="text-base font-medium text-gray-700">
-                      {t('rsvp.maybeEmoji')}
+                      {t('rsvp.declined')}
                     </Label>
                   </div>
                 </RadioGroup>

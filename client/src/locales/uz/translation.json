@@ -260,6 +260,8 @@
   "rsvp.failedToUpdate": "RSVP yangilanmadi. Iltimos, qayta urinib ko'ring.",
   "rsvp.letUsKnow": "Kelishingiz mumkinligini bizga bildiring!",
   "rsvp.receivedRsvp": "RSVP javobingizni oldik va siz bilan bayram qilishni intizorlik bilan kutmoqdamiz!",
+  "rsvp.confirmed": "Ha, albatta boraman!",
+  "rsvp.declined": "Afsus, kela olmayman",
   "rsvp.confirmedEmoji": "✅ Ha, albatta boraman!",
   "rsvp.confirmedWithGuest": "Ha, mehmon bilan",
   "rsvp.confirmedWithGuestEmoji": "👥 Ha, mehmon bilan boraman",

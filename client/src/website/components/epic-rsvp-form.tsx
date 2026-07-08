@@ -317,40 +317,22 @@ export function EpicRSVPForm({ wedding, primaryColor = '#1976d2', accentColor = 
                       className="flex flex-col space-y-3"
                     >
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem 
-                          value="confirmed" 
-                          id="confirmed" 
+                        <RadioGroupItem
+                          value="confirmed"
+                          id="confirmed"
                           className="border-2"
                           style={{ borderColor: primaryColor, color: primaryColor }}
                         />
-                        <Label htmlFor="confirmed" className={labelColor}>{t('rsvp.confirmedEmoji')}</Label>
+                        <Label htmlFor="confirmed" className={labelColor}>{t('rsvp.confirmed')}</Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem 
-                          value="confirmed_with_guest" 
-                          id="confirmed_with_guest" 
+                        <RadioGroupItem
+                          value="declined"
+                          id="declined"
                           className="border-2"
                           style={{ borderColor: primaryColor, color: primaryColor }}
                         />
-                        <Label htmlFor="confirmed_with_guest" className={labelColor}>{t('rsvp.confirmedWithGuestEmoji')}</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem 
-                          value="declined" 
-                          id="declined" 
-                          className="border-2"
-                          style={{ borderColor: primaryColor, color: primaryColor }}
-                        />
-                        <Label htmlFor="declined" className={labelColor}>{t('rsvp.declinedEmoji')}</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem 
-                          value="maybe" 
-                          id="maybe" 
-                          className="border-2"
-                          style={{ borderColor: primaryColor, color: primaryColor }}
-                        />
-                        <Label htmlFor="maybe" className={labelColor}>{t('rsvp.maybeEmoji')}</Label>
+                        <Label htmlFor="declined" className={labelColor}>{t('rsvp.declined')}</Label>
                       </div>
                     </RadioGroup>
                   </FormControl>
@@ -519,40 +501,22 @@ export function EpicRSVPForm({ wedding, primaryColor = '#1976d2', accentColor = 
                         className="flex flex-col space-y-3"
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem 
-                            value="confirmed" 
-                            id="preregistered-confirmed" 
+                          <RadioGroupItem
+                            value="confirmed"
+                            id="preregistered-confirmed"
                             className="border-2"
                             style={{ borderColor: primaryColor, color: primaryColor }}
                           />
-                          <Label htmlFor="preregistered-confirmed" className={labelColor}>{t('rsvp.confirmedEmoji')}</Label>
+                          <Label htmlFor="preregistered-confirmed" className={labelColor}>{t('rsvp.confirmed')}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem 
-                            value="confirmed_with_guest" 
-                            id="preregistered-confirmed_with_guest" 
+                          <RadioGroupItem
+                            value="declined"
+                            id="preregistered-declined"
                             className="border-2"
                             style={{ borderColor: primaryColor, color: primaryColor }}
                           />
-                          <Label htmlFor="preregistered-confirmed_with_guest" className={labelColor}>{t('rsvp.confirmedWithGuestEmoji')}</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem 
-                            value="declined" 
-                            id="preregistered-declined" 
-                            className="border-2"
-                            style={{ borderColor: primaryColor, color: primaryColor }}
-                          />
-                          <Label htmlFor="preregistered-declined" className={labelColor}>{t('rsvp.declinedEmoji')}</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem 
-                            value="maybe" 
-                            id="preregistered-maybe" 
-                            className="border-2"
-                            style={{ borderColor: primaryColor, color: primaryColor }}
-                          />
-                          <Label htmlFor="preregistered-maybe" className={labelColor}>{t('rsvp.maybeEmoji')}</Label>
+                          <Label htmlFor="preregistered-declined" className={labelColor}>{t('rsvp.declined')}</Label>
                         </div>
                       </RadioGroup>
                     </FormControl>
