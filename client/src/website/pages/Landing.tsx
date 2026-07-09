@@ -117,6 +117,12 @@ export default function Landing() {
       descriptionKey: 'templates.imperialDesc',
       demoUrl: '/demo?template=imperial', // Imperial — gold-on-ivory ceremonial
     },
+    {
+      nameKey: 'templates.turkish',
+      image: 'https://images.pexels.com/photos/6044227/pexels-photo-6044227.jpeg?auto=compress&cs=tinysrgb&w=800',
+      descriptionKey: 'templates.turkishDesc',
+      demoUrl: '/demo?template=turkish', // Kına Gecesi — Ottoman burgundy & gold
+    },
   ];
 
   const invitationComparisonItems = [

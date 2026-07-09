@@ -1922,6 +1922,8 @@
   "manage.linkHiddenUntilApproved": "Your site link will appear here once an admin approves it.",
   "templates.imperial": "Imperial",
   "templates.imperialDesc": "A regal gold-on-ivory invitation with ornate filigree, a sacred blessing and a ceremonial order of the day.",
+  "templates.turkish": "Kına Gecesi",
+  "templates.turkishDesc": "A Turkish henna-night invitation dressed in Ottoman burgundy carpets and antique gold on ivory.",
   "imperial.tagline": "Wedding Invitation",
   "imperial.invitationCame": "An invitation has arrived for you",
   "imperial.blessing.arabic": "وَأَلَّفَ بَيْنَ قُلُوبِهِمْ",

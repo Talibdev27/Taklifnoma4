@@ -14,6 +14,7 @@ import { VelvetTemplate } from "@/website/components/templates/velvet-template";
 import { PearlTemplate } from "@/website/components/templates/pearl-template";
 import { AuroraTemplate } from "@/website/components/templates/aurora-template";
 import { ImperialTemplate } from "@/website/components/templates/imperial-template";
+import { TurkishTemplate } from "@/website/components/templates/turkish-template";
 import { EpicTemplate } from "@/website/components/templates/epic-template";
 import { FlowerTemplate } from "@/website/components/templates/flower-template";
 
@@ -71,6 +72,26 @@ const IMPERIAL_DEMO = {
   defaultLanguage: 'uz',
   availableLanguages: ['uz', 'ru', 'en'],
   sections: { blessing: true, countdown: true, schedule: true, venue: true, location: true, rsvp: true, guestBook: true },
+};
+
+/* Demo data for the Turkish "Kına Gecesi" template. */
+const TURKISH_DEMO = {
+  ...DEMO_WEDDING,
+  bride: 'Farida',
+  groom: '',
+  weddingDate: new Date('2026-07-22T11:00:00').toISOString() as any,
+  weddingTime: '11:00',
+  venue: 'Marğilon Restoranı',
+  venueAddress: 'Mustakillik Caddesi 663, Margilan, Fergana, Özbekistan',
+  venueCoordinates: null,
+  mapPinUrl: 'https://maps.app.goo.gl/aVShWms9SiJQSr2q7',
+  story: null,
+  dearGuestMessage: null,
+  dressCode: null,
+  template: 'turkish',
+  defaultLanguage: 'tr',
+  availableLanguages: ['tr'],
+  sections: { dearGuests: true, countdown: true, details: true, gallery: true, location: true, rsvp: true, guestbook: true, orderCta: true },
 };
 
 const templateConfigs = {
@@ -862,7 +883,7 @@ export default function DemoWedding() {
     const templateParam = urlParams.get('template');
     if (!templateParam) return;
     // These templates render via their real wedding-template components.
-    if (['velvet', 'pearl', 'aurora', 'imperial', 'epic', 'flower'].includes(templateParam)) {
+    if (['velvet', 'pearl', 'aurora', 'imperial', 'turkish', 'epic', 'flower'].includes(templateParam)) {
       setCurrentTemplate(templateParam);
       return;
     }
@@ -886,6 +907,9 @@ export default function DemoWedding() {
   }
   if (currentTemplate === 'imperial') {
     return <ImperialTemplate wedding={IMPERIAL_DEMO as any} photos={[]} />;
+  }
+  if (currentTemplate === 'turkish') {
+    return <TurkishTemplate wedding={TURKISH_DEMO as any} photos={[]} />;
   }
   if (currentTemplate === 'epic') {
     return <EpicTemplate wedding={{ ...DEMO_WEDDING, template: 'epic' } as any} />;

@@ -25,6 +25,7 @@ export const FREE_TEMPLATES = [
   'pearl',
   'aurora',
   'imperial',
+  'turkish',
 ] as const;
 
 // Premium templates that require payment (currently none — see file header).

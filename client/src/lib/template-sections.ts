@@ -21,6 +21,7 @@ const STORY: SectionDef = { key: 'story', labelKey: L('story') };
 const GALLERY: SectionDef = { key: 'gallery', labelKey: L('gallery') };
 const RSVP: SectionDef = { key: 'rsvp', labelKey: L('rsvp') };
 const GUESTBOOK: SectionDef = { key: 'guestbook', labelKey: L('guestBook') };
+const LOCATION: SectionDef = { key: 'location', labelKey: L('location') };
 // Our company promo CTA rendered at the very end of every template's footer.
 const ORDER_CTA: SectionDef = { key: 'orderCta', labelKey: L('orderCta') };
 
@@ -41,6 +42,7 @@ export const TEMPLATE_SECTIONS: Record<string, SectionDef[]> = {
   pearl: [DEAR_GUESTS, COUNTDOWN, GALLERY, DETAILS, RSVP, GUESTBOOK, ORDER_CTA],
   epic: [DETAILS, RSVP, GUESTBOOK, ORDER_CTA],
   flower: [DETAILS, RSVP, GUESTBOOK, ORDER_CTA],
+  turkish: [DEAR_GUESTS, COUNTDOWN, DETAILS, GALLERY, LOCATION, RSVP, GUESTBOOK, ORDER_CTA],
 };
 
 /** Every section key across all templates, defaulted to ON (for form state). */

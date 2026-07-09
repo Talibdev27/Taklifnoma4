@@ -4,6 +4,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Cinzel:wght@400;500;600&family=Great+Vibes&display=swap');
 /* Imperial (Noir) — cinematic serif + sans + Arabic for the momento-style clone */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Amiri:ital@0;1&display=swap');
+/* Turkish "Kına Gecesi" template — flowing calligraphic script with full Turkish
+   glyph coverage (ı, İ, ğ, ş, ç, ö, ü). Dancing Script + Ephesis handle names. */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Ephesis&display=swap');
 
 @tailwind base;
 @tailwind components;

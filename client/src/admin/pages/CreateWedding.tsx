@@ -89,6 +89,12 @@ const templateOptions = [
     descriptionKey: "templates.imperialDesc",
     image: "https://images.pexels.com/photos/27865567/pexels-photo-27865567.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
+  {
+    id: "turkish",
+    nameKey: "templates.turkish",
+    descriptionKey: "templates.turkishDesc",
+    image: "https://images.pexels.com/photos/6044227/pexels-photo-6044227.jpeg?auto=compress&cs=tinysrgb&w=800",
+  },
 ];
 
 

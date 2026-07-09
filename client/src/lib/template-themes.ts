@@ -44,6 +44,13 @@ export const TEMPLATE_THEMES: Record<string, TemplateTheme> = {
     iconColor: '#241a08',
     glow: 'rgba(201,169,110,0.5)',
   },
+  // Turkish "Kına Gecesi" — Ottoman burgundy carpet + antique gold on ivory.
+  turkish: {
+    primary: '#7a1f2b',
+    accent: '#b0894a',
+    iconColor: '#f7f1e3',
+    glow: 'rgba(122,31,43,0.45)',
+  },
 
   // ── Other premium templates ────────────────────────────────────────────
   modern: {

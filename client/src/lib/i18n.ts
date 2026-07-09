@@ -5,6 +5,7 @@ import ru from '../locales/ru/translation.json';
 import uz from '../locales/uz/translation.json';
 import kk from '../locales/kk/translation.json';
 import kaa from '../locales/kaa/translation.json';
+import tr from '../locales/tr/translation.json';
 
 const resources = {
   en: { translation: en },
@@ -12,6 +13,10 @@ const resources = {
   uz: { translation: uz },
   kk: { translation: kk },
   kaa: { translation: kaa },
+  // Turkish — only the subset of keys used by the shared RSVP / Guest-book
+  // forms inside the "Kına Gecesi" (turkish) template. Anything missing falls
+  // back to `uz` via fallbackLng; the template itself hardcodes its Turkish copy.
+  tr: { translation: tr },
 };
 
 // Get saved language from localStorage or default to Uzbek
