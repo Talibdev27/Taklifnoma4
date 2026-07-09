@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import { format } from 'date-fns';
-import { tr as trLocale } from 'date-fns/locale';
+import { tr as trLocale, uz as uzLocale, ru as ruLocale } from 'date-fns/locale';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -9,7 +9,7 @@ import { EpicRSVPForm } from '@/website/components/epic-rsvp-form';
 import { OrderInvitationCTA } from '@/website/components/order-invitation-cta';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
-import { MapPin, ArrowRight } from 'lucide-react';
+import { MapPin, ArrowRight, Lock } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
 
@@ -30,6 +30,20 @@ const WINE_D = '#521021';
 const GOLD = '#b0894a';
 const GOLD_L = '#e0c07f';
 const IVORY = '#f6efdb';
+
+/* Optional raster decorations (transparent PNGs) dropped into
+ * client/public/turkish/. Each is rendered as a background LAYER on top of the
+ * SVG base design, so a missing file just shows nothing — nothing breaks. See
+ * client/public/turkish/README.md for the filename → image mapping. */
+const ASSETS = {
+  scene: '/turkish/scene.jpg',            // full "Ahıska Türkleri" illustration → default background
+  arch: '/turkish/arch.png',              // burgundy velvet niche shape (behind the ivory niche)
+  doves: '/turkish/doves.png',            // three flying doves
+  flowerRed: '/turkish/flower-red.png',   // burgundy glitter magnolia
+  flowerCream: '/turkish/flower-cream.png', // cream / gold glitter flower
+  flowersSide: '/turkish/flowers-side.png', // vertical cascading red flowers
+  heart: '/turkish/heart.png',            // gold glitter heart
+};
 
 interface TurkishTemplateProps {
   wedding: Wedding;
@@ -219,6 +233,155 @@ const Alem = ({ className = '', style }) => (
   </svg>
 );
 
+/** An absolutely-positioned raster decoration (transparent PNG). If the file is
+ *  absent the element is simply empty — the SVG base design underneath stays. */
+const Flora = ({ src, className = '', style }) => (
+  <div className={`tk-flora ${className}`} style={{ backgroundImage: `url("${src}")`, ...style }} aria-hidden />
+);
+
+/** A burgundy magnolia + cream glitter flower tucked into two opposite corners
+ *  of a `relative` container (cards / the niche). */
+const CornerFlora = () => (
+  <>
+    <Flora src={ASSETS.flowerRed} style={{ top: -30, right: -24, width: 116, height: 116, transform: 'rotate(10deg)' }} />
+    <Flora src={ASSETS.flowerCream} style={{ bottom: -26, left: -22, width: 104, height: 104, transform: 'rotate(-14deg)' }} />
+  </>
+);
+
+/** Gold glitter heart flanked by hairlines — a divider that overlays the heart
+ *  PNG (if present) on top of a drawn fallback so it always reads. */
+const HeartDivider = ({ className = '' }) => (
+  <div className={`flex items-center justify-center gap-3 ${className}`} aria-hidden>
+    <span className="h-px w-12 sm:w-16" style={{ background: `linear-gradient(90deg,transparent,${GOLD})` }} />
+    <div className="relative w-6 h-6 shrink-0">
+      <svg viewBox="0 0 24 24" className="absolute inset-0 w-full h-full" style={{ color: GOLD }} aria-hidden>
+        <path {...g()} d="M12 20 C 5 14 3 9 6 6 c 2 -2 5 -1 6 2 c 1 -3 4 -4 6 -2 c 3 3 1 8 -6 14 z" />
+      </svg>
+      <Flora src={ASSETS.heart} style={{ inset: 0, width: '100%', height: '100%' }} />
+    </div>
+    <span className="h-px w-12 sm:w-16" style={{ background: `linear-gradient(90deg,${GOLD},transparent)` }} />
+  </div>
+);
+
+/* ── Trilingual copy (Turkish first, then Uzbek + Russian). The event name
+ *    "Kına Gecesi" stays constant across languages (it is the ceremony's name). */
+const LANGS = ['tr', 'uz', 'ru'] as const;
+type Lang = typeof LANGS[number];
+const LANG_LABEL: Record<Lang, string> = { tr: 'TR', uz: 'UZ', ru: 'RU' };
+const DATE_LOCALE: Record<Lang, any> = { tr: trLocale, uz: uzLocale, ru: ruLocale };
+
+const COPY: Record<Lang, any> = {
+  tr: {
+    gateReceived: 'Davetiyeniz hazır', gateUnlock: 'Açmak için kaydırın',
+    dearGuests: 'Değerli Misafirlerimiz',
+    invite: [
+      'Karadeniz’in havasını ve neşesini taşıyan bu kına gecemizde, sevincimize ortak olmanızı ve kınamızı yakarken sizleri de aramızda görmeyi yürekten dileriz.',
+      'Teşrifleriniz bizleri onurlandıracaktır.',
+    ],
+    countdownLabel: 'Kınamıza Kalan',
+    units: ['Gün', 'Saat', 'Dakika', 'Saniye'],
+    details: 'Tarih & Saat', saat: 'Saat',
+    days: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'],
+    galleryLabel: 'Anılarımız', galleryTitle: 'Fotoğraflar',
+    konum: 'Konum', mekan: 'Mekan', openMap: 'Haritada Aç',
+    rsvpTitle: 'Katılım', rsvpSub: 'Lütfen katılımınızı bize bildiriniz',
+    gbLabel: 'Dilekleriniz', gbTitle: 'Dilek Defteri',
+    closing: 'Sizleri aramızda görmekten mutluluk duyarız',
+  },
+  uz: {
+    gateReceived: 'Taklifnomangiz tayyor', gateUnlock: 'Ochish uchun suring',
+    dearGuests: 'Hurmatli mehmonlar',
+    invite: [
+      'Qora dengiz ruhi va shodligini o‘zida mujassam etgan ushbu kina kechamizda quvonchimizga sherik bo‘lishingizni va sizni davramizda ko‘rishni chin dildan tilaymiz.',
+      'Tashrifingiz biz uchun katta sharaf bo‘ladi.',
+    ],
+    countdownLabel: 'Kinagacha qoldi',
+    units: ['Kun', 'Soat', 'Daqiqa', 'Soniya'],
+    details: 'Sana & Vaqt', saat: 'Soat',
+    days: ['Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan', 'Yak'],
+    galleryLabel: 'Xotiralarimiz', galleryTitle: 'Suratlar',
+    konum: 'Manzil', mekan: 'Joy', openMap: 'Xaritada ochish',
+    rsvpTitle: 'Ishtirok', rsvpSub: 'Iltimos, ishtirokingizni bildiring',
+    gbLabel: 'Tilaklaringiz', gbTitle: 'Tilaklar Daftari',
+    closing: 'Sizni davramizda ko‘rishdan mamnun bo‘lamiz',
+  },
+  ru: {
+    gateReceived: 'Ваше приглашение готово', gateUnlock: 'Проведите, чтобы открыть',
+    dearGuests: 'Дорогие гости',
+    invite: [
+      'В этот вечер хны, наполненный духом и радостью Причерноморья, мы от всего сердца желаем разделить с вами нашу радость и видеть вас среди нас.',
+      'Ваш визит станет для нас честью.',
+    ],
+    countdownLabel: 'До вечера хны осталось',
+    units: ['Дней', 'Часов', 'Минут', 'Секунд'],
+    details: 'Дата & Время', saat: 'Время',
+    days: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+    galleryLabel: 'Наши моменты', galleryTitle: 'Фотографии',
+    konum: 'Место', mekan: 'Место проведения', openMap: 'Открыть на карте',
+    rsvpTitle: 'Участие', rsvpSub: 'Пожалуйста, подтвердите ваше участие',
+    gbLabel: 'Пожелания', gbTitle: 'Книга пожеланий',
+    closing: 'Будем рады видеть вас среди нас',
+  },
+};
+
+/* Slide-to-unlock — drag the knob left→right to open the invitation (as in Imperial). */
+function SlideToUnlock({ label, onUnlock }: { label: string; onUnlock: () => void }) {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const xRef = useRef(0);
+  const [x, setX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [done, setDone] = useState(false);
+  const KNOB = 56, PAD = 5;
+
+  const maxX = () => Math.max(0, (trackRef.current?.offsetWidth || 300) - KNOB - PAD * 2);
+  const setFromClientX = (clientX: number) => {
+    const rect = trackRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const nx = Math.max(0, Math.min(clientX - rect.left - PAD - KNOB / 2, maxX()));
+    xRef.current = nx; setX(nx);
+  };
+  const onDown = (e: React.PointerEvent) => {
+    if (done) return;
+    setDragging(true);
+    try { (e.target as Element).setPointerCapture?.(e.pointerId); } catch {}
+  };
+  const onMove = (e: React.PointerEvent) => { if (dragging) setFromClientX(e.clientX); };
+  const finish = () => {
+    if (!dragging) return;
+    setDragging(false);
+    if (xRef.current >= maxX() * 0.8) { xRef.current = maxX(); setX(maxX()); setDone(true); onUnlock(); }
+    else { xRef.current = 0; setX(0); }
+  };
+  const pct = maxX() ? x / maxX() : 0;
+
+  return (
+    <div
+      ref={trackRef}
+      className="tk-pulse relative w-[min(86vw,320px)] h-16 rounded-full select-none touch-none"
+      style={{ background: 'rgba(0,0,0,0.4)', border: `1px solid ${GOLD}88`, backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)', touchAction: 'none' }}
+      onPointerMove={onMove}
+      onPointerUp={finish}
+      onPointerCancel={finish}
+    >
+      <div className="absolute inset-y-[5px] left-[5px] rounded-full pointer-events-none"
+        style={{ width: x + KNOB, background: `linear-gradient(100deg,${GOLD},${GOLD_L})`, opacity: 0.92, transition: dragging ? 'none' : 'width .35s ease' }} />
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <span className="tk-label text-[10px] font-semibold flex items-center gap-2"
+          style={{ color: GOLD_L, opacity: Math.max(0, 1 - pct * 1.4) }}>
+          {label} <ArrowRight className="w-4 h-4" />
+        </span>
+      </div>
+      <div
+        onPointerDown={onDown}
+        className="absolute top-[5px] rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing"
+        style={{ left: 5 + x, width: KNOB, height: 'calc(100% - 10px)', background: `linear-gradient(135deg,#fff3cf,${GOLD})`, boxShadow: '0 4px 14px rgba(0,0,0,0.45)', transition: dragging ? 'none' : 'left .35s ease', touchAction: 'none' }}
+      >
+        <Lock className="w-5 h-5" style={{ color: WINE }} />
+      </div>
+    </div>
+  );
+}
+
 export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) {
   const { i18n } = useTranslation();
 
@@ -231,11 +394,28 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const musicRef = useRef<AzamatScrollMusicHandle | null>(null);
 
-  // This template is Turkish-only — force the `tr` locale so the shared RSVP /
-  // guest-book forms speak Turkish too. (Missing keys fall back to uz.)
+  // Trilingual — Turkish is the default/first language; the switcher also flips
+  // the shared RSVP / guest-book forms via i18n (tr partial, uz/ru full locales).
+  const [lang, setLang] = useState<Lang>('tr');
+  const c = COPY[lang];
+  const switchLang = (code: Lang) => {
+    setLang(code);
+    i18n.changeLanguage(code);
+    try { localStorage.setItem('language', code); } catch {}
+  };
   useEffect(() => {
     if (i18n.language !== 'tr') i18n.changeLanguage('tr');
-  }, []); // once
+  }, []); // once — start in Turkish
+
+  // Imperial-style opening: a locked gate the guest slides open (left → right).
+  const [locked, setLocked] = useState(true);
+  const [unlocking, setUnlocking] = useState(false);
+  const handleUnlock = () => {
+    if (unlocking) return;
+    musicRef.current?.startPlayback();
+    setUnlocking(true);
+    setTimeout(() => setLocked(false), 800);
+  };
 
   const { data: guestBookEntries = [] } = useQuery<GuestBookEntry[]>({
     queryKey: ['/api/guest-book/wedding', wedding?.id],
@@ -266,7 +446,7 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
 
   const dateObj = wedding.weddingDate ? new Date(wedding.weddingDate) : null;
   const dottedDate = dateObj ? format(dateObj, 'dd.MM.yyyy') : '';
-  const monthLabel = dateObj ? format(dateObj, 'LLLL yyyy', { locale: trLocale }) : '';
+  const monthLabel = dateObj ? format(dateObj, 'LLLL yyyy', { locale: DATE_LOCALE[lang] || trLocale }) : '';
 
   /* Month calendar grid (Mon-first) with the ceremony day highlighted. */
   const calendar = (() => {
@@ -333,7 +513,7 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
           background: linear-gradient(100deg,#8a6a34,#e0c07f 34%,#fff3d4 50%,#d8b978 66%,#8a6a34);
           -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
         }
-        .tk-carpet { position: relative; background: ${WINE}; }
+        .tk-carpet { position: relative; background: transparent; }
         .tk-carpet::before {
           content:''; position:absolute; inset:0; pointer-events:none; opacity:0.16;
           background-image:url("data:image/svg+xml,${carpetTile}");
@@ -361,8 +541,23 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
         .tk-sway { transform-origin: top center; animation: tk-sway 5s ease-in-out infinite; }
         @keyframes tk-glow { 0%,100%{ opacity:.75 } 50%{ opacity:1 } }
         .tk-flicker { animation: tk-glow 2.6s ease-in-out infinite; }
-        @media (prefers-reduced-motion: reduce){ .tk-sway,.tk-flicker{ animation:none } }
+        /* raster decoration layers (from client/public/turkish/) */
+        .tk-flora { position:absolute; background-size:contain; background-repeat:no-repeat; background-position:center; pointer-events:none; z-index:5; }
+        /* default page background — the "Ahıska Türkleri" poster, fixed behind everything (no tint) */
+        .tk-page-bg { position:fixed; inset:0; z-index:-1; background-image:url("${ASSETS.scene}"); background-size:cover; background-position:center; background-repeat:no-repeat; }
+        /* extra, stronger copy of the poster just in the hero */
+        .tk-scene { position:absolute; inset:0; background-image:url("${ASSETS.scene}"); background-size:cover; background-position:center 8%; opacity:0.5; z-index:0; }
+        .tk-cascade { position:absolute; top:0; bottom:0; width:clamp(44px,10vw,88px); background-image:url("${ASSETS.flowersSide}"); background-size:cover; background-repeat:no-repeat; pointer-events:none; opacity:0.9; z-index:2; }
+        .tk-cascade-l { left:0; background-position:left top; }
+        .tk-cascade-r { right:0; background-position:left top; transform:scaleX(-1); }
+        .tk-archbg { position:absolute; left:50%; top:0; transform:translateX(-50%); width:118%; height:100%; background-image:url("${ASSETS.arch}"); background-size:contain; background-repeat:no-repeat; background-position:center top; z-index:0; pointer-events:none; }
+        @keyframes tk-pulse { 0%,100%{ box-shadow:0 0 0 0 rgba(176,137,74,0.45) } 50%{ box-shadow:0 0 0 12px rgba(176,137,74,0) } }
+        .tk-pulse { animation: tk-pulse 2.6s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce){ .tk-sway,.tk-flicker,.tk-pulse{ animation:none } }
       `}</style>
+
+      {/* default background — the "Ahıska Türkleri" poster, muted behind everything */}
+      <div className="tk-page-bg" />
 
       <AzamatScrollMusic
         ref={musicRef}
@@ -370,41 +565,81 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
         theme={{ primary: GOLD, accent: WINE, iconColor: IVORY, glow: 'rgba(176,137,74,0.5)' }}
       />
 
+      {/* ── Language switcher (top-right; above the gate so it works while locked) ── */}
+      <div className="fixed top-4 right-4 z-[90] flex gap-1.5">
+        {LANGS.map((code) => (
+          <button key={code} onClick={() => switchLang(code)}
+            className="w-9 h-9 rounded-full text-[11px] tracking-wider transition-all backdrop-blur-md"
+            style={lang === code
+              ? { background: GOLD, color: WINE, fontWeight: 600 }
+              : { background: 'rgba(255,255,255,0.12)', color: 'rgba(246,239,219,0.85)' }}>
+            {LANG_LABEL[code]}
+          </button>
+        ))}
+      </div>
+
+      {/* ════════════ UNLOCK GATE — slide left → right to open ════════════ */}
+      {locked && (
+        <div className={`fixed inset-0 z-[70] flex items-center justify-center text-center px-6 transition-opacity duration-700 ${unlocking ? 'opacity-0' : 'opacity-100'}`}>
+          {/* faded scene backdrop + wine wash */}
+          <div className="absolute inset-0" style={{ backgroundImage: `url("${ASSETS.scene}")`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.35 }} />
+          <div className="absolute inset-0" style={{ background: `radial-gradient(circle at 50% 38%, rgba(109,26,46,0.72), rgba(82,16,33,0.94) 74%)` }} />
+          <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}
+            className="relative z-10 max-w-md flex flex-col items-center">
+            <p className="tk-label tk-gold-l text-[10px] sm:text-[11px] mb-5">{c.gateReceived}</p>
+            <p className="tk-label text-[10px] tracking-[0.4em] tk-gold-l mb-3">Ahıska Türkleri</p>
+            <h1 className="tk-script text-6xl sm:text-7xl leading-[0.95]" style={{ color: IVORY }}>{possessive || name}</h1>
+            <p className="tk-display text-lg sm:text-xl tracking-[0.3em] tk-gold-l mt-2">KINA GECESİ</p>
+            <HeartDivider className="my-6" />
+            <p className="tk-display text-2xl sm:text-3xl tracking-[0.12em]" style={{ color: IVORY }}>{dottedDate}</p>
+            <p className="tk-label text-[11px] tk-gold-l mt-2 mb-9">{c.saat} {timeText}</p>
+            <SlideToUnlock label={c.gateUnlock} onUnlock={handleUnlock} />
+          </motion.div>
+        </div>
+      )}
+
       {/* ════════════ HERO — mihrab niche on the carpet ════════════ */}
       <header className="tk-carpet tk-vignette relative overflow-hidden px-5 pt-0 pb-16">
+        {/* full "Ahıska Türkleri" illustration as a faded backdrop (like Imperial) */}
+        <div className="tk-scene" />
+        {/* cascading red flowers down each edge */}
+        <div className="tk-cascade tk-cascade-l hidden sm:block" />
+        <div className="tk-cascade tk-cascade-r hidden sm:block" />
         <KilimBand />
 
         {/* hanging lanterns */}
-        <Lantern className="tk-sway absolute left-3 sm:left-10 top-8 w-9 sm:w-12 h-auto opacity-90" />
-        <Lantern className="tk-sway absolute right-3 sm:right-10 top-8 w-9 sm:w-12 h-auto opacity-90" style={{ animationDelay: '1.2s' }} />
+        <Lantern className="tk-sway absolute left-3 sm:left-10 top-8 w-9 sm:w-12 h-auto opacity-90 z-10" />
+        <Lantern className="tk-sway absolute right-3 sm:right-10 top-8 w-9 sm:w-12 h-auto opacity-90 z-10" style={{ animationDelay: '1.2s' }} />
 
-        <div className="relative z-10 max-w-xl mx-auto text-center pt-14 sm:pt-16">
-          <motion.p initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}
-            className="tk-label tk-gold-l text-[11px] sm:text-xs mb-4">Ahıska Türkleri</motion.p>
-          <Birds className="w-24 sm:w-28 h-auto mx-auto mb-3 opacity-90" />
+        <div className="relative z-10 max-w-xl mx-auto text-center pt-[150px] sm:pt-[124px]">
+          {/* "Ahıska Türkleri" heading + doves intentionally omitted here — the
+              background poster already carries those elements. */}
 
-          {/* the ivory niche */}
-          <div className="relative inline-block w-full max-w-md mx-auto">
-            <Alem className="absolute left-1/2 -translate-x-1/2 -top-9 w-6 h-auto z-20" />
+          {/* the ivory niche, framed by the burgundy velvet arch — kept compact
+              so more of the background poster shows around it */}
+          <div className="relative inline-block w-full max-w-[300px] sm:max-w-[330px] mx-auto">
+            <div className="tk-archbg" />
+            <Alem className="absolute left-1/2 -translate-x-1/2 -top-7 w-5 h-auto z-20" />
             <motion.div
               variants={fadeUp} initial="hidden" animate="visible"
-              className="tk-niche relative px-6 sm:px-10 pt-16 pb-12 mt-4">
-              <p className="tk-label text-[10px] tracking-[0.4em] text-[#9a6a2f] mb-4">Kına Gecesi</p>
-              <h1 className="tk-script text-6xl sm:text-7xl leading-[0.95] mb-1" style={{ color: WINE }}>{possessive || name}</h1>
-              <p className="tk-display text-xl sm:text-2xl tracking-[0.3em] text-[#7a1f2b] mt-3">KINA GECESİ</p>
+              className="tk-niche relative z-10 px-5 sm:px-7 pt-11 pb-8 mt-4">
+              <CornerFlora />
+              <p className="tk-label text-[9px] tracking-[0.4em] text-[#9a6a2f] mb-3">Kına Gecesi</p>
+              <h1 className="tk-script text-5xl sm:text-6xl leading-[0.95] mb-1" style={{ color: WINE }}>{possessive || name}</h1>
+              <p className="tk-display text-base sm:text-lg tracking-[0.3em] text-[#7a1f2b] mt-2">KINA GECESİ</p>
 
-              <div className="my-6"><Rosette className="w-40 h-auto mx-auto" /></div>
+              <HeartDivider className="my-4" />
 
-              <p className="tk-display text-3xl sm:text-4xl tracking-[0.12em]" style={{ color: '#3a241a' }}>{dottedDate}</p>
-              <p className="tk-label text-[11px] text-[#9a6a2f] mt-3">Saat {timeText}</p>
+              <p className="tk-display text-2xl sm:text-3xl tracking-[0.12em]" style={{ color: '#3a241a' }}>{dottedDate}</p>
+              <p className="tk-label text-[10px] text-[#9a6a2f] mt-2">{c.saat} {timeText}</p>
 
               {/* instruments + candles at the niche base */}
-              <div className="flex items-end justify-center gap-4 mt-8">
-                <Saz className="w-8 sm:w-9 h-auto tk-gold" style={{ color: GOLD }} />
-                <Candle className="tk-flicker w-4 h-auto" style={{ color: GOLD }} />
-                <Def className="w-14 sm:w-16 h-auto" style={{ color: GOLD }} />
-                <Candle className="tk-flicker w-4 h-auto" style={{ color: GOLD, animationDelay: '.8s' }} />
-                <Tulip className="w-7 sm:w-8 h-auto" style={{ color: GOLD }} />
+              <div className="relative z-10 flex items-end justify-center gap-3 mt-6">
+                <Saz className="w-6 sm:w-7 h-auto tk-gold" style={{ color: GOLD }} />
+                <Candle className="tk-flicker w-3 h-auto" style={{ color: GOLD }} />
+                <Def className="w-11 sm:w-12 h-auto" style={{ color: GOLD }} />
+                <Candle className="tk-flicker w-3 h-auto" style={{ color: GOLD, animationDelay: '.8s' }} />
+                <Tulip className="w-5 sm:w-6 h-auto" style={{ color: GOLD }} />
               </div>
             </motion.div>
           </div>
@@ -416,16 +651,17 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
         <section className="tk-carpet relative px-5 py-16 sm:py-20">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="tk-ivory tk-frame relative max-w-2xl mx-auto rounded-[18px] px-7 sm:px-12 py-12 text-center">
+            <CornerFlora />
             <Tulip className="w-8 h-auto mx-auto mb-4" style={{ color: GOLD }} />
-            <p className="tk-label text-[11px] text-[#9a6a2f] mb-6">Değerli Misafirlerimiz</p>
+            <p className="tk-label text-[11px] text-[#9a6a2f] mb-6">{c.dearGuests}</p>
             {wedding.dearGuestMessage ? (
               <p className="text-lg sm:text-xl leading-relaxed whitespace-pre-wrap" style={{ color: '#4a3222' }}>
                 {wedding.dearGuestMessage}
               </p>
             ) : (
               <div className="text-lg sm:text-xl leading-relaxed space-y-4" style={{ color: '#4a3222' }}>
-                <p>Karadeniz’in havasını ve neşesini taşıyan bu kına gecemizde, sevincimize ortak olmanızı ve kınamızı yakarken sizleri de aramızda görmeyi yürekten dileriz.</p>
-                <p>Teşrifleriniz bizleri onurlandıracaktır.</p>
+                <p>{c.invite[0]}</p>
+                <p>{c.invite[1]}</p>
               </div>
             )}
             {wedding.dressCode && (
@@ -441,13 +677,13 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
       {show('countdown') && (
         <section className="tk-carpet tk-vignette relative px-5 py-16 sm:py-20">
           <div className="relative z-10 max-w-2xl mx-auto text-center">
-            <p className="tk-label tk-gold-l text-[11px] mb-2">Kınamıza Kalan</p>
+            <p className="tk-label tk-gold-l text-[11px] mb-2">{c.countdownLabel}</p>
             <Rosette className="w-40 h-auto mx-auto mb-8" style={{ color: GOLD_L }} />
             <div className="grid grid-cols-4 gap-2.5 sm:gap-4 max-w-md mx-auto">
-              {[['Gün', timeLeft.days], ['Saat', timeLeft.hours], ['Dakika', timeLeft.minutes], ['Saniye', timeLeft.seconds]].map(([label, v]) => (
-                <div key={label as string} className="tk-ivory tk-frame rounded-2xl py-4 sm:py-5">
+              {[timeLeft.days, timeLeft.hours, timeLeft.minutes, timeLeft.seconds].map((v, idx) => (
+                <div key={idx} className="tk-ivory tk-frame rounded-2xl py-4 sm:py-5">
                   <div className="tk-display text-3xl sm:text-4xl tabular-nums" style={{ color: WINE }}>{String(v).padStart(2, '0')}</div>
-                  <div className="tk-label text-[8px] sm:text-[9px] text-[#9a6a2f] mt-1.5">{label}</div>
+                  <div className="tk-label text-[8px] sm:text-[9px] text-[#9a6a2f] mt-1.5">{c.units[idx]}</div>
                 </div>
               ))}
             </div>
@@ -460,15 +696,15 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
         <section className="tk-carpet relative px-5 py-16 sm:py-20">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="tk-ivory tk-frame max-w-xl mx-auto rounded-[18px] px-7 sm:px-12 py-12 text-center">
-            <p className="tk-label text-[11px] text-[#9a6a2f] mb-5">Tarih &amp; Saat</p>
+            <p className="tk-label text-[11px] text-[#9a6a2f] mb-5">{c.details}</p>
             <p className="tk-display text-4xl sm:text-5xl tracking-[0.1em]" style={{ color: WINE }}>{dottedDate}</p>
-            <p className="tk-label text-xs text-[#9a6a2f] mt-3">Saat {timeText}</p>
+            <p className="tk-label text-xs text-[#9a6a2f] mt-3">{c.saat} {timeText}</p>
 
             {calendar && (
               <div className="mt-10">
                 <p className="tk-label text-xs text-[#5a3b28] mb-4">{monthLabel}</p>
                 <table className="tk-cal w-full max-w-sm mx-auto">
-                  <thead><tr>{['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map((d) => <th key={d}>{d}</th>)}</tr></thead>
+                  <thead><tr>{c.days.map((d: string, di: number) => <th key={di}>{d}</th>)}</tr></thead>
                   <tbody>
                     {Array.from({ length: calendar.cells.length / 7 }).map((_, r) => (
                       <tr key={r}>{calendar.cells.slice(r * 7, r * 7 + 7).map((d, i) => (
@@ -489,8 +725,8 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
         <section className="tk-carpet tk-vignette relative px-5 py-16 sm:py-20">
           <div className="relative z-10 max-w-5xl mx-auto">
             <div className="text-center mb-10">
-              <p className="tk-label tk-gold-l text-[11px] mb-2">Anılarımız</p>
-              <h2 className="tk-script tk-gold-text text-5xl sm:text-6xl">Fotoğraflar</h2>
+              <p className="tk-label tk-gold-l text-[11px] mb-2">{c.galleryLabel}</p>
+              <h2 className="tk-script tk-gold-text text-5xl sm:text-6xl">{c.galleryTitle}</h2>
               <Rosette className="w-40 h-auto mx-auto mt-4" style={{ color: GOLD_L }} />
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
@@ -510,10 +746,11 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
       {show('location') && (
         <section className="tk-carpet relative px-5 py-16 sm:py-20">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="tk-ivory tk-frame max-w-3xl mx-auto rounded-[18px] px-6 sm:px-10 py-12">
+            className="tk-ivory tk-frame relative max-w-3xl mx-auto rounded-[18px] px-6 sm:px-10 py-12">
+            <CornerFlora />
             <div className="text-center mb-8">
-              <p className="tk-label text-[11px] text-[#9a6a2f] mb-2">Konum</p>
-              <h2 className="tk-script text-4xl sm:text-5xl" style={{ color: WINE }}>{wedding.venue || 'Mekan'}</h2>
+              <p className="tk-label text-[11px] text-[#9a6a2f] mb-2">{c.konum}</p>
+              <h2 className="tk-script text-4xl sm:text-5xl" style={{ color: WINE }}>{wedding.venue || c.mekan}</h2>
               {addressText && (
                 <p className="flex items-start justify-center gap-2 text-sm sm:text-base mt-4" style={{ color: '#5a3b28' }}>
                   <MapPin className="w-4 h-4 mt-0.5 shrink-0" style={{ color: GOLD }} /> {addressText}
@@ -530,7 +767,7 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
             {hasMap && (
               <div className="text-center">
                 <button onClick={openMap} className="tk-btn inline-flex items-center gap-2 px-7 py-3.5 rounded-full tk-label text-xs">
-                  <MapPin className="w-4 h-4" /> Haritada Aç <ArrowRight className="w-4 h-4" />
+                  <MapPin className="w-4 h-4" /> {c.openMap} <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             )}
@@ -544,8 +781,8 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
           <div className="relative z-10 max-w-2xl mx-auto">
             <div className="text-center mb-8">
               <p className="tk-label tk-gold-l text-[11px] mb-2">L.C.V.</p>
-              <h2 className="tk-script tk-gold-text text-5xl sm:text-6xl">Katılım</h2>
-              <p className="text-sm mt-3" style={{ color: 'rgba(246,239,219,0.75)' }}>Lütfen katılımınızı bize bildiriniz</p>
+              <h2 className="tk-script tk-gold-text text-5xl sm:text-6xl">{c.rsvpTitle}</h2>
+              <p className="text-sm mt-3" style={{ color: 'rgba(246,239,219,0.75)' }}>{c.rsvpSub}</p>
             </div>
             <div className="tk-ivory tk-frame rounded-[18px] p-6 sm:p-10">
               <EpicRSVPForm wedding={wedding} primaryColor={WINE} accentColor={GOLD} labelColor="text-[#4a3222]" />
@@ -559,8 +796,8 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
         <section id="guestbook" className="tk-carpet relative px-5 py-16 sm:py-20">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-8">
-              <p className="tk-label tk-gold-l text-[11px] mb-2">Dilekleriniz</p>
-              <h2 className="tk-script tk-gold-text text-4xl sm:text-5xl">Dilek Defteri</h2>
+              <p className="tk-label tk-gold-l text-[11px] mb-2">{c.gbLabel}</p>
+              <h2 className="tk-script tk-gold-text text-4xl sm:text-5xl">{c.gbTitle}</h2>
             </div>
             <div className="tk-ivory tk-frame rounded-[18px] p-6 sm:p-9">
               <GuestBookForm weddingId={wedding.id} primaryColor={WINE} accentColor={GOLD} surface="light" />
@@ -589,7 +826,7 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
             <Tassel className="w-5 h-auto opacity-90" />
           </div>
           <p className="tk-script tk-gold-text text-5xl mb-2">{name}</p>
-          <p className="tk-label text-[11px] tk-gold-l">Sizleri aramızda görmekten mutluluk duyarız</p>
+          <p className="tk-label text-[11px] tk-gold-l">{c.closing}</p>
           <Rosette className="w-40 h-auto mx-auto mt-6" style={{ color: GOLD_L }} />
           <p className="tk-label text-[10px] mt-4" style={{ color: 'rgba(246,239,219,0.45)' }}>— Kına Gecesi —</p>
         </div>
