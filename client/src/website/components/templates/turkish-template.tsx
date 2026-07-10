@@ -275,7 +275,7 @@ const COPY: Record<Lang, any> = {
     gateReceived: 'Davetiyeniz hazır', gateUnlock: 'Açmak için kaydırın',
     dearGuests: 'Değerli Misafirlerimiz',
     invite: [
-      'Karadeniz’in havasını ve neşesini taşıyan bu kına gecemizde, sevincimize ortak olmanızı ve kınamızı yakarken sizleri de aramızda görmeyi yürekten dileriz.',
+      'Sevincimize ortak olmanızı ve kınamızı yakarken sizleri de aramızda görmeyi yürekten dileriz.',
       'Teşrifleriniz bizleri onurlandıracaktır.',
     ],
     countdownLabel: 'Kınamıza Kalan',
@@ -292,7 +292,7 @@ const COPY: Record<Lang, any> = {
     gateReceived: 'Taklifnomangiz tayyor', gateUnlock: 'Ochish uchun suring',
     dearGuests: 'Hurmatli mehmonlar',
     invite: [
-      'Qora dengiz ruhi va shodligini o‘zida mujassam etgan ushbu kina kechamizda quvonchimizga sherik bo‘lishingizni va sizni davramizda ko‘rishni chin dildan tilaymiz.',
+      'Quvonchimizga sherik bo‘lishingizni va sizni davramizda ko‘rishni chin dildan tilaymiz.',
       'Tashrifingiz biz uchun katta sharaf bo‘ladi.',
     ],
     countdownLabel: 'Kinagacha qoldi',
@@ -309,7 +309,7 @@ const COPY: Record<Lang, any> = {
     gateReceived: 'Ваше приглашение готово', gateUnlock: 'Проведите, чтобы открыть',
     dearGuests: 'Дорогие гости',
     invite: [
-      'В этот вечер хны, наполненный духом и радостью Причерноморья, мы от всего сердца желаем разделить с вами нашу радость и видеть вас среди нас.',
+      'Мы от всего сердца желаем разделить с вами нашу радость и видеть вас среди нас.',
       'Ваш визит станет для нас честью.',
     ],
     countdownLabel: 'До вечера хны осталось',
