@@ -9,6 +9,7 @@ import { EpicRSVPForm } from '@/website/components/epic-rsvp-form';
 import { OrderInvitationCTA } from '@/website/components/order-invitation-cta';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
+import { ToyonaCard } from '@/website/components/toyona-card';
 import { MapPin, ArrowRight, Lock } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
@@ -286,6 +287,9 @@ const COPY: Record<Lang, any> = {
     konum: 'Konum', mekan: 'Mekan', openMap: 'Haritada Aç',
     rsvpTitle: 'Katılım', rsvpSub: 'Lütfen katılımınızı bize bildiriniz',
     gbLabel: 'Dilekleriniz', gbTitle: 'Dilek Defteri',
+    toyonaLabel: 'Takı', toyonaTitle: 'Düğün Hediyesi',
+    toyonaSub: 'Çifti maddi bir hediye ile tebrik etmek isterseniz bu karta gönderebilirsiniz',
+    toyonaCopy: 'Kart numarasını kopyala', toyonaCopied: 'Kopyalandı!',
     closing: 'Sizleri aramızda görmekten mutluluk duyarız',
   },
   uz: {
@@ -303,6 +307,9 @@ const COPY: Record<Lang, any> = {
     konum: 'Manzil', mekan: 'Joy', openMap: 'Xaritada ochish',
     rsvpTitle: 'Ishtirok', rsvpSub: 'Iltimos, ishtirokingizni bildiring',
     gbLabel: 'Tilaklaringiz', gbTitle: 'Tilaklar Daftari',
+    toyonaLabel: 'To‘yona', toyonaTitle: 'To‘yona',
+    toyonaSub: 'Yosh oilani to‘yona bilan qutlamoqchi bo‘lsangiz, ushbu kartaga yuborishingiz mumkin',
+    toyonaCopy: 'Karta raqamini nusxalash', toyonaCopied: 'Nusxalandi!',
     closing: 'Sizni davramizda ko‘rishdan mamnun bo‘lamiz',
   },
   ru: {
@@ -320,6 +327,9 @@ const COPY: Record<Lang, any> = {
     konum: 'Место', mekan: 'Место проведения', openMap: 'Открыть на карте',
     rsvpTitle: 'Участие', rsvpSub: 'Пожалуйста, подтвердите ваше участие',
     gbLabel: 'Пожелания', gbTitle: 'Книга пожеланий',
+    toyonaLabel: 'Туёна', toyonaTitle: 'Свадебный подарок',
+    toyonaSub: 'Если вы хотите поздравить молодожёнов денежным подарком, вы можете отправить его на эту карту',
+    toyonaCopy: 'Скопировать номер карты', toyonaCopied: 'Скопировано!',
     closing: 'Будем рады видеть вас среди нас',
   },
 };
@@ -786,6 +796,29 @@ export function TurkishTemplate({ wedding, photos = [] }: TurkishTemplateProps) 
             </div>
             <div className="tk-ivory tk-frame rounded-[18px] p-6 sm:p-10">
               <EpicRSVPForm wedding={wedding} primaryColor={WINE} accentColor={GOLD} labelColor="text-[#4a3222]" />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ════════════ TAKI / TO'YONA ════════════ */}
+      {show('toyona') && !!wedding.cardNumber && (
+        <section id="toyona" className="tk-carpet relative px-5 py-16 sm:py-20">
+          <div className="relative z-10 max-w-2xl mx-auto">
+            <div className="text-center mb-8">
+              <p className="tk-label tk-gold-l text-[11px] mb-2">{c.toyonaLabel}</p>
+              <h2 className="tk-script tk-gold-text text-4xl sm:text-5xl">{c.toyonaTitle}</h2>
+              <p className="text-sm mt-3" style={{ color: 'rgba(246,239,219,0.75)' }}>{c.toyonaSub}</p>
+            </div>
+            <div className="tk-ivory tk-frame rounded-[18px] p-6 sm:p-9 text-center">
+              <ToyonaCard
+                cardHolderName={wedding.cardHolderName}
+                cardNumber={wedding.cardNumber}
+                accent={WINE}
+                surface="light"
+                copyLabel={c.toyonaCopy}
+                copiedLabel={c.toyonaCopied}
+              />
             </div>
           </div>
         </section>

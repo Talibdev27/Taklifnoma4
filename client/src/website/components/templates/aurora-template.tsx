@@ -10,6 +10,7 @@ import { OrderInvitationCTA } from '@/website/components/order-invitation-cta';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
 import { MediaCarousel } from '@/website/components/media-carousel';
+import { ToyonaCard } from '@/website/components/toyona-card';
 import {
   MapPin, Heart, MessageSquare, Calendar, Users, ChevronDown, Sparkles,
 } from 'lucide-react';
@@ -954,6 +955,35 @@ export function AuroraTemplate({ wedding, photos = [] }: AuroraTemplateProps) {
           </motion.div>
         </div>
       </section>
+
+      {/* ════════════ TO'YONA (money gift) ════════════ */}
+      {show('toyona') && !!wedding.cardNumber && (
+        <section id="toyona" className="relative z-10 py-24 px-6 border-t border-white/10">
+          <div className="max-w-2xl mx-auto">
+            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
+              <p className="text-[10px] uppercase tracking-[0.55em] text-white/70 mb-3">{t('sections.toyona')}</p>
+              <h2 className="aurora-text text-4xl sm:text-5xl"
+                  style={{ fontFamily: '"Cormorant Garamond", serif', fontStyle: 'italic', fontWeight: 400 }}>
+                {t('toyona.title')}
+              </h2>
+              <div className="h-px w-32 mx-auto mt-5"
+                   style={{ background: 'linear-gradient(90deg, transparent, #c9b6e3 50%, transparent)' }} />
+              <p className="text-white/60 text-sm mt-6 max-w-md mx-auto leading-relaxed">{t('toyona.message')}</p>
+            </motion.div>
+            <motion.div
+              variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="text-center"
+            >
+              <ToyonaCard
+                cardHolderName={wedding.cardHolderName}
+                cardNumber={wedding.cardNumber}
+                accent="#c9b6e3"
+                surface="dark"
+              />
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* ════════════ GUEST BOOK ════════════ */}
       <section id="guestbook" className={`relative z-10 py-24 px-6 border-t border-white/10 ${show('guestbook') ? '' : 'hidden'}`}>

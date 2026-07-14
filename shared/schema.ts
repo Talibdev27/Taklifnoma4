@@ -46,6 +46,9 @@ export const weddings = pgTable("weddings", {
   accentColor: varchar("accent_color", { length: 20 }).notNull().default("#89916B"),
   backgroundMusicUrl: text("background_music_url"),
   dressCode: text("dress_code"),
+  // To'yona (monetary gift): bank card guests can send money to.
+  cardHolderName: varchar("card_holder_name", { length: 255 }),
+  cardNumber: varchar("card_number", { length: 50 }),
   isPublic: boolean("is_public").notNull().default(true),
   isApproved: boolean("is_approved").notNull().default(false),
   availableLanguages: json("available_languages").$type<string[]>().notNull().default(['en']),
@@ -66,6 +69,7 @@ export const weddings = pgTable("weddings", {
     gallery?: boolean;
     guestbook?: boolean;
     orderCta?: boolean;
+    toyona?: boolean;
   }>().notNull().default({ blessing: true, countdown: true, schedule: true, venue: true, location: true, rsvp: true, guestBook: true }),
   // Birthday-specific fields
   age: varchar("age", { length: 50 }),

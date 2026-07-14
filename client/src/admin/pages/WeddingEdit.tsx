@@ -21,7 +21,8 @@ import {
   Eye,
   Settings,
   Camera,
-  UserPlus
+  UserPlus,
+  CreditCard
 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
@@ -1219,6 +1220,50 @@ export default function AdminWeddingEdit() {
                         )}
                       </div>
                     )}
+                  </div>
+                </div>
+
+                {/* To'yona (money gift) card details */}
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-[#D4B08C]" />
+                    {t('weddingEdit.toyona', "To'yona (money gift)")}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-3">
+                    {t('weddingEdit.toyonaHint', 'Bank card details for guests who want to send a monetary gift. The section stays hidden until a card number is filled in.')}
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        {t('weddingEdit.cardHolderName', 'Card holder name')}
+                      </label>
+                      {editMode ? (
+                        <Input
+                          value={weddingData?.cardHolderName || ''}
+                          onChange={(e) => handleInputChange('cardHolderName', e.target.value)}
+                          className="wedding-input"
+                          placeholder={t('weddingEdit.cardHolderPlaceholder', 'AZAMAT KOCHIMOV')}
+                        />
+                      ) : (
+                        <p className="p-3 bg-gray-50 rounded-lg">{wedding.cardHolderName || '—'}</p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        {t('weddingEdit.cardNumber', 'Card number')}
+                      </label>
+                      {editMode ? (
+                        <Input
+                          value={weddingData?.cardNumber || ''}
+                          onChange={(e) => handleInputChange('cardNumber', e.target.value)}
+                          className="wedding-input"
+                          inputMode="numeric"
+                          placeholder={t('weddingEdit.cardNumberPlaceholder', '8600 1234 5678 9012')}
+                        />
+                      ) : (
+                        <p className="p-3 bg-gray-50 rounded-lg">{wedding.cardNumber || '—'}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
 

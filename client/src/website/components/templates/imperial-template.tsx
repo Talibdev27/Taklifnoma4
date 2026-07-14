@@ -9,6 +9,7 @@ import { EpicRSVPForm } from '@/website/components/epic-rsvp-form';
 import { OrderInvitationCTA } from '@/website/components/order-invitation-cta';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
+import { ToyonaCard } from '@/website/components/toyona-card';
 import { MapPin, Lock, ArrowRight, Heart } from 'lucide-react';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
@@ -617,6 +618,28 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
           <motion.div variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="imp-card-light rounded-[22px] p-6 sm:p-10">
             <EpicRSVPForm wedding={wedding} primaryColor="#b08f4d" accentColor={GOLD} labelColor="text-[#3a3a3a]" />
+          </motion.div>
+        </div>
+      </section>
+      )}
+
+      {/* ════════════ TO'YONA (money gift, light) ════════════ */}
+      {show('toyona') && !!wedding.cardNumber && (
+      <section id="toyona" className="imp-light px-6 pb-24">
+        <div className="max-w-2xl mx-auto">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-8">
+            <span className="imp-label text-[11px] text-[#9b8347]">✦ {t('sections.toyona')} ✦</span>
+            <h2 className="imp-serif imp-gold-text-d text-3xl sm:text-4xl mt-3">{t('toyona.title')}</h2>
+            <p className="text-sm text-[#8a8a8a] mt-3 max-w-md mx-auto leading-relaxed">{t('toyona.message')}</p>
+          </motion.div>
+          <motion.div variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
+            className="imp-card-light rounded-[22px] p-6 sm:p-9 text-center">
+            <ToyonaCard
+              cardHolderName={wedding.cardHolderName}
+              cardNumber={wedding.cardNumber}
+              accent="#b08f4d"
+              surface="light"
+            />
           </motion.div>
         </div>
       </section>

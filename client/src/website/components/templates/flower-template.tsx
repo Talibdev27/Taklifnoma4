@@ -10,6 +10,7 @@ import { EnhancedSocialShare } from '@/website/components/enhanced-social-share'
 import { WeddingWelcomeOverlay } from '@/website/components/wedding-welcome-overlay';
 import { BackgroundMusicPlayer } from '@/website/components/background-music-player';
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, Camera, Users, Gift, Cake, PartyPopper, ChevronUp } from 'lucide-react';
+import { ToyonaCard } from '@/website/components/toyona-card';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, Photo, GuestBookEntry } from '@shared/schema';
 import { isTwinWedding, coupleNames } from '@/lib/couples';
@@ -532,6 +533,37 @@ export function FlowerTemplate({ wedding }: FlowerTemplateProps) {
           </div>
         </div>
       </section>
+
+      {/* To'yona (money gift) Section */}
+      {show('toyona') && !!wedding.cardNumber && (
+        <section id="toyona" className="py-16 px-4 bg-white">
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center mb-8">
+              <h2
+                className="text-3xl sm:text-4xl font-serif mb-4"
+                style={{
+                  fontFamily: 'Great Vibes, cursive',
+                  color: primaryColor
+                }}
+              >
+                {t('toyona.title')}
+              </h2>
+              <p className="text-lg sm:text-xl">
+                {t('toyona.message')}
+              </p>
+            </div>
+
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg text-center" style={{ backgroundColor: `${primaryColor}08` }}>
+              <ToyonaCard
+                cardHolderName={wedding.cardHolderName}
+                cardNumber={wedding.cardNumber}
+                accent={primaryColor}
+                surface="light"
+              />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Wedding Details Section */}
       <section id="details" className={`py-16 px-4 bg-white ${show('details') ? '' : 'hidden'}`}>

@@ -10,6 +10,7 @@ import { EnhancedSocialShare } from '@/website/components/enhanced-social-share'
 import { WeddingWelcomeOverlay } from '@/website/components/wedding-welcome-overlay';
 import { BackgroundMusicPlayer } from '@/website/components/background-music-player';
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, Camera, Users } from 'lucide-react';
+import { ToyonaCard } from '@/website/components/toyona-card';
 import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, Photo, GuestBookEntry } from '@shared/schema';
 import { coupleNames } from '@/lib/couples';
@@ -448,6 +449,40 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
           </div>
         </div>
       </section>
+
+      {/* To'yona (money gift) Section */}
+      {show('toyona') && !!wedding.cardNumber && (
+        <section id="toyona" className="py-12 sm:py-16 lg:py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-8 sm:mb-10">
+              <h2
+                className="text-2xl sm:text-3xl md:text-4xl font-light mb-3 sm:mb-4"
+                style={{
+                  color: primaryColor,
+                  background: `linear-gradient(to right, ${primaryColor}, ${accentColor})`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                {t('toyona.title')}
+              </h2>
+              <p className="text-gray-700 max-w-2xl mx-auto text-sm sm:text-base lg:text-lg px-2">
+                {t('toyona.message')}
+              </p>
+            </div>
+
+            <div className="max-w-md mx-auto text-center">
+              <ToyonaCard
+                cardHolderName={wedding.cardHolderName}
+                cardNumber={wedding.cardNumber}
+                accent={primaryColor}
+                surface="light"
+              />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Wedding Details Section */}
       <section id="details" className={`py-12 sm:py-16 lg:py-20 bg-white ${show('details') ? '' : 'hidden'}`}>

@@ -10,6 +10,7 @@ import { OrderInvitationCTA } from '@/website/components/order-invitation-cta';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
 import { MediaCarousel } from '@/website/components/media-carousel';
+import { ToyonaCard } from '@/website/components/toyona-card';
 import {
   MapPin, Heart, MessageSquare, Calendar, Users, ArrowDown,
 } from 'lucide-react';
@@ -883,6 +884,34 @@ export function PearlTemplate({ wedding, photos = [] }: PearlTemplateProps) {
           </motion.div>
         </div>
       </section>
+
+      {/* ════════════ TO'YONA (money gift) ════════════ */}
+      {show('toyona') && !!wedding.cardNumber && (
+        <section id="toyona" className="relative z-10 py-20 sm:py-28 px-6 sm:px-12">
+          <div className="max-w-2xl mx-auto">
+            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
+              <p className="text-[10px] uppercase tracking-[0.55em] text-[#1a1a1a]/55 mb-3">{t('sections.toyona')}</p>
+              <h2 className="text-4xl sm:text-5xl"
+                  style={{ fontFamily: '"Playfair Display", serif', fontStyle: 'italic', fontWeight: 500 }}>
+                {t('toyona.title')}
+              </h2>
+              <div className="hair-line w-32 mx-auto mt-5" />
+              <p className="text-[#1a1a1a]/60 text-sm mt-6 max-w-md mx-auto leading-relaxed">{t('toyona.message')}</p>
+            </motion.div>
+            <motion.div
+              variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="pearl-card p-6 sm:p-10 text-center"
+            >
+              <ToyonaCard
+                cardHolderName={wedding.cardHolderName}
+                cardNumber={wedding.cardNumber}
+                accent="#1a1a1a"
+                surface="light"
+              />
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* ════════════ GUEST BOOK ════════════ */}
       <section id="guestbook" className={`relative z-10 py-20 sm:py-28 px-6 sm:px-12 bg-[#f0e8df] ${show('guestbook') ? '' : 'hidden'}`}>

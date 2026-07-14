@@ -125,7 +125,12 @@ export default function WeddingManage() {
   /* ── Auth + data queries (preserved from original logic) ──────── */
   const { data: currentUser, isLoading: authLoading } = useQuery<any>({
     queryKey: ['/api/user/current'],
-    queryFn: () => fetch('/api/user/current').then((res) => res.json()),
+    queryFn: () => {
+      const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+      return fetch('/api/user/current', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }).then((res) => res.json());
+    },
   });
 
   const { data: wedding, isLoading: weddingLoading } = useQuery<Wedding>({
@@ -198,7 +203,9 @@ export default function WeddingManage() {
   /* ── Update mutation (preserved + extended for settings) ────────── */
   const updateWeddingMutation = useMutation({
     mutationFn: async (updatedData: Partial<Wedding>) => {
-      const headers: HeadersInit = { 'Content-Type': 'application/json' };
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+      if (token) headers['Authorization'] = `Bearer ${token}`;
       if (currentUser && (currentUser.isAdmin === true || currentUser.role === 'admin')) {
         headers['x-admin'] = 'true';
       }
@@ -810,6 +817,43 @@ export default function WeddingManage() {
                     />
                     <p className="text-xs text-slate-500">
                       {t('manage.storyHint', 'Used in the Our Journey section. Plain text — line breaks are kept.')}
+                    </p>
+                  </div>
+                </div>
+              </SectionCard>
+
+              <SectionCard
+                title={t('manage.toyona', "To'yona (money gift)")}
+                description={t(
+                  'manage.toyonaDesc',
+                  'Bank card details for guests who want to send a monetary gift. The section stays hidden until a card number is filled in.',
+                )}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="cardHolderName" className="text-sm font-medium text-slate-700">
+                      {t('manage.cardHolderName', 'Card holder name')}
+                    </Label>
+                    <Input
+                      id="cardHolderName"
+                      placeholder={t('manage.cardHolderPlaceholder', 'AZAMAT KOCHIMOV')}
+                      value={value('cardHolderName')}
+                      onChange={(e) => setField('cardHolderName', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="cardNumber" className="text-sm font-medium text-slate-700">
+                      {t('manage.cardNumber', 'Card number')}
+                    </Label>
+                    <Input
+                      id="cardNumber"
+                      inputMode="numeric"
+                      placeholder={t('manage.cardNumberPlaceholder', '8600 1234 5678 9012')}
+                      value={value('cardNumber')}
+                      onChange={(e) => setField('cardNumber', e.target.value)}
+                    />
+                    <p className="text-xs text-slate-500">
+                      {t('manage.cardNumberHint', 'Guests see this number with a one-tap copy button.')}
                     </p>
                   </div>
                 </div>

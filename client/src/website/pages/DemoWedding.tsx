@@ -43,6 +43,8 @@ const DEMO_WEDDING = {
   accentColor: '#8a5a3a',
   backgroundMusicUrl: '',
   dressCode: null,
+  cardHolderName: 'AZAMAT KOCHIMOV',
+  cardNumber: '8600 1234 5678 9012',
   isPublic: true,
   isApproved: true,
   availableLanguages: ['en', 'uz', 'ru'],

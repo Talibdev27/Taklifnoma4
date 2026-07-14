@@ -10,6 +10,7 @@ import { OrderInvitationCTA } from '@/website/components/order-invitation-cta';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
 import { MediaCarousel } from '@/website/components/media-carousel';
+import { ToyonaCard } from '@/website/components/toyona-card';
 import {
   MapPin, Heart, MessageSquare, Calendar, Users, ChevronDown,
 } from 'lucide-react';
@@ -916,6 +917,38 @@ export function VelvetTemplate({ wedding, photos = [] }: VelvetTemplateProps) {
           </motion.div>
         </div>
       </section>
+
+      {/* ════════════ TO'YONA (money gift) ════════════ */}
+      {show('toyona') && !!wedding.cardNumber && (
+        <section id="toyona" className="relative z-10 py-24 px-6 border-t border-[#d4a87c]/10">
+          <div className="max-w-2xl mx-auto">
+            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
+              <p className="text-[10px] uppercase tracking-[0.55em] text-[#d4a87c]/75 mb-3">{t('sections.toyona')}</p>
+              <h2 className="gold-text text-4xl sm:text-5xl"
+                  style={{ fontFamily: '"Cormorant Garamond", serif', fontStyle: 'italic', fontWeight: 400 }}>
+                {t('toyona.title')}
+              </h2>
+              <div className="gold-divider w-44 mx-auto mt-5">
+                <span className="line" /><span className="ornament" /><span className="line" />
+              </div>
+              <p className="text-[#f5e6d3]/70 text-sm mt-6 max-w-md mx-auto leading-relaxed">{t('toyona.message')}</p>
+            </motion.div>
+            <motion.div
+              variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="velvet-card relative rounded-sm p-6 sm:p-10 text-center"
+            >
+              <span className="corner tl" /><span className="corner tr" />
+              <span className="corner bl" /><span className="corner br" />
+              <ToyonaCard
+                cardHolderName={wedding.cardHolderName}
+                cardNumber={wedding.cardNumber}
+                accent="#d4a87c"
+                surface="dark"
+              />
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* ════════════ GUEST BOOK ════════════ */}
       <section id="guestbook" className={`relative z-10 py-24 px-6 border-t border-[#d4a87c]/10 ${show('guestbook') ? '' : 'hidden'}`}>

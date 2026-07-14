@@ -48,6 +48,9 @@ const WEDDING_COLUMNS: string[] = [
   `"is_twin_wedding" boolean NOT NULL DEFAULT false`,
   `"bride2" varchar(255)`,
   `"groom2" varchar(255)`,
+  // To'yona (monetary gift) card details
+  `"card_holder_name" varchar(255)`,
+  `"card_number" varchar(50)`,
 ];
 
 export async function ensureWeddingsSchema(): Promise<void> {

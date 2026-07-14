@@ -10,6 +10,7 @@ import { OrderInvitationCTA } from '@/website/components/order-invitation-cta';
 import { GuestBookForm } from '@/website/components/guest-book-form';
 import { EnhancedSocialShare } from '@/website/components/enhanced-social-share';
 import { AzamatScrollMusic, type AzamatScrollMusicHandle } from '@/website/components/azamat-scroll-music';
+import { ToyonaCard } from '@/website/components/toyona-card';
 import {
   MapPin, Heart, MessageSquare, Calendar, Users, ChevronDown, ChevronUp, Sparkles,
 } from 'lucide-react';
@@ -827,6 +828,37 @@ export function AzamatTemplate({ wedding, photos = [] }: AzamatTemplateProps) {
           </motion.div>
         </div>
       </section>
+
+      {/* ════════════ TO'YONA (money gift) ════════════ */}
+      {show('toyona') && !!wedding.cardNumber && (
+        <section id="toyona" className="relative z-10 py-20 px-6">
+          <div className="max-w-md mx-auto">
+            {/* @ts-ignore Framer Motion className typing issue */}
+            <motion.div
+              variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="text-center mb-8"
+            >
+              <p className="text-[10px] uppercase tracking-[0.5em] text-[#c9a96e]/70 mb-3">{t('sections.toyona')}</p>
+              <h2 className="gold-gradient-text text-3xl font-extralight" style={{ fontFamily: '"Playfair Display", Georgia, serif' }}>
+                {t('toyona.title')}
+              </h2>
+              <p className="text-[#e8d5b0]/60 text-sm mt-4 leading-relaxed">{t('toyona.message')}</p>
+            </motion.div>
+            {/* @ts-ignore Framer Motion className typing issue */}
+            <motion.div
+              variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="glass-card rounded-3xl p-7 text-center"
+            >
+              <ToyonaCard
+                cardHolderName={wedding.cardHolderName}
+                cardNumber={wedding.cardNumber}
+                accent="#c9a96e"
+                surface="dark"
+              />
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* ════════════ GUEST BOOK ════════════ */}
       <section id="guestbook" className={`relative z-10 py-20 px-6 pb-28 sm:pb-20 ${show('guestbook') ? '' : 'hidden'}`}>
