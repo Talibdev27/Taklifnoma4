@@ -794,7 +794,9 @@ export default function WeddingManage() {
                 <div className="space-y-5">
                   <div className="space-y-1.5">
                     <Label htmlFor="dearGuestMessage" className="text-sm font-medium text-slate-700">
-                      {t('manage.dearGuestMessage', 'Dear-guest message')}
+                      {value('template') === 'qizbazmi'
+                        ? t('manage.eventDetailsMessage', 'Tadbir tafsilotlari')
+                        : t('manage.dearGuestMessage', 'Dear-guest message')}
                     </Label>
                     <Textarea
                       id="dearGuestMessage"
@@ -803,6 +805,11 @@ export default function WeddingManage() {
                       value={value('dearGuestMessage')}
                       onChange={(e) => setField('dearGuestMessage', e.target.value)}
                     />
+                    {value('template') === 'qizbazmi' && (
+                      <p className="text-xs text-slate-500">
+                        {t('manage.eventDetailsMessageHint', "Shown in the 'Aziz mehmonlar' section of the invitation. Leave empty to use the built-in text.")}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="story" className="text-sm font-medium text-slate-700">

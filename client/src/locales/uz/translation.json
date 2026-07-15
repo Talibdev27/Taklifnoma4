@@ -2004,5 +2004,8 @@
   "weddingEdit.cardNumber": "Karta raqami",
   "weddingEdit.cardNumberPlaceholder": "8600 1234 5678 9012",
   "templates.qizbazmi": "Qiz Bazmi 🌿",
-  "templates.qizbazmiDesc": "Qizlar bazmi va fotiha uchun botanik uslubdagi taklifnoma — yumshoq yashil akvarel fonda oltin muhrli konvert, oq lilya va orxideyalar. Faqat kelinning ismi yoziladi."
+  "templates.qizbazmiDesc": "Qizlar bazmi va fotiha uchun botanik uslubdagi taklifnoma — yumshoq yashil akvarel fonda oltin muhrli konvert, oq lilya va orxideyalar. Faqat kelinning ismi yoziladi.",
+  "manage.eventDetailsMessage": "Tadbir tafsilotlari",
+  "manage.eventDetailsMessageHint": "Bu matn taklifnomaning “Aziz mehmonlar” boʻlimida koʻrsatiladi. Boʻsh qoldirsangiz, standart matn chiqadi.",
+  "weddingEdit.eventDetailsMessage": "Tadbir tafsilotlari"
 }

@@ -1157,7 +1157,9 @@ export default function AdminWeddingEdit() {
                   </h3>
                   <div>
                     <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                      {t('weddingEdit.welcomeMessageForGuests')}
+                      {wedding?.template === 'qizbazmi'
+                        ? t('weddingEdit.eventDetailsMessage', 'Tadbir tafsilotlari')
+                        : t('weddingEdit.welcomeMessageForGuests')}
                     </label>
                     <p className="text-sm text-gray-600 mb-3">
                       {t('weddingEdit.welcomeMessageHint', { section: wedding?.template === 'birthday' ? t('weddingEdit.sectionBirthdayCelebration') : t('weddingEdit.sectionEventDetails') })}
