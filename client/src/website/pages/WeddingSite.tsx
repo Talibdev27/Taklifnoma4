@@ -23,7 +23,7 @@ import { PearlTemplate } from '@/website/components/templates/pearl-template';
 import { AuroraTemplate } from '@/website/components/templates/aurora-template';
 import { ImperialTemplate } from '@/website/components/templates/imperial-template';
 import { TurkishTemplate } from '@/website/components/templates/turkish-template';
-import { BizBazmiTemplate } from '@/website/components/templates/bizbazmi-template';
+import { QizBazmiTemplate } from '@/website/components/templates/qizbazmi-template';
 import { BackgroundMusicPlayer } from '@/website/components/background-music-player';
 import { WeddingWelcomeOverlay } from '@/website/components/wedding-welcome-overlay';
 import { formatDate } from '@/lib/utils';
@@ -282,10 +282,10 @@ export default function WeddingSite() {
     return <TurkishTemplate wedding={wedding} photos={photos} />;
   }
 
-  // Check for "Biz Bazmi" (bridal celebration) template
-  if (wedding?.template === 'bizbazmi') {
-    console.log('Rendering Biz Bazmi template for wedding:', wedding);
-    return <BizBazmiTemplate wedding={wedding} photos={photos} />;
+  // Check for "Qiz Bazmi" (bridal celebration) template
+  if (wedding?.template === 'qizbazmi') {
+    console.log('Rendering Qiz Bazmi template for wedding:', wedding);
+    return <QizBazmiTemplate wedding={wedding} photos={photos} />;
   }
 
   // Template-specific configurations

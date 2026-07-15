@@ -953,7 +953,7 @@ export default function WeddingManage() {
                       <SelectItem value="aurora">{t('templates.aurora', 'Aurora')}</SelectItem>
                       <SelectItem value="imperial">{t('templates.imperial', 'Imperial 👑')}</SelectItem>
                       <SelectItem value="turkish">{t('templates.turkish', 'Kına Gecesi 🌙')}</SelectItem>
-                      <SelectItem value="bizbazmi">{t('templates.bizbazmi', 'Biz Bazmi 🌿')}</SelectItem>
+                      <SelectItem value="qizbazmi">{t('templates.qizbazmi', 'Qiz Bazmi 🌿')}</SelectItem>
                       {/* Legacy templates — kept selectable only when the wedding
                          is currently using one, so the Select trigger doesn't
                          render an empty value. New users can't switch *into*

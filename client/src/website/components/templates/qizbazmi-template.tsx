@@ -15,7 +15,7 @@ import { calculateWeddingCountdown } from '@/lib/utils';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
 
 /* ─────────────────────────────────────────────────────────────────────────
- * BIZ BAZMI — bridal celebration (biz bazmi / qizlar bazmi / fotiha) invitation.
+ * QIZ BAZMI — bridal celebration (biz bazmi / qizlar bazmi / fotiha) invitation.
  *
  * UI/UX direction: a botanical "sealed envelope" aesthetic — a soft sage
  * watercolor canvas, a deep olive-green envelope closed with a gold wax seal
@@ -35,7 +35,7 @@ const GOLD_L = '#dcc283';  // light gold
 const CREAM = '#fbf9ef';   // cards
 const INK = '#41482f';     // body text on cream
 
-interface BizBazmiTemplateProps {
+interface QizBazmiTemplateProps {
   wedding: Wedding;
   photos?: any[];
 }
@@ -228,7 +228,7 @@ const DATE_LOCALE: Record<Lang, any> = { uz: uzLocale, ru: ruLocale, en: enLocal
 
 const COPY: Record<Lang, any> = {
   uz: {
-    eventName: 'Biz Bazmi',
+    eventName: 'Qiz Bazmi',
     gateReceived: 'Taklifnomangiz tayyor', gateUnlock: 'Ochish uchun muhrga bosing',
     dearGuests: 'Aziz mehmonlar',
     invite: [
@@ -249,7 +249,7 @@ const COPY: Record<Lang, any> = {
     closing: 'Sizni davramizda koʻrishdan mamnun boʻlamiz',
   },
   ru: {
-    eventName: 'Биз базми',
+    eventName: 'Қиз базми',
     gateReceived: 'Ваше приглашение готово', gateUnlock: 'Нажмите на печать, чтобы открыть',
     dearGuests: 'Дорогие гости',
     invite: [
@@ -270,7 +270,7 @@ const COPY: Record<Lang, any> = {
     closing: 'Будем рады видеть вас среди нас',
   },
   en: {
-    eventName: 'Biz Bazmi',
+    eventName: 'Qiz Bazmi',
     gateReceived: 'Your invitation is ready', gateUnlock: 'Tap the seal to open',
     dearGuests: 'Dear Guests',
     invite: [
@@ -292,7 +292,7 @@ const COPY: Record<Lang, any> = {
   },
 };
 
-export function BizBazmiTemplate({ wedding, photos = [] }: BizBazmiTemplateProps) {
+export function QizBazmiTemplate({ wedding, photos = [] }: QizBazmiTemplateProps) {
   const { i18n } = useTranslation();
 
   const memoryPhotos = photos.filter((p: any) => p.photoType === 'memory');

@@ -124,10 +124,10 @@ export default function Landing() {
       demoUrl: '/demo?template=turkish', // Kına Gecesi — Ottoman burgundy & gold
     },
     {
-      nameKey: 'templates.bizbazmi',
-      image: '/bizbazmi-card.svg',
-      descriptionKey: 'templates.bizbazmiDesc',
-      demoUrl: '/demo?template=bizbazmi', // Biz Bazmi — sage & gold wax-seal botanical
+      nameKey: 'templates.qizbazmi',
+      image: '/qizbazmi-card.svg',
+      descriptionKey: 'templates.qizbazmiDesc',
+      demoUrl: '/demo?template=qizbazmi', // Qiz Bazmi — sage & gold wax-seal botanical
     },
   ];
 
