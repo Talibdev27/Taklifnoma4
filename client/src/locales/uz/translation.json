@@ -2002,5 +2002,7 @@
   "weddingEdit.cardHolderName": "Karta egasining ismi",
   "weddingEdit.cardHolderPlaceholder": "AZAMAT KOCHIMOV",
   "weddingEdit.cardNumber": "Karta raqami",
-  "weddingEdit.cardNumberPlaceholder": "8600 1234 5678 9012"
+  "weddingEdit.cardNumberPlaceholder": "8600 1234 5678 9012",
+  "templates.bizbazmi": "Biz Bazmi 🌿",
+  "templates.bizbazmiDesc": "Qizlar bazmi va fotiha uchun botanik uslubdagi taklifnoma — yumshoq yashil akvarel fonda oltin muhrli konvert, oq lilya va orxideyalar. Faqat kelinning ismi yoziladi."
 }

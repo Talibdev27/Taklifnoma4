@@ -95,6 +95,12 @@ const templateOptions = [
     descriptionKey: "templates.turkishDesc",
     image: "https://images.pexels.com/photos/6044227/pexels-photo-6044227.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
+  {
+    id: "bizbazmi",
+    nameKey: "templates.bizbazmi",
+    descriptionKey: "templates.bizbazmiDesc",
+    image: "/bizbazmi-card.svg",
+  },
 ];
 
 

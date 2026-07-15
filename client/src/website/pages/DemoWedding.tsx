@@ -15,6 +15,7 @@ import { PearlTemplate } from "@/website/components/templates/pearl-template";
 import { AuroraTemplate } from "@/website/components/templates/aurora-template";
 import { ImperialTemplate } from "@/website/components/templates/imperial-template";
 import { TurkishTemplate } from "@/website/components/templates/turkish-template";
+import { BizBazmiTemplate } from "@/website/components/templates/bizbazmi-template";
 import { EpicTemplate } from "@/website/components/templates/epic-template";
 import { FlowerTemplate } from "@/website/components/templates/flower-template";
 
@@ -94,6 +95,23 @@ const TURKISH_DEMO = {
   defaultLanguage: 'tr',
   availableLanguages: ['tr'],
   sections: { dearGuests: true, countdown: true, details: true, gallery: true, location: true, rsvp: true, guestbook: true, orderCta: true },
+};
+
+/* Demo data for the "Biz Bazmi" (bridal celebration) template — bride only. */
+const BIZBAZMI_DEMO = {
+  ...DEMO_WEDDING,
+  bride: 'Nilufar',
+  groom: '',
+  weddingDate: new Date('2026-08-14T17:00:00').toISOString() as any,
+  weddingTime: '17:00',
+  venue: 'Gulzor Saroyi',
+  venueAddress: 'Toshkent, Yunusobod tumani, Bogʻishamol koʻchasi 12',
+  story: null,
+  dearGuestMessage: null,
+  template: 'bizbazmi',
+  defaultLanguage: 'uz',
+  availableLanguages: ['uz', 'ru', 'en'],
+  sections: { dearGuests: true, countdown: true, details: true, gallery: true, location: true, rsvp: true, toyona: true, guestbook: true, orderCta: true },
 };
 
 const templateConfigs = {
@@ -885,7 +903,7 @@ export default function DemoWedding() {
     const templateParam = urlParams.get('template');
     if (!templateParam) return;
     // These templates render via their real wedding-template components.
-    if (['velvet', 'pearl', 'aurora', 'imperial', 'turkish', 'epic', 'flower'].includes(templateParam)) {
+    if (['velvet', 'pearl', 'aurora', 'imperial', 'turkish', 'bizbazmi', 'epic', 'flower'].includes(templateParam)) {
       setCurrentTemplate(templateParam);
       return;
     }
@@ -912,6 +930,9 @@ export default function DemoWedding() {
   }
   if (currentTemplate === 'turkish') {
     return <TurkishTemplate wedding={TURKISH_DEMO as any} photos={[]} />;
+  }
+  if (currentTemplate === 'bizbazmi') {
+    return <BizBazmiTemplate wedding={BIZBAZMI_DEMO as any} photos={[]} />;
   }
   if (currentTemplate === 'epic') {
     return <EpicTemplate wedding={{ ...DEMO_WEDDING, template: 'epic' } as any} />;

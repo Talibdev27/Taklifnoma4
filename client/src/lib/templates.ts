@@ -12,6 +12,7 @@ export const TEMPLATE_REGISTRY = {
     { value: 'aurora', label: 'Aurora' },
     { value: 'imperial', label: 'Imperial 👑' },
     { value: 'turkish', label: 'Kına Gecesi 🌙' },
+    { value: 'bizbazmi', label: 'Biz Bazmi 🌿' },
   ],
 };
 

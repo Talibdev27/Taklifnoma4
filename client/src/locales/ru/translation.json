@@ -1999,5 +1999,7 @@
   "weddingEdit.cardHolderName": "Имя владельца карты",
   "weddingEdit.cardHolderPlaceholder": "AZAMAT KOCHIMOV",
   "weddingEdit.cardNumber": "Номер карты",
-  "weddingEdit.cardNumberPlaceholder": "8600 1234 5678 9012"
+  "weddingEdit.cardNumberPlaceholder": "8600 1234 5678 9012",
+  "templates.bizbazmi": "Biz Bazmi 🌿",
+  "templates.bizbazmiDesc": "Ботаническое приглашение для девичника и фотихи — конверт с золотой сургучной печатью на шалфейно-зелёной акварели, белые лилии и орхидеи. Указывается только имя невесты."
 }

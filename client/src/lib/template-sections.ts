@@ -46,6 +46,7 @@ export const TEMPLATE_SECTIONS: Record<string, SectionDef[]> = {
   epic: [DETAILS, RSVP, TOYONA, GUESTBOOK, ORDER_CTA],
   flower: [DETAILS, RSVP, TOYONA, GUESTBOOK, ORDER_CTA],
   turkish: [DEAR_GUESTS, COUNTDOWN, DETAILS, GALLERY, LOCATION, RSVP, TOYONA, GUESTBOOK, ORDER_CTA],
+  bizbazmi: [DEAR_GUESTS, COUNTDOWN, DETAILS, GALLERY, LOCATION, RSVP, TOYONA, GUESTBOOK, ORDER_CTA],
 };
 
 /** Every section key across all templates, defaulted to ON (for form state). */
