@@ -314,16 +314,15 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
         /* parallax cinematic photo */
         .imp-parallax { position:relative; background-size:cover; background-position:center; background-attachment:fixed; }
         @media (hover:none){ .imp-parallax{ background-attachment:scroll; } }
-        .imp-mono { filter: grayscale(1) brightness(0.92) contrast(1); }
-        /* scrim for photo sections that carry text directly: dark where the copy
-           sits (top/bottom), open through the middle so the subject reads */
-        .imp-scrim { background: linear-gradient(180deg, rgba(11,11,11,0.55) 0%, rgba(11,11,11,0.34) 45%, rgba(11,11,11,0.55) 100%); }
-        .imp-legible { text-shadow: 0 2px 20px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.55); }
+        .imp-mono { filter: grayscale(1); }
+        /* Photo sections carry no scrim — the copy reads via its own shadow halo,
+           so the image stays fully visible underneath. */
+        .imp-legible { text-shadow: 0 2px 22px rgba(0,0,0,0.92), 0 2px 8px rgba(0,0,0,0.85), 0 0 3px rgba(0,0,0,0.7); }
         /* Gradient-filled gold has a transparent fill, so text-shadow paints through
            the glyph instead of behind it — drop-shadow follows the glyph's alpha. */
         .imp-legible .imp-gold-text {
           text-shadow: none;
-          filter: drop-shadow(0 2px 14px rgba(0,0,0,0.9)) drop-shadow(0 1px 3px rgba(0,0,0,0.7));
+          filter: drop-shadow(0 2px 16px rgba(0,0,0,0.95)) drop-shadow(0 1px 4px rgba(0,0,0,0.9)) drop-shadow(0 0 1px rgba(0,0,0,0.8));
         }
         /* light card sections */
         .imp-light { background:#f6f6f4; color:#1a1a1a; }
@@ -363,11 +362,10 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
       {locked && (
         <div className={`fixed inset-0 z-[70] flex items-center justify-center text-center px-6 transition-opacity duration-900 ${unlocking ? 'opacity-0' : 'opacity-100'}`}>
           <div className="absolute inset-0 imp-mono" style={{ backgroundImage: `url(${heroPhoto})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 50% 40%, rgba(11,11,11,0.18), rgba(11,11,11,0.66) 78%)' }} />
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1 }}
             className="relative z-10 max-w-xl flex flex-col items-center imp-legible">
             <Diamond className="mb-6" />
-            <p className="imp-label text-[10px] sm:text-[11px] text-white/70 mb-6">{t('imperial.gate.received')}</p>
+            <p className="imp-label text-[10px] sm:text-[11px] text-white/90 mb-6">{t('imperial.gate.received')}</p>
             <h1 className="imp-serif text-5xl sm:text-7xl font-medium leading-tight mb-7">
               {wedding.groom} <span className="imp-gold">&amp;</span> {wedding.bride}
             </h1>
@@ -399,10 +397,9 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
       <section className="imp-parallax min-h-screen flex items-center justify-center text-center px-6"
         style={{ backgroundImage: `url(${introPhoto})` }}>
         <div className="absolute inset-0 imp-mono" style={{ backgroundImage: `url(${introPhoto})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-        <div className="absolute inset-0 imp-scrim" />
         <div className="relative z-10 max-w-2xl imp-legible">
           <motion.p variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="imp-label text-[11px] sm:text-xs text-white/80 mb-6">{t('imperial.intro.dearOnes')}</motion.p>
+            className="imp-label text-[11px] sm:text-xs text-white/90 mb-6">{t('imperial.intro.dearOnes')}</motion.p>
           <motion.p variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="imp-script text-7xl sm:text-8xl imp-gold-text leading-none mb-6">{t('imperial.intro.we')}</motion.p>
           <motion.p variants={fadeUp} custom={2} initial="hidden" whileInView="visible" viewport={{ once: true }}
@@ -685,10 +682,9 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
       <section className="imp-parallax min-h-screen flex items-center justify-center text-center px-6"
         style={{ backgroundImage: `url(${closingPhoto})` }}>
         <div className="absolute inset-0 imp-mono" style={{ backgroundImage: `url(${closingPhoto})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-        <div className="absolute inset-0 imp-scrim" />
         <div className="relative z-10 max-w-2xl imp-legible">
           <motion.p variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="imp-label text-[11px] sm:text-xs text-white/80 mb-6">{t('imperial.closing.presence')}</motion.p>
+            className="imp-label text-[11px] sm:text-xs text-white/90 mb-6">{t('imperial.closing.presence')}</motion.p>
           <motion.p variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="imp-script text-6xl sm:text-7xl imp-gold-text leading-tight mb-6">{t('imperial.closing.gift')}</motion.p>
           <motion.p variants={fadeUp} custom={2} initial="hidden" whileInView="visible" viewport={{ once: true }}
