@@ -383,8 +383,8 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
                 <p dir="rtl" lang="ar" className="imp-gold-text text-2xl sm:text-3xl mb-3" style={{ fontFamily: '"Amiri", serif' }}>
                   {t('imperial.blessing.arabic')}
                 </p>
-                <p className="text-white/80 italic text-base sm:text-lg" style={{ fontFamily: serif }}>“{t('imperial.blessing.translation')}”</p>
-                <p className="text-white/45 text-xs mt-1 mb-7" style={{ fontFamily: serif }}>{t('imperial.blessing.source')}</p>
+                <p className="text-white italic text-base sm:text-lg" style={{ fontFamily: serif }}>“{t('imperial.blessing.translation')}”</p>
+                <p className="text-white/75 text-xs mt-1 mb-7" style={{ fontFamily: serif }}>{t('imperial.blessing.source')}</p>
               </>
             )}
             <Heart className="w-5 h-5 mb-8 imp-gold imp-float" strokeWidth={1.2} />
@@ -403,7 +403,7 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
           <motion.p variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="imp-script text-7xl sm:text-8xl imp-gold-text leading-none mb-6">{t('imperial.intro.we')}</motion.p>
           <motion.p variants={fadeUp} custom={2} initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="imp-label text-xs sm:text-sm text-white/85 leading-loose">{t('imperial.intro.delighted')}</motion.p>
+            className="imp-label text-xs sm:text-sm text-white leading-loose">{t('imperial.intro.delighted')}</motion.p>
           <motion.div variants={fadeUp} custom={3} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mt-8 flex justify-center">
             <Heart className="w-5 h-5 imp-gold" strokeWidth={1.2} />
           </motion.div>
@@ -688,7 +688,7 @@ export function ImperialTemplate({ wedding, photos = [] }: ImperialTemplateProps
           <motion.p variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="imp-script text-6xl sm:text-7xl imp-gold-text leading-tight mb-6">{t('imperial.closing.gift')}</motion.p>
           <motion.p variants={fadeUp} custom={2} initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="imp-label text-xs sm:text-sm text-white/85">{t('imperial.closing.forUs')}</motion.p>
+            className="imp-label text-xs sm:text-sm text-white">{t('imperial.closing.forUs')}</motion.p>
           <motion.div variants={fadeUp} custom={3} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mt-7 flex justify-center">
             <Heart className="w-5 h-5 imp-gold imp-float" strokeWidth={1.2} />
           </motion.div>
