@@ -102,9 +102,9 @@ const TURKISH_DEMO = {
 /* Demo data for the "Floral" (garden) template. */
 const GARDEN_DEMO = {
   ...DEMO_WEDDING,
-  groom: 'Ziyobek',
-  bride: 'Shahzoda',
-  weddingDate: new Date('2026-08-11T19:00:00').toISOString() as any,
+  groom: 'Azamat',
+  bride: 'Shahnoza',
+  weddingDate: new Date('2026-09-12T19:00:00').toISOString() as any,
   weddingTime: '19:00',
   venue: 'Banket zali «Istiqlol»',
   venueAddress: 'Navoiy viloyati, Qiziltepa tumani',
@@ -121,8 +121,8 @@ const GARDEN_DEMO = {
 /* Demo data for the "Royal" (navy-and-gold envelope) template. */
 const ROYAL_DEMO = {
   ...DEMO_WEDDING,
-  groom: 'Shukurulla',
-  bride: 'Munisaxon',
+  groom: 'Azizbek',
+  bride: 'Nargizaxon',
   weddingDate: new Date('2026-03-29T18:00:00').toISOString() as any,
   weddingTime: '18:00',
   venue: 'Dvorets torjestv «Rohat»',
