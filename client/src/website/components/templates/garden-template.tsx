@@ -49,46 +49,17 @@ function parseTimeToMinutes(value?: string | null): number | null {
   return null;
 }
 
-/* ── Watercolour floral SVG primitives (self-contained decoration) ───────── */
-const Flower = ({ x, y, s = 1, petal = '#ffffff' }: any) => (
-  <g opacity="0.97">
-    {[0, 72, 144, 216, 288].map(a => (
-      <ellipse key={a} cx={x} cy={y - 13 * s} rx={6.5 * s} ry={12 * s} fill={petal}
-        transform={`rotate(${a} ${x} ${y})`} />
-    ))}
-    <circle cx={x} cy={y} r={4.6 * s} fill={GOLD_LEAF} />
-    <circle cx={x} cy={y} r={2.2 * s} fill="#cbb972" />
-  </g>
+/* Decorative watercolour flower cluster (self-hosted asset) used to frame the
+   frosted glass cards, matching the full-bleed floral canvas behind them. */
+/* Real chungdoi watercolour decorations (self-hosted): an L-corner spray for the
+   top of each glass card, and a horizontal cluster for the bottom. */
+const FlowerTop = ({ className = '', flip = false }: any) => (
+  <img src="/garden/flower2-decoration.webp" alt="" aria-hidden draggable={false}
+    className={className} style={flip ? { transform: 'scaleX(-1)' } : undefined} />
 );
-const Leaf = ({ x, y, s = 1, rot = 0, fill = GREEN_SOFT }: any) => (
-  <path d={`M${x} ${y} q ${9 * s} ${-17 * s} 0 ${-34 * s} q ${-9 * s} ${17 * s} 0 ${34 * s} z`}
-    fill={fill} opacity="0.9" transform={`rotate(${rot} ${x} ${y})`} />
-);
-const Dots = ({ x, y, s = 1 }: any) => (
-  <g fill="#ffffff" opacity="0.9">
-    {[[0, 0], [10, -8], [-9, -6], [4, -16], [-6, -18], [14, 2]].map(([dx, dy], i) => (
-      <circle key={i} cx={x + dx * s} cy={y + dy * s} r={2.1 * s} />
-    ))}
-  </g>
-);
-/* A horizontal bouquet ~360×150, used (mirrored/scaled) around cards. */
-const Bouquet = ({ className = '', style = {}, flip = false }: any) => (
-  <svg viewBox="0 0 360 150" className={className}
-    style={{ transform: flip ? 'scaleX(-1)' : undefined, ...style }} aria-hidden>
-    <Leaf x={120} y={95} s={1.5} rot={-35} fill={GREEN} />
-    <Leaf x={150} y={100} s={1.7} rot={20} fill={GREEN_SOFT} />
-    <Leaf x={210} y={92} s={1.5} rot={40} fill={GREEN} />
-    <Leaf x={95} y={80} s={1.2} rot={-70} fill={GREEN_SOFT} />
-    <Leaf x={250} y={80} s={1.3} rot={75} fill={GREEN_SOFT} />
-    <Leaf x={180} y={110} s={1.4} rot={0} fill={GREEN_DEEP} />
-    <Dots x={80} y={70} s={1.2} />
-    <Dots x={270} y={70} s={1.2} />
-    <Flower x={140} y={78} s={1.5} />
-    <Flower x={205} y={82} s={1.7} />
-    <Flower x={175} y={62} s={2.1} />
-    <Flower x={110} y={92} s={1.1} />
-    <Flower x={238} y={94} s={1.2} />
-  </svg>
+const FlowerBottom = ({ className = '', flip = false }: any) => (
+  <img src="/garden/flower5-bottom.webp" alt="" aria-hidden draggable={false}
+    className={className} style={flip ? { transform: 'scaleX(-1)' } : undefined} />
 );
 
 export function GardenTemplate({ wedding, photos = [] }: GardenTemplateProps) {
@@ -242,26 +213,18 @@ export function GardenTemplate({ wedding, photos = [] }: GardenTemplateProps) {
     <div className="min-h-screen relative overflow-x-hidden gdn-root" style={{ color: GREEN }}>
       <style>{`
         .gdn-root { font-family: ${serif}; }
+        /* full-bleed watercolour floral canvas (self-hosted), fixed behind all
+           content so the frosted cards read over a lush garden — like the ref. */
         .gdn-canvas {
           position: fixed; inset: 0; z-index: 0;
-          background:
-            radial-gradient(60% 45% at 18% 12%, rgba(238,224,222,0.55), transparent 60%),
-            radial-gradient(55% 40% at 85% 20%, rgba(233,240,224,0.6), transparent 60%),
-            radial-gradient(70% 55% at 50% 95%, rgba(214,228,198,0.7), transparent 65%),
-            linear-gradient(160deg, #e9efdf 0%, #dbe6c9 45%, #cfe0ba 78%, #e3ecd6 100%);
+          background: #eef3e8 url(/garden/floral-background.webp) center center / cover no-repeat;
         }
-        /* faint botanical speckle so the empty canvas never looks flat */
-        .gdn-speckle {
-          position: fixed; inset: 0; z-index: 0; opacity: 0.5; pointer-events: none;
-          background-image: radial-gradient(rgba(125,145,96,0.18) 1.2px, transparent 1.4px);
-          background-size: 26px 26px;
-        }
-        .gdn-label { font-family: ${serif}; text-transform: uppercase; letter-spacing: 0.34em; font-weight: 600; }
+        .gdn-label { font-family: ${serif}; text-transform: uppercase; letter-spacing: 0.32em; font-weight: 600; }
         .gdn-card {
-          background: rgba(246,249,240,0.62);
-          backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-          border: 1px solid rgba(124,145,96,0.32);
-          box-shadow: 0 24px 60px rgba(63,82,51,0.14);
+          background: rgba(247,250,240,0.60);
+          backdrop-filter: blur(9px) saturate(1.02); -webkit-backdrop-filter: blur(9px) saturate(1.02);
+          border: 1px solid rgba(124,145,96,0.28);
+          box-shadow: 0 24px 60px rgba(63,82,51,0.16);
         }
         .gdn-btn {
           background: linear-gradient(135deg, ${GREEN}, ${GREEN_DEEP});
@@ -278,7 +241,6 @@ export function GardenTemplate({ wedding, photos = [] }: GardenTemplateProps) {
       `}</style>
 
       <div className="gdn-canvas" />
-      <div className="gdn-speckle" />
 
       <AzamatScrollMusic ref={musicRef} musicUrl={wedding.backgroundMusicUrl ?? ''}
         theme={{ primary: GREEN, accent: GREEN_SOFT, iconColor: '#f4f6ef', glow: 'rgba(84,104,60,0.5)' }} />
@@ -300,28 +262,28 @@ export function GardenTemplate({ wedding, photos = [] }: GardenTemplateProps) {
       {locked && (
         <div className={`fixed inset-0 z-[70] flex items-center justify-center px-5 transition-opacity duration-700 ${unlocking ? 'opacity-0' : 'opacity-100'}`}>
           <div className="gdn-canvas" />
-          <div className="gdn-speckle" />
           <div className="relative w-[min(92vw,430px)]">
-            <Bouquet className="absolute -top-16 -left-10 w-56 rotate-[8deg]" />
-            <Bouquet className="absolute -top-16 -right-10 w-56" flip />
+            <FlowerTop className="absolute -top-16 -right-4 w-[58%] z-20 pointer-events-none drop-shadow-md" />
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}
-              className="gdn-card rounded-[26px] px-7 sm:px-10 pt-16 pb-14 text-center relative">
-              <div className="w-14 h-14 rounded-full mx-auto mb-7 flex items-center justify-center"
+              className="gdn-card rounded-[26px] px-7 sm:px-10 pt-16 pb-16 text-center relative">
+              <div className="relative z-30 w-14 h-14 rounded-full mx-auto mb-7 flex items-center justify-center"
                 style={{ background: GREEN_DEEP, boxShadow: '0 10px 24px rgba(63,82,51,0.35)' }}>
                 <Heart className="w-6 h-6" style={{ color: '#f4f6ef' }} fill="#f4f6ef" strokeWidth={0} />
               </div>
-              <Names size="text-4xl sm:text-5xl" />
-              <Divider className="my-6" />
-              <p className="text-lg sm:text-xl" style={{ fontFamily: serif, color: GREEN }}>{dotsDate}</p>
-              <p className="gdn-label text-[10px] sm:text-[11px] leading-relaxed mt-7" style={{ color: GREEN }}>
-                {t('garden.gate.invite')}
-              </p>
-              <button onClick={handleUnlock}
-                className="gdn-btn gdn-label text-xs mt-9 px-10 py-4 rounded-full inline-flex items-center gap-2">
-                {t('garden.gate.open')} <ArrowRight className="w-4 h-4" />
-              </button>
+              <div className="relative z-30">
+                <Names size="text-4xl sm:text-5xl" />
+                <Divider className="my-6" />
+                <p className="text-lg sm:text-xl" style={{ fontFamily: serif, color: GREEN }}>{dotsDate}</p>
+                <p className="gdn-label text-[10px] sm:text-[11px] leading-relaxed mt-7" style={{ color: GREEN }}>
+                  {t('garden.gate.invite')}
+                </p>
+                <button onClick={handleUnlock}
+                  className="gdn-btn gdn-label text-xs mt-9 px-10 py-4 rounded-full inline-flex items-center gap-2">
+                  {t('garden.gate.open')} <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </motion.div>
-            <Bouquet className="absolute -bottom-14 left-1/2 -translate-x-1/2 w-64" />
+            <FlowerBottom className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[62%] z-10 pointer-events-none drop-shadow-md" />
           </div>
         </div>
       )}
@@ -332,10 +294,8 @@ export function GardenTemplate({ wedding, photos = [] }: GardenTemplateProps) {
         {/* ── HERO / CEREMONY ── */}
         <section className="min-h-screen flex items-center justify-center px-5 py-20">
           <div className="relative w-[min(92vw,460px)]">
-            <Bouquet className="absolute -top-14 -left-8 w-52 rotate-[6deg]" />
-            <Bouquet className="absolute -top-14 -right-8 w-52" flip />
             <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-              className="gdn-card rounded-[26px] px-7 sm:px-11 pt-16 pb-12 text-center relative">
+              className="gdn-card rounded-[26px] px-7 sm:px-11 pt-14 pb-12 text-center relative">
               <p className="gdn-label text-[11px] mb-6" style={{ color: GREEN_SOFT }}>{t('garden.ceremony.label')}</p>
               <p className="gdn-label text-[11px] leading-relaxed mb-9" style={{ color: GREEN }}>
                 {t('garden.ceremony.invite')}
@@ -361,7 +321,6 @@ export function GardenTemplate({ wedding, photos = [] }: GardenTemplateProps) {
                 {t('garden.ceremony.at')} {wedding.weddingTime || '18:00'}
               </p>
             </motion.div>
-            <Bouquet className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-60" />
           </div>
         </section>
 
@@ -539,9 +498,8 @@ export function GardenTemplate({ wedding, photos = [] }: GardenTemplateProps) {
         {/* ── CLOSING ── */}
         <section className="px-5 py-20">
           <div className="relative w-[min(92vw,440px)] mx-auto">
-            <Bouquet className="absolute -top-14 left-1/2 -translate-x-1/2 w-60" />
             <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-              className="gdn-card rounded-[26px] px-7 pt-16 pb-12 text-center">
+              className="gdn-card rounded-[26px] px-7 pt-14 pb-12 text-center">
               <p className="gdn-label text-[11px] mb-5" style={{ color: GREEN_SOFT }}>{t('garden.closing.label')}</p>
               <p className="text-5xl sm:text-6xl leading-tight" style={{ fontFamily: script, color: GREEN_DEEP }}>{t('garden.closing.seeYou')}</p>
               <div className="flex justify-center mt-7"><Heart className="w-6 h-6 gdn-float" style={{ color: GREEN_SOFT }} fill={GREEN_SOFT} strokeWidth={0} /></div>

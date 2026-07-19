@@ -7,6 +7,11 @@
 /* Turkish "Kına Gecesi" template — flowing calligraphic script with full Turkish
    glyph coverage (ı, İ, ğ, ş, ç, ö, ü). Dancing Script + Ephesis handle names. */
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Ephesis&display=swap');
+/* Royal (envelope) template — formal calligraphy + geometric sans, matching the
+   InviteStudio reference (Corinthia headings, IBM Plex Sans labels/countdown). */
+@import url('https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+/* Garden ("Floral") template — the chungdoi glass-garden serif pairing. */
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Cormorant:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
