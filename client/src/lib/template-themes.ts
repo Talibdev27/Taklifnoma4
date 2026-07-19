@@ -51,6 +51,20 @@ export const TEMPLATE_THEMES: Record<string, TemplateTheme> = {
     iconColor: '#f7f1e3',
     glow: 'rgba(122,31,43,0.45)',
   },
+  // Floral (garden) — forest green over a watercolour garden.
+  garden: {
+    primary: '#54683c',
+    accent: '#7d9160',
+    iconColor: '#f4f6ef',
+    glow: 'rgba(84,104,60,0.5)',
+  },
+  // Royal (envelope) — deep navy + antique gold.
+  royal: {
+    primary: '#22385c',
+    accent: '#c9a45f',
+    iconColor: '#f6f0e2',
+    glow: 'rgba(201,164,95,0.5)',
+  },
 
   // ── Other premium templates ────────────────────────────────────────────
   modern: {

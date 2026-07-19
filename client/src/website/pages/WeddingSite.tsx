@@ -24,6 +24,8 @@ import { AuroraTemplate } from '@/website/components/templates/aurora-template';
 import { ImperialTemplate } from '@/website/components/templates/imperial-template';
 import { TurkishTemplate } from '@/website/components/templates/turkish-template';
 import { QizBazmiTemplate } from '@/website/components/templates/qizbazmi-template';
+import { GardenTemplate } from '@/website/components/templates/garden-template';
+import { RoyalTemplate } from '@/website/components/templates/royal-template';
 import { BackgroundMusicPlayer } from '@/website/components/background-music-player';
 import { WeddingWelcomeOverlay } from '@/website/components/wedding-welcome-overlay';
 import { formatDate } from '@/lib/utils';
@@ -286,6 +288,16 @@ export default function WeddingSite() {
   if (wedding?.template === 'qizbazmi') {
     console.log('Rendering Qiz Bazmi template for wedding:', wedding);
     return <QizBazmiTemplate wedding={wedding} photos={photos} />;
+  }
+
+  // Check for "Floral" (garden) template
+  if (wedding?.template === 'garden') {
+    return <GardenTemplate wedding={wedding} photos={photos} />;
+  }
+
+  // Check for "Royal" (envelope) template
+  if (wedding?.template === 'royal') {
+    return <RoyalTemplate wedding={wedding} photos={photos} />;
   }
 
   // Template-specific configurations

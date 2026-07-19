@@ -47,6 +47,10 @@ export const TEMPLATE_SECTIONS: Record<string, SectionDef[]> = {
   flower: [DETAILS, RSVP, TOYONA, GUESTBOOK, ORDER_CTA],
   turkish: [DEAR_GUESTS, COUNTDOWN, DETAILS, GALLERY, LOCATION, RSVP, TOYONA, GUESTBOOK, ORDER_CTA],
   qizbazmi: [DEAR_GUESTS, COUNTDOWN, DETAILS, GALLERY, LOCATION, RSVP, TOYONA, GUESTBOOK, ORDER_CTA],
+  // garden/royal check show('guestBook') (capital B, like imperial), so their
+  // toggle key must match — use an inline def, not the lowercase GUESTBOOK.
+  garden: [DEAR_GUESTS, COUNTDOWN, GALLERY, LOCATION, RSVP, TOYONA, { key: 'guestBook', labelKey: L('guestBook') }, ORDER_CTA],
+  royal: [COUNTDOWN, GALLERY, LOCATION, RSVP, TOYONA, { key: 'guestBook', labelKey: L('guestBook') }, ORDER_CTA],
 };
 
 /** Every section key across all templates, defaulted to ON (for form state). */

@@ -18,6 +18,8 @@ import { TurkishTemplate } from "@/website/components/templates/turkish-template
 import { QizBazmiTemplate } from "@/website/components/templates/qizbazmi-template";
 import { EpicTemplate } from "@/website/components/templates/epic-template";
 import { FlowerTemplate } from "@/website/components/templates/flower-template";
+import { GardenTemplate } from "@/website/components/templates/garden-template";
+import { RoyalTemplate } from "@/website/components/templates/royal-template";
 
 /* Demo wedding object used to preview the new premium templates. */
 const DEMO_WEDDING = {
@@ -95,6 +97,42 @@ const TURKISH_DEMO = {
   defaultLanguage: 'tr',
   availableLanguages: ['tr'],
   sections: { dearGuests: true, countdown: true, details: true, gallery: true, location: true, rsvp: true, guestbook: true, orderCta: true },
+};
+
+/* Demo data for the "Floral" (garden) template. */
+const GARDEN_DEMO = {
+  ...DEMO_WEDDING,
+  groom: 'Ziyobek',
+  bride: 'Shahzoda',
+  weddingDate: new Date('2026-08-11T19:00:00').toISOString() as any,
+  weddingTime: '19:00',
+  venue: 'Banket zali «Istiqlol»',
+  venueAddress: 'Navoiy viloyati, Qiziltepa tumani',
+  venueCoordinates: { lat: 40.0072, lng: 64.8528 },
+  story: null,
+  dearGuestMessage: null,
+  template: 'garden',
+  defaultLanguage: 'uz',
+  availableLanguages: ['uz', 'ru', 'en'],
+  sections: { dearGuests: true, countdown: true, gallery: true, location: true, rsvp: true, toyona: true, guestBook: true, orderCta: true },
+};
+
+/* Demo data for the "Royal" (navy-and-gold envelope) template. */
+const ROYAL_DEMO = {
+  ...DEMO_WEDDING,
+  groom: 'Shukurulla',
+  bride: 'Munisaxon',
+  weddingDate: new Date('2026-03-29T18:00:00').toISOString() as any,
+  weddingTime: '18:00',
+  venue: 'Dvorets torjestv «Rohat»',
+  venueAddress: 'Toshkent, Chilonzor tumani, Arnasoy koʻchasi 7/2',
+  venueCoordinates: { lat: 41.2856, lng: 69.2034 },
+  story: null,
+  dearGuestMessage: null,
+  template: 'royal',
+  defaultLanguage: 'ru',
+  availableLanguages: ['ru', 'uz'],
+  sections: { countdown: true, location: true, gallery: true, rsvp: true, toyona: true, guestBook: true, orderCta: true },
 };
 
 /* Demo data for the "Qiz Bazmi" (bridal celebration) template — bride only. */
@@ -903,7 +941,7 @@ export default function DemoWedding() {
     const templateParam = urlParams.get('template');
     if (!templateParam) return;
     // These templates render via their real wedding-template components.
-    if (['velvet', 'pearl', 'aurora', 'imperial', 'turkish', 'qizbazmi', 'epic', 'flower'].includes(templateParam)) {
+    if (['velvet', 'pearl', 'aurora', 'imperial', 'turkish', 'qizbazmi', 'garden', 'royal', 'epic', 'flower'].includes(templateParam)) {
       setCurrentTemplate(templateParam);
       return;
     }
@@ -933,6 +971,12 @@ export default function DemoWedding() {
   }
   if (currentTemplate === 'qizbazmi') {
     return <QizBazmiTemplate wedding={QIZBAZMI_DEMO as any} photos={[]} />;
+  }
+  if (currentTemplate === 'garden') {
+    return <GardenTemplate wedding={GARDEN_DEMO as any} photos={[]} />;
+  }
+  if (currentTemplate === 'royal') {
+    return <RoyalTemplate wedding={ROYAL_DEMO as any} photos={[]} />;
   }
   if (currentTemplate === 'epic') {
     return <EpicTemplate wedding={{ ...DEMO_WEDDING, template: 'epic' } as any} />;

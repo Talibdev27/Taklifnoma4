@@ -2004,5 +2004,9 @@
   "templates.qizbazmiDesc": "Қыздар кеші мен фотихаға арналған ботаникалық шақыру — сарғыш-жасыл акварель фонында алтын мөрлі конверт, ақ лилиялар мен орхидеялар. Тек қалыңдықтың есімі жазылады.",
   "manage.eventDetailsMessage": "Іс-шара мәліметтері",
   "manage.eventDetailsMessageHint": "Бұл мәтін шақырудың «Құрметті қонақтар» бөлімінде көрсетіледі. Бос қалдырсаңыз, стандартты мәтін шығады.",
-  "weddingEdit.eventDetailsMessage": "Іс-шара мәліметтері"
+  "weddingEdit.eventDetailsMessage": "Іс-шара мәліметтері",
+  "templates.garden": "Floral 💐",
+  "templates.gardenDesc": "Акварель гүлдер, жұмсақ жасыл бақ",
+  "templates.royal": "Royal 💌",
+  "templates.royalDesc": "Қою көк пен алтын, балауыз мөрмен ашылады"
 }

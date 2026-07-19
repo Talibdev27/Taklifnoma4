@@ -101,6 +101,18 @@ const templateOptions = [
     descriptionKey: "templates.qizbazmiDesc",
     image: "/qizbazmi-card.svg",
   },
+  {
+    id: "garden",
+    nameKey: "templates.garden",
+    descriptionKey: "templates.gardenDesc",
+    image: "/garden-card.svg",
+  },
+  {
+    id: "royal",
+    nameKey: "templates.royal",
+    descriptionKey: "templates.royalDesc",
+    image: "/royal-card.svg",
+  },
 ];
 
 

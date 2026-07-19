@@ -2004,5 +2004,9 @@
   "templates.qizbazmiDesc": "Қызлар кешеси ҳәм патияға арналған ботаникалық шақырыў — жасыл акварель фонында алтын мөрли конверт, ақ лилиялар ҳәм орхидеялар. Тек келинниң аты жазылады.",
   "manage.eventDetailsMessage": "Илажы мағлыўматлары",
   "manage.eventDetailsMessageHint": "Бул текст шақырыўдың «Әзиз қонақлар» бөлиминде көрсетиледи. Бос қалдырсаңыз, стандарт текст шығады.",
-  "weddingEdit.eventDetailsMessage": "Илажы мағлыўматлары"
+  "weddingEdit.eventDetailsMessage": "Илажы мағлыўматлары",
+  "templates.garden": "Floral 💐",
+  "templates.gardenDesc": "Akvarel gullar, nozik jasıl bogʻ",
+  "templates.royal": "Royal 💌",
+  "templates.royalDesc": "Toʻq kók hám altın, konvert múri menen ashıladı"
 }

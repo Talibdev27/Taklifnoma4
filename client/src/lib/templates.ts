@@ -13,6 +13,8 @@ export const TEMPLATE_REGISTRY = {
     { value: 'imperial', label: 'Imperial 👑' },
     { value: 'turkish', label: 'Kına Gecesi 🌙' },
     { value: 'qizbazmi', label: 'Qiz Bazmi 🌿' },
+    { value: 'garden', label: 'Floral 💐' },
+    { value: 'royal', label: 'Royal 💌' },
   ],
 };
 

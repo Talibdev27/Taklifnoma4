@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="gbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e9efdf"/>
+      <stop offset="45%" stop-color="#dbe6c9"/>
+      <stop offset="78%" stop-color="#cfe0ba"/>
+      <stop offset="100%" stop-color="#e3ecd6"/>
+    </linearGradient>
+    <radialGradient id="gwash1" cx="18%" cy="12%" r="55%">
+      <stop offset="0%" stop-color="#eee0de" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#eee0de" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gwash2" cx="85%" cy="80%" r="55%">
+      <stop offset="0%" stop-color="#c8d6b6" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#c8d6b6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#gbg)"/>
+  <rect width="800" height="600" fill="url(#gwash1)"/>
+  <rect width="800" height="600" fill="url(#gwash2)"/>
+
+  <!-- frosted card -->
+  <rect x="230" y="120" width="340" height="380" rx="26" fill="#f6f9f0" fill-opacity="0.62" stroke="#7d9160" stroke-opacity="0.4" stroke-width="1.5"/>
+
+  <!-- green heart badge -->
+  <circle cx="400" cy="188" r="30" fill="#3f5233"/>
+  <path d="M400 205 C400 205 384 195 384 184 a9 9 0 0 1 16 -5 a9 9 0 0 1 16 5 C416 195 400 205 400 205 Z" fill="#f4f6ef"/>
+
+  <!-- names -->
+  <text x="400" y="268" text-anchor="middle" font-size="42" fill="#3f5233" font-family="'Playfair Display',Georgia,serif">Ziyobek</text>
+  <text x="400" y="300" text-anchor="middle" font-size="30" fill="#7d9160" font-family="'Great Vibes',cursive">&amp;</text>
+  <text x="400" y="342" text-anchor="middle" font-size="42" fill="#3f5233" font-family="'Playfair Display',Georgia,serif">Shahzoda</text>
+  <text x="400" y="392" text-anchor="middle" font-size="18" letter-spacing="4" fill="#54683c" font-family="Georgia,serif">11 · 08 · 2026</text>
+
+  <!-- flower helper clusters -->
+  <g>
+    <!-- top-left bouquet -->
+    <g transform="translate(150,150) scale(1.1)">
+      <path d="M0 40 q9 -17 0 -34 q-9 17 0 34 z" fill="#54683c" opacity="0.9"/>
+      <path d="M28 44 q9 -17 0 -34 q-9 17 0 34 z" fill="#7d9160" opacity="0.9" transform="rotate(30 28 27)"/>
+      <g>
+        <ellipse cx="14" cy="6" rx="7" ry="13" fill="#fff"/>
+        <ellipse cx="14" cy="6" rx="7" ry="13" fill="#fff" transform="rotate(72 14 19)"/>
+        <ellipse cx="14" cy="6" rx="7" ry="13" fill="#fff" transform="rotate(144 14 19)"/>
+        <ellipse cx="14" cy="6" rx="7" ry="13" fill="#fff" transform="rotate(216 14 19)"/>
+        <ellipse cx="14" cy="6" rx="7" ry="13" fill="#fff" transform="rotate(288 14 19)"/>
+        <circle cx="14" cy="19" r="5" fill="#e6d9a8"/>
+      </g>
+    </g>
+    <!-- bottom cluster (mirror-ish) -->
+    <g transform="translate(600,420) scale(1.2)">
+      <path d="M0 40 q9 -17 0 -34 q-9 17 0 34 z" fill="#7d9160" opacity="0.9" transform="rotate(-25 0 23)"/>
+      <path d="M30 44 q9 -17 0 -34 q-9 17 0 34 z" fill="#54683c" opacity="0.9" transform="rotate(35 30 27)"/>
+      <g transform="translate(6,0)">
+        <ellipse cx="14" cy="6" rx="7" ry="13" fill="#fff"/>
+        <ellipse cx="14" cy="6" rx="7" ry="13" fill="#fff" transform="rotate(72 14 19)"/>
+        <ellipse cx="14" cy="6" rx="7" ry="13" fill="#fff" transform="rotate(144 14 19)"/>
+        <ellipse cx="14" cy="6" rx="7" ry="13" fill="#fff" transform="rotate(216 14 19)"/>
+        <ellipse cx="14" cy="6" rx="7" ry="13" fill="#fff" transform="rotate(288 14 19)"/>
+        <circle cx="14" cy="19" r="5" fill="#e6d9a8"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- title -->
+  <text x="400" y="558" text-anchor="middle" font-size="46" fill="#3f5233" font-family="'Great Vibes','Snell Roundhand',cursive">Floral</text>
+</svg>

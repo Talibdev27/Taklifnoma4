@@ -129,6 +129,18 @@ export default function Landing() {
       descriptionKey: 'templates.qizbazmiDesc',
       demoUrl: '/demo?template=qizbazmi', // Qiz Bazmi — sage & gold wax-seal botanical
     },
+    {
+      nameKey: 'templates.garden',
+      image: '/garden-card.svg',
+      descriptionKey: 'templates.gardenDesc',
+      demoUrl: '/demo?template=garden', // Floral — watercolour garden, forest green
+    },
+    {
+      nameKey: 'templates.royal',
+      image: '/royal-card.svg',
+      descriptionKey: 'templates.royalDesc',
+      demoUrl: '/demo?template=royal', // Royal — navy & gold wax-seal envelope
+    },
   ];
 
   const invitationComparisonItems = [

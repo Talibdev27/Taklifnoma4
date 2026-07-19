@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <radialGradient id="rbg" cx="50%" cy="38%" r="80%">
+      <stop offset="0%" stop-color="#2a4066"/>
+      <stop offset="100%" stop-color="#16273f"/>
+    </radialGradient>
+    <linearGradient id="rgold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e0c98a"/>
+      <stop offset="100%" stop-color="#c9a45f"/>
+    </linearGradient>
+    <radialGradient id="rwax" cx="38%" cy="32%" r="75%">
+      <stop offset="0%" stop-color="#e0c98a"/>
+      <stop offset="55%" stop-color="#c9a45f"/>
+      <stop offset="100%" stop-color="#a07d3c"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#rbg)"/>
+
+  <!-- envelope flap lines: four corners to the seal -->
+  <g stroke="url(#rgold)" stroke-width="2" opacity="0.85">
+    <line x1="0" y1="0" x2="400" y2="300"/>
+    <line x1="800" y1="0" x2="400" y2="300"/>
+    <line x1="0" y1="600" x2="400" y2="300"/>
+    <line x1="800" y1="600" x2="400" y2="300"/>
+  </g>
+
+  <!-- heading -->
+  <text x="400" y="86" text-anchor="middle" font-size="34" letter-spacing="6" fill="#f6f0e2" font-family="'Cinzel',Georgia,serif">SIZ TAKLIF</text>
+  <text x="400" y="128" text-anchor="middle" font-size="40" fill="#e0c98a" font-family="'Great Vibes',cursive">etilgansiz</text>
+
+  <!-- wax seal -->
+  <g transform="translate(400,300)">
+    <circle r="66" fill="url(#rwax)" stroke="#7d5f22" stroke-width="2"/>
+    <circle r="52" fill="none" stroke="#5a4219" stroke-opacity="0.5" stroke-width="1.5"/>
+    <text x="0" y="8" text-anchor="middle" font-size="18" letter-spacing="2" fill="#5a4219" font-family="'Cinzel',Georgia,serif">OCHISH</text>
+  </g>
+
+  <!-- couple line -->
+  <text x="400" y="512" text-anchor="middle" font-size="15" letter-spacing="4" fill="#e0c98a" font-family="Georgia,serif">SHUKURULLA &amp; MUNISAXON</text>
+
+  <!-- title -->
+  <text x="400" y="566" text-anchor="middle" font-size="46" fill="#e0c98a" font-family="'Great Vibes','Snell Roundhand',cursive">Royal</text>
+</svg>

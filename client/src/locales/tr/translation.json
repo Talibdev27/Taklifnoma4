@@ -1,7 +1,6 @@
 {
   "common.error": "Hata",
   "common.loading": "Yükleniyor...",
-
   "rsvp.willYouAttend": "Katılıyor musunuz?",
   "rsvp.confirmed": "Evet, mutlaka geleceğim!",
   "rsvp.declined": "Maalesef, gelemeyeceğim",
@@ -30,7 +29,6 @@
   "rsvp.failedToUpdate": "Katılım güncellenemedi. Lütfen tekrar deneyin.",
   "rsvp.submitError": "Yanıt gönderilemedi. Lütfen tekrar deneyin.",
   "rsvp.updateError": "Güncelleme başarısız oldu.",
-
   "guestBook.form.namePlaceholder": "Adınız",
   "guestBook.form.messagePlaceholder": "Dileğinizi yazın...",
   "guestBook.form.submit": "Dileği Gönder",
@@ -38,5 +36,9 @@
   "guestBook.addingMessage": "Gönderiliyor...",
   "guestBook.messageAdded": "Dileğiniz eklendi!",
   "guestBook.messageAddedDesc": "Güzel dileğiniz için teşekkür ederiz.",
-  "guestBook.addMessageError": "Mesaj eklenemedi. Lütfen tekrar deneyin."
+  "guestBook.addMessageError": "Mesaj eklenemedi. Lütfen tekrar deneyin.",
+  "templates.garden": "Floral 💐",
+  "templates.gardenDesc": "Suluboya çiçekler, zarif yeşil bahçe",
+  "templates.royal": "Royal 💌",
+  "templates.royalDesc": "Lacivert ve altın, mühürlü zarf açılışı"
 }
