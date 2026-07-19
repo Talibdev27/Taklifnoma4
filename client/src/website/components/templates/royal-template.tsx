@@ -314,11 +314,16 @@ export function RoyalTemplate({ wedding, photos = [] }: RoyalTemplateProps) {
         {albumPhotos.length > 0 && show('gallery') && (
           <section className="rylx-extra reveal" aria-label="Album">
             <h2 className="rylx-extra-title">{t('wedding.memoryPhotos', 'Album')}</h2>
-            <div className="rylx-grid">
-              {albumPhotos.map((url: string, i: number) => (
-                <div className="rylx-photo" key={i}><img src={url} alt="" loading="lazy" /></div>
-              ))}
-            </div>
+            {albumPhotos.length === 1 ? (
+              /* A single photo is shown large (like the Floral template). */
+              <div className="rylx-photo-single"><img src={albumPhotos[0]} alt="" loading="lazy" /></div>
+            ) : (
+              <div className="rylx-grid">
+                {albumPhotos.map((url: string, i: number) => (
+                  <div className="rylx-photo" key={i}><img src={url} alt="" loading="lazy" /></div>
+                ))}
+              </div>
+            )}
           </section>
         )}
 

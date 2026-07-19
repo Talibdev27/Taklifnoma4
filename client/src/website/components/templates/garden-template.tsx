@@ -220,11 +220,13 @@ export function GardenTemplate({ wedding, photos = [] }: GardenTemplateProps) {
           background: #eef3e8 url(/garden/floral-background.webp) center center / cover no-repeat;
         }
         .gdn-label { font-family: ${serif}; text-transform: uppercase; letter-spacing: 0.32em; font-weight: 600; }
+        /* Opaque enough that green text always reads clearly over the busy
+           floral, while a little bloom still shows through the frosted glass. */
         .gdn-card {
-          background: rgba(247,250,240,0.60);
-          backdrop-filter: blur(9px) saturate(1.02); -webkit-backdrop-filter: blur(9px) saturate(1.02);
-          border: 1px solid rgba(124,145,96,0.28);
-          box-shadow: 0 24px 60px rgba(63,82,51,0.16);
+          background: rgba(248,251,243,0.88);
+          backdrop-filter: blur(18px) saturate(1.05); -webkit-backdrop-filter: blur(18px) saturate(1.05);
+          border: 1px solid rgba(124,145,96,0.32);
+          box-shadow: 0 24px 60px rgba(63,82,51,0.18);
         }
         .gdn-btn {
           background: linear-gradient(135deg, ${GREEN}, ${GREEN_DEEP});
@@ -386,86 +388,83 @@ export function GardenTemplate({ wedding, photos = [] }: GardenTemplateProps) {
         {/* ── WEDDING ALBUM ── */}
         {albumPhotos.length > 0 && show('gallery') && (
         <section id="memories" className="px-5 py-14">
-          <div className="max-w-3xl mx-auto">
-            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-9">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+            className="gdn-card rounded-[24px] max-w-3xl mx-auto px-5 sm:px-8 py-10">
+            <div className="text-center mb-8">
               <p className="gdn-label text-[11px] mb-3" style={{ color: GREEN_SOFT }}>{t('wedding.photos')}</p>
               <h2 className="text-4xl sm:text-5xl" style={{ fontFamily: display, color: GREEN_DEEP }}>{t('garden.album')}</h2>
               <Divider className="mt-5" />
-            </motion.div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {albumPhotos.map((url: string, i: number) => (
-                <motion.div key={i} variants={fadeUp} custom={i % 3} initial="hidden" whileInView="visible" viewport={{ once: true }}
-                  className="aspect-square overflow-hidden rounded-2xl gdn-card">
-                  <img src={url} alt="" loading="lazy" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
-                </motion.div>
-              ))}
             </div>
-          </div>
+            {albumPhotos.length === 1 ? (
+              /* A single photo is shown large (full card width), like the reference. */
+              <div className="rounded-2xl overflow-hidden border border-[#7d9160]/35 mx-auto max-w-lg shadow-sm">
+                <img src={albumPhotos[0]} alt="" loading="lazy" className="w-full h-auto object-cover" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {albumPhotos.map((url: string, i: number) => (
+                  <div key={i} className="aspect-square overflow-hidden rounded-2xl border border-[#7d9160]/35">
+                    <img src={url} alt="" loading="lazy" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                  </div>
+                ))}
+              </div>
+            )}
+          </motion.div>
         </section>
         )}
 
         {/* ── VENUE / LOCATION + MAP ── */}
         {show('location') && (
         <section id="location" className="px-5 py-14">
-          <div className="max-w-2xl mx-auto">
-            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-8">
-              <p className="gdn-label text-[11px] mb-3" style={{ color: GREEN_SOFT }}>{t('garden.location.label')}</p>
-              <h2 className="text-4xl sm:text-5xl" style={{ fontFamily: display, color: GREEN_DEEP }}>{wedding.venue || t('details.venueTBD')}</h2>
-              {addressText && (
-                <p className="flex items-center justify-center gap-2 text-sm mt-4" style={{ color: GREEN }}>
-                  <MapPin className="w-4 h-4" style={{ color: GREEN_SOFT }} /> {addressText}
-                </p>
-              )}
-              <Divider className="mt-6" />
-            </motion.div>
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+            className="gdn-card rounded-[24px] max-w-2xl mx-auto px-6 sm:px-10 py-10 text-center">
+            <p className="gdn-label text-[11px] mb-3" style={{ color: GREEN_SOFT }}>{t('garden.location.label')}</p>
+            <h2 className="text-4xl sm:text-5xl" style={{ fontFamily: display, color: GREEN_DEEP }}>{wedding.venue || t('details.venueTBD')}</h2>
+            {addressText && (
+              <p className="flex items-center justify-center gap-2 text-sm mt-4" style={{ color: GREEN }}>
+                <MapPin className="w-4 h-4" style={{ color: GREEN_SOFT }} /> {addressText}
+              </p>
+            )}
+            <Divider className="mt-6 mb-8" />
             {embedSrc && (
-              <motion.div variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
-                className="gdn-card rounded-[24px] overflow-hidden mb-5">
+              <div className="rounded-2xl overflow-hidden border border-[#7d9160]/35 mb-5">
                 <iframe title="map" src={embedSrc} className="w-full" style={{ border: 0, height: 280, filter: 'grayscale(0.1) contrast(1.02)' }}
                   loading="lazy" allowFullScreen referrerPolicy="no-referrer-when-downgrade" />
-              </motion.div>
-            )}
-            {hasMap && (
-              <div className="text-center">
-                <button onClick={openMap} className="gdn-pill inline-flex items-center gap-2 px-8 py-3.5 rounded-full gdn-label text-xs">
-                  <MapPin className="w-4 h-4" /> {t('garden.location.openMap')} <ArrowRight className="w-4 h-4" />
-                </button>
               </div>
             )}
-          </div>
+            {hasMap && (
+              <button onClick={openMap} className="gdn-pill inline-flex items-center gap-2 px-8 py-3.5 rounded-full gdn-label text-xs">
+                <MapPin className="w-4 h-4" /> {t('garden.location.openMap')} <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
+          </motion.div>
         </section>
         )}
 
         {/* ── RSVP ── */}
         {show('rsvp') && (
         <section id="rsvp" className="px-5 py-14">
-          <div className="max-w-xl mx-auto">
-            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-8">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+            className="gdn-card rounded-[24px] max-w-xl mx-auto px-6 sm:px-9 py-10">
+            <div className="text-center mb-8">
               <p className="gdn-label text-[11px] mb-3" style={{ color: GREEN_SOFT }}>{t('imperial.rsvp.label')}</p>
               <h2 className="text-4xl sm:text-5xl" style={{ fontFamily: display, color: GREEN_DEEP }}>{t('imperial.rsvp.title')}</h2>
-            </motion.div>
-            <motion.div variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
-              className="gdn-card rounded-[24px] p-6 sm:p-9">
-              <EpicRSVPForm wedding={wedding} primaryColor={GREEN} accentColor={GREEN_SOFT} labelColor={`text-[${GREEN_DEEP}]`} />
-            </motion.div>
-          </div>
+            </div>
+            <EpicRSVPForm wedding={wedding} primaryColor={GREEN} accentColor={GREEN_SOFT} labelColor={`text-[${GREEN_DEEP}]`} />
+          </motion.div>
         </section>
         )}
 
         {/* ── TO'YONA ── */}
         {show('toyona') && !!wedding.cardNumber && (
         <section id="toyona" className="px-5 py-14">
-          <div className="max-w-xl mx-auto">
-            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-8">
-              <p className="gdn-label text-[11px] mb-3" style={{ color: GREEN_SOFT }}>{t('sections.toyona')}</p>
-              <h2 className="text-3xl sm:text-4xl" style={{ fontFamily: display, color: GREEN_DEEP }}>{t('toyona.title')}</h2>
-              <p className="text-sm mt-3 max-w-md mx-auto leading-relaxed" style={{ color: GREEN }}>{t('toyona.message')}</p>
-            </motion.div>
-            <motion.div variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
-              className="gdn-card rounded-[24px] p-6 sm:p-9 text-center">
-              <ToyonaCard cardHolderName={wedding.cardHolderName} cardNumber={wedding.cardNumber} accent={GREEN} surface="light" />
-            </motion.div>
-          </div>
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+            className="gdn-card rounded-[24px] max-w-xl mx-auto px-6 sm:px-9 py-10 text-center">
+            <p className="gdn-label text-[11px] mb-3" style={{ color: GREEN_SOFT }}>{t('sections.toyona')}</p>
+            <h2 className="text-3xl sm:text-4xl" style={{ fontFamily: display, color: GREEN_DEEP }}>{t('toyona.title')}</h2>
+            <p className="text-sm mt-3 mb-8 max-w-md mx-auto leading-relaxed" style={{ color: GREEN }}>{t('toyona.message')}</p>
+            <ToyonaCard cardHolderName={wedding.cardHolderName} cardNumber={wedding.cardNumber} accent={GREEN} surface="light" />
+          </motion.div>
         </section>
         )}
 
@@ -473,12 +472,12 @@ export function GardenTemplate({ wedding, photos = [] }: GardenTemplateProps) {
         {show('guestBook') && (
         <section id="guestbook" className="px-5 py-14">
           <div className="max-w-2xl mx-auto">
-            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-8">
-              <p className="gdn-label text-[11px] mb-3" style={{ color: GREEN_SOFT }}>{t('sections.guestbook')}</p>
-              <h2 className="text-3xl sm:text-4xl" style={{ fontFamily: display, color: GREEN_DEEP }}>{t('guestbook.title')}</h2>
-            </motion.div>
-            <motion.div variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
-              className="gdn-card rounded-[24px] p-6 sm:p-9">
+            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="gdn-card rounded-[24px] px-6 sm:px-9 py-10">
+              <div className="text-center mb-8">
+                <p className="gdn-label text-[11px] mb-3" style={{ color: GREEN_SOFT }}>{t('sections.guestbook')}</p>
+                <h2 className="text-3xl sm:text-4xl" style={{ fontFamily: display, color: GREEN_DEEP }}>{t('guestbook.title')}</h2>
+              </div>
               <GuestBookForm weddingId={wedding.id} primaryColor={GREEN} accentColor={GREEN_SOFT} surface="light" />
             </motion.div>
             {guestBookEntries.length > 0 && (
@@ -508,14 +507,22 @@ export function GardenTemplate({ wedding, photos = [] }: GardenTemplateProps) {
         </section>
 
         {/* ── FOOTER ── */}
-        <footer className="px-6 pb-16 pt-6 text-center relative z-10">
-          {show('orderCta') && <OrderInvitationCTA accent={GREEN} surface="light" className="mb-12 max-w-xl mx-auto" />}
-          <Divider className="mb-5" />
-          <p className="text-4xl mb-2" style={{ fontFamily: display, color: GREEN_DEEP }}>
-            {wedding.groom} <span style={{ fontFamily: script, color: GREEN_SOFT }}>&amp;</span> {wedding.bride}
-          </p>
-          <p className="gdn-label text-[10px]" style={{ color: GREEN_SOFT }}>{t('footer.withLove')}</p>
-          <p className="text-[10px] mt-5 tracking-[0.3em] uppercase" style={{ color: GREEN_SOFT }}>— Floral —</p>
+        <footer className="px-5 pb-16 pt-6 text-center relative z-10">
+          {show('orderCta') && (
+            /* Frosted card behind the promo CTA so its text reads over the busy
+               floral (its own light surface is near-transparent). */
+            <div className="gdn-card rounded-[24px] max-w-xl mx-auto mb-8 px-4 py-5">
+              <OrderInvitationCTA accent={GREEN} surface="light" className="!max-w-full !bg-transparent !border-none !p-2" />
+            </div>
+          )}
+          <div className="gdn-card rounded-[24px] max-w-md mx-auto px-6 py-9">
+            <Divider className="mb-5" />
+            <p className="text-4xl mb-2" style={{ fontFamily: display, color: GREEN_DEEP }}>
+              {wedding.groom} <span style={{ fontFamily: script, color: GREEN_SOFT }}>&amp;</span> {wedding.bride}
+            </p>
+            <p className="gdn-label text-[10px]" style={{ color: GREEN_SOFT }}>{t('footer.withLove')}</p>
+            <p className="text-[10px] mt-5 tracking-[0.3em] uppercase" style={{ color: GREEN_SOFT }}>— Floral —</p>
+          </div>
         </footer>
       </div>
     </div>
